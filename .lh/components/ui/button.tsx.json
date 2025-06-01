@@ -1,0 +1,18 @@
+{
+    "sourceFile": "components/ui/button.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1748771380674,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1748771380674,
+            "name": "Commit-0",
+            "content": "// components/ui/button.tsx\r\nimport { cn } from '@/lib/utils';\r\nimport { ButtonHTMLAttributes, forwardRef } from 'react';\r\n\r\nexport interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {\r\n  variant?: 'default' | 'outline' | 'ghost';\r\n  size?: 'sm' | 'md' | 'lg';\r\n}\r\n\r\nconst buttonVariants = {\r\n  default: 'bg-blue-600 text-white hover:bg-blue-700',\r\n  outline: 'border border-blue-600 text-blue-600 hover:bg-blue-50',\r\n  ghost: 'text-blue-600 hover:bg-blue-100',\r\n};\r\n\r\nconst buttonSizes = {\r\n  sm: 'px-3 py-1 text-sm',\r\n  md: 'px-4 py-2 text-base',\r\n  lg: 'px-6 py-3 text-lg',\r\n};\r\n\r\nexport const Button = forwardRef<HTMLButtonElement, ButtonProps>(\r\n  ({ children, className, variant = 'default', size = 'md', ...props }, ref) => {\r\n    return (\r\n      <button\r\n        ref={ref}\r\n        className={cn(\r\n          'rounded-md font-medium transition-colors duration-200',\r\n          buttonVariants[variant],\r\n          buttonSizes[size],\r\n          className\r\n        )}\r\n        {...props}\r\n      >\r\n        {children}\r\n      </button>\r\n    );\r\n  }\r\n);\r\n\r\nButton.displayName = 'Button';\r\n"
+        }
+    ]
+}

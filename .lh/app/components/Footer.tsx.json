@@ -1,0 +1,18 @@
+{
+    "sourceFile": "app/components/Footer.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1748771170839,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1748771170839,
+            "name": "Commit-0",
+            "content": "// components/Footer.tsx\r\nexport default function Footer() {\r\n  return (\r\n    <footer className=\"bg-gray-100 border-t mt-10\">\r\n      <div className=\"max-w-6xl mx-auto px-4 py-6 text-center text-sm text-gray-600\">\r\n        &copy; {new Date().getFullYear()} SmartCanteen. Built by Rahish Sheikh.\r\n      </div>\r\n    </footer>\r\n  );\r\n}\r\n"
+        }
+    ]
+}

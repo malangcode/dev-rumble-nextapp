@@ -1,0 +1,18 @@
+{
+    "sourceFile": "components/CheckoutSkeleton.tsx",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1748775763712,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1748775763712,
+            "name": "Commit-0",
+            "content": "'use client';\r\n\r\nexport default function CheckoutSkeleton() {\r\n  return (\r\n    <div className=\"max-w-4xl mx-auto p-6 animate-pulse\">\r\n      <h1 className=\"text-2xl font-semibold mb-6 bg-gray-200 rounded w-48 h-8\"></h1>\r\n\r\n      <div className=\"space-y-4\">\r\n        {[1, 2].map((_, i) => (\r\n          <div\r\n            key={i}\r\n            className=\"flex items-center justify-between bg-gray-100 rounded-lg p-4\"\r\n          >\r\n            <div className=\"flex items-center space-x-4\">\r\n              <div className=\"h-16 w-16 bg-gray-300 rounded\" />\r\n              <div>\r\n                <div className=\"h-5 w-48 bg-gray-300 rounded mb-2\"></div>\r\n                <div className=\"h-4 w-24 bg-gray-300 rounded\"></div>\r\n              </div>\r\n            </div>\r\n\r\n            <div className=\"flex items-center space-x-3\">\r\n              <div className=\"h-8 w-8 bg-gray-300 rounded\"></div>\r\n              <div className=\"h-5 w-5 bg-gray-300 rounded\"></div>\r\n              <div className=\"h-8 w-8 bg-gray-300 rounded\"></div>\r\n            </div>\r\n\r\n            <div className=\"text-right\">\r\n              <div className=\"h-4 w-16 bg-gray-300 rounded mb-1\"></div>\r\n              <div className=\"h-6 w-20 bg-gray-300 rounded\"></div>\r\n            </div>\r\n          </div>\r\n        ))}\r\n      </div>\r\n\r\n      <div className=\"mt-8 border-t pt-6 flex justify-between items-center\">\r\n        <div>\r\n          <div className=\"h-6 w-24 bg-gray-300 rounded mb-2\"></div>\r\n          <div className=\"h-8 w-32 bg-gray-300 rounded\"></div>\r\n        </div>\r\n        <div className=\"h-10 w-48 bg-gray-300 rounded\"></div>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n"
+        }
+    ]
+}
