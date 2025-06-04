@@ -1,9 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getAuthStatus, logout, UserAuthStatus } from '@/utils/auth';
 import { cn } from '@/lib/utils';
+
 import {
   HiHome,
   HiOutlineShoppingBag,
@@ -11,6 +13,14 @@ import {
   HiOutlineBell,
   HiOutlineUserCircle,
   HiX,
+  HiOutlineCog,
+  HiOutlineLogin,
+  HiOutlineUserAdd,
+  HiOutlineCreditCard,
+  HiOutlineMenu,
+  HiOutlineHome,
+  HiOutlineLogout,
+  HiOutlineShieldCheck, // Optional for admin panel icon
 } from 'react-icons/hi';
 
 const navLinks = [
@@ -23,20 +33,35 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [user, setUser] = useState<UserAuthStatus | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const authData = await getAuthStatus();
+      setUser(authData);
+    };
+    fetchUser();
+  }, []);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleLogout = async () => {
+    await logout();
+    setIsSidebarOpen(false);
+    setUser(null);
+    router.push('/login');
+  };
 
   return (
     <>
       <nav className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          {/* Logo */}
           <Link href="/" className="text-2xl font-bold text-blue-600 tracking-tight">
             SmartCanteen
           </Link>
 
-          {/* Main Nav */}
           <div className="hidden md:flex items-center space-x-16">
             {navLinks.map((link) => {
               const Icon = link.icon;
@@ -64,7 +89,6 @@ export default function Navbar() {
             })}
           </div>
 
-          {/* Profile Icon */}
           <button
             onClick={toggleSidebar}
             className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition duration-200 flex items-center justify-center"
@@ -74,7 +98,7 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Sidebar Overlay */}
+      {/* Sidebar */}
       <div
         className={cn(
           'fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-50 transform transition-transform duration-300 ease-in-out',
@@ -82,41 +106,93 @@ export default function Navbar() {
         )}
       >
         <div className="flex justify-between items-center px-4 py-3 border-b">
-          <h2 className="text-lg font-semibold">Account</h2>
+          <h2 className="text-lg font-semibold text-blue-700">SmartCanteen</h2>
           <button onClick={toggleSidebar} className="text-gray-600 hover:text-red-500">
             <HiX className="text-2xl" />
           </button>
         </div>
-        <div className="p-4 flex flex-col space-y-4">
-          <Link
-            href="/login"
-            className="border border-blue-600 text-blue-600 text-center py-2 rounded hover:bg-blue-50 transition"
-            onClick={toggleSidebar}
-          >
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="bg-blue-600 text-white text-center py-2 rounded hover:bg-blue-700 transition"
-            onClick={toggleSidebar}
-          >
-            Sign Up
-          </Link>
-          <Link href="/profile" onClick={toggleSidebar} className="text-sm text-gray-600 hover:text-blue-600 transition">
-            My Profile
-          </Link>
-          <Link href="/settings" onClick={toggleSidebar} className="text-sm text-gray-600 hover:text-blue-600 transition">
-            Settings
-          </Link>
-        </div>
+
+        <nav className="p-4 space-y-2">
+          {/* Common Links */}
+          {[
+            { href: '/', label: 'Home', icon: HiOutlineHome },
+            { href: '/menu', label: 'Menu', icon: HiOutlineMenu },
+            { href: '/cart', label: 'Cart', icon: HiOutlineShoppingCart },
+            { href: '/checkout', label: 'Checkout', icon: HiOutlineCreditCard },
+            { href: '/notifications', label: 'Notifications', icon: HiOutlineBell },
+            { href: '/profile', label: 'My Profile', icon: HiOutlineUserCircle },
+            { href: '/settings', label: 'Settings', icon: HiOutlineCog },
+          ].map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={toggleSidebar}
+              className="flex items-center space-x-3 px-3 py-2 rounded hover:bg-blue-50 text-gray-700 hover:text-blue-600 transition"
+            >
+              <Icon className="text-xl" />
+              <span>{label}</span>
+            </Link>
+          ))}
+
+          {/* Admin Panel Link */}
+          {user?.is_superuser && (
+            <Link
+              href="/admin/dashboard"
+              onClick={toggleSidebar}
+              className="flex items-center space-x-3 px-3 py-2 rounded bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition"
+            >
+              <HiOutlineShieldCheck className="text-xl" />
+              <span>Admin Panel</span>
+            </Link>
+          )}
+
+          {/* Staff Panel Link */}
+          {user?.is_staff && !user.is_superuser && (
+            <Link
+              href="/staff/tools"
+              onClick={toggleSidebar}
+              className="flex items-center space-x-3 px-3 py-2 rounded bg-purple-100 text-purple-800 hover:bg-purple-200 transition"
+            >
+              <HiOutlineShieldCheck className="text-xl" />
+              <span>Staff Tools</span>
+            </Link>
+          )}
+
+          <hr className="my-3" />
+
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="flex w-full items-center space-x-3 px-3 py-2 rounded border border-red-600 text-red-600 hover:bg-red-50 transition"
+            >
+              <HiOutlineLogout className="text-xl" />
+              <span>Logout</span>
+            </button>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                onClick={toggleSidebar}
+                className="flex items-center space-x-3 px-3 py-2 rounded border border-blue-600 text-blue-600 hover:bg-blue-50 transition"
+              >
+                <HiOutlineLogin className="text-xl" />
+                <span>Login</span>
+              </Link>
+              <Link
+                href="/signup"
+                onClick={toggleSidebar}
+                className="flex items-center space-x-3 px-3 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition"
+              >
+                <HiOutlineUserAdd className="text-xl" />
+                <span>Sign Up</span>
+              </Link>
+            </>
+          )}
+        </nav>
       </div>
 
-      {/* Background dim (optional) */}
       {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-opacity-30 z-40"
-          onClick={toggleSidebar}
-        />
+        <div className="fixed inset-0 z-40" onClick={toggleSidebar} />
       )}
     </>
   );

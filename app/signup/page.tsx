@@ -2,19 +2,23 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { FcGoogle } from 'react-icons/fc';
+import { useRouter } from 'next/navigation';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { Button } from '@/components/ui/button';
+import { FcGoogle } from 'react-icons/fc';
+import { axiosWithCsrf } from '@/lib/axiosWithCsrf'; // ✅ use helper
 
 export default function SignupPage() {
+  const router = useRouter();
+
+  const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -23,13 +27,50 @@ export default function SignupPage() {
       return;
     }
 
-    console.log('Signup with', { email, password });
-    // TODO: Add signup logic (Firebase/Auth0/backend)
+    try {
+      // Signup API call
+      await axiosWithCsrf.post('/auth/', {
+        username: username.trim(),
+        email: email.trim(),
+        password1: password,
+        password2: confirmPassword,
+      });
+
+      console.log('Signup successful');
+
+      // Auto-login after signup
+      await axiosWithCsrf.post('/auth/login/', {
+        email: email.trim(),
+        password: password,
+      });
+
+      console.log('Login successful after signup');
+      router.push('/');
+
+    } catch (err: any) {
+      console.error(err);
+
+      if (err.response?.data) {
+        const data = err.response.data;
+        let messages: string[] = [];
+
+        for (const key in data) {
+          if (Array.isArray(data[key])) {
+            messages.push(`${key}: ${data[key].join(' ')}`);
+          } else if (typeof data[key] === 'string') {
+            messages.push(`${key}: ${data[key]}`);
+          }
+        }
+        setError(messages.join(' | '));
+      } else {
+        setError('Signup failed. Please try again.');
+      }
+    }
   };
 
-  const handleGoogleSignup = () => {
-    console.log('Signup with Google clicked');
-    // TODO: Add Google OAuth signup logic
+  const handleGoogleLogin = () => {
+    console.log('Google login clicked');
+    // TODO: Add Google OAuth here
   };
 
   return (
@@ -37,26 +78,30 @@ export default function SignupPage() {
       <div className="w-full max-w-md space-y-6 bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-blue-700">Create an Account</h2>
 
-        {/* Google Signup */}
         <Button
-          onClick={handleGoogleSignup}
+          onClick={handleGoogleLogin}
           className="w-full flex items-center justify-center gap-2 border border-gray-300 bg-white text-gray-800 hover:bg-gray-100"
           variant="outline"
         >
           <FcGoogle size={20} /> Continue with Google
         </Button>
 
-        <div className="relative my-4">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-gray-300" />
-          </div>
-          <div className="relative flex justify-center text-sm text-gray-500 bg-white px-2">
-            or sign up with email
-          </div>
-        </div>
-
-        {/* Signup Form */}
         <form onSubmit={handleSignup} className="space-y-4">
+          <div>
+            <label htmlFor="username" className="text-sm font-medium text-gray-700">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              required
+              onChange={(e) => setUsername(e.target.value)}
+              className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+              placeholder="Your username"
+            />
+          </div>
+
           <div>
             <label htmlFor="email" className="text-sm font-medium text-gray-700">
               Email
@@ -100,7 +145,7 @@ export default function SignupPage() {
               Confirm Password
             </label>
             <input
-              type={showConfirmPassword ? 'text' : 'password'}
+              type={showPassword ? 'text' : 'password'}
               id="confirmPassword"
               value={confirmPassword}
               required
@@ -108,21 +153,9 @@ export default function SignupPage() {
               className="w-full mt-1 pr-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="••••••••"
             />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute top-[38px] right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
-              aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-            >
-              {showConfirmPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
-            </button>
           </div>
 
-          {error && (
-            <p className="text-sm text-red-600 text-center">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-red-600 text-sm">{error}</p>}
 
           <Button type="submit" className="w-full">
             Sign Up
@@ -132,7 +165,7 @@ export default function SignupPage() {
         <p className="text-center text-sm text-gray-500">
           Already have an account?{' '}
           <Link href="/login" className="text-blue-600 hover:underline">
-            Login here
+            Log in here
           </Link>
         </p>
       </div>

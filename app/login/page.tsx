@@ -5,16 +5,34 @@ import Link from 'next/link';
 import { FcGoogle } from 'react-icons/fc';
 import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { Button } from '@/components/ui/button';
+import { axiosWithCsrf } from '@/lib/axiosWithCsrf'; // ✅ use helper
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Login with', { email, password });
-    // TODO: Add auth logic here
+    setError('');
+
+    try {
+      const res = await axiosWithCsrf.post('/auth/login/', {
+        email: email.trim(),
+        password,
+      });
+
+      console.log('Login successful:', res.data);
+      window.location.href = '/'; // redirect on success
+    } catch (err: any) {
+      console.error(err);
+      if (err.response?.data?.non_field_errors) {
+        setError(err.response.data.non_field_errors.join(' '));
+      } else {
+        setError('Login failed. Please check your credentials.');
+      }
+    }
   };
 
   const handleGoogleLogin = () => {
@@ -45,7 +63,6 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Email Login */}
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -84,6 +101,8 @@ export default function LoginPage() {
               {showPassword ? <HiEyeOff size={20} /> : <HiEye size={20} />}
             </button>
           </div>
+
+          {error && <p className="text-red-600 text-sm">{error}</p>}
 
           <Button type="submit" className="w-full">
             Login

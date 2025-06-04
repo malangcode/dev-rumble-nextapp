@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 10,
+            "activePatchIndex": 12,
             "patches": [
                 {
                     "date": 1748771316342,
@@ -48,6 +48,14 @@
                 {
                     "date": 1748780987951,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,29 @@\n+// app/layout.tsx\n+import './globals.css';\n+import type { Metadata } from 'next';\n+import { Inter } from 'next/font/google';\n+import Navbar from '@/components/Navbar';\n+import Footer from '@/components/Footer';\n+\n+const inter = Inter({ subsets: ['latin'] });\n+\n+export const metadata: Metadata = {\n+  title: 'SmartCanteen',\n+  description: 'Modern canteen management system for colleges',\n+};\n+\n+export default function RootLayout({\n+  children,\n+}: {\n+  children: React.ReactNode;\n+}) {\n+  return (\n+    <html lang=\"en\">\n+      <body className={`${inter.className} bg-gray-50 text-gray-900`}>\n+        <Navbar />\n+        <main className=\"min-h-screen px-2 sm:px-2 lg:px-32 xl:px-64 pt-6\">{children}</main>\n+        <Footer />\n+      </body>\n+    </html>\n+  );\n+}\n"
+                },
+                {
+                    "date": 1748783195422,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,29 @@\n+// app/layout.tsx\n+import './globals.css';\n+import type { Metadata } from 'next';\n+import { Inter } from 'next/font/google';\n+import Navbar from '@/components/Navbar';\n+import Footer from '@/components/Footer';\n+\n+const inter = Inter({ subsets: ['latin'] });\n+\n+export const metadata: Metadata = {\n+  title: 'SmartCanteen',\n+  description: 'Modern canteen management system for colleges',\n+};\n+\n+export default function RootLayout({\n+  children,\n+}: {\n+  children: React.ReactNode;\n+}) {\n+  return (\n+    <html lang=\"en\">\n+      <body className={`${inter.className} bg-gray-50 text-gray-900`}>\n+        <Navbar />\n+        <main className=\"min-h-screen px-2 sm:px-2 lg:px-32 xl:px- pt-6\">{children}</main>\n+        <Footer />\n+      </body>\n+    </html>\n+  );\n+}\n"
+                },
+                {
+                    "date": 1748791982054,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -20,68 +20,10 @@\n   return (\n     <html lang=\"en\">\n       <body className={`${inter.className} bg-gray-50 text-gray-900`}>\n         <Navbar />\n-        <main className=\"min-h-screen px-2 sm:px-2 lg:px-32 xl:px- pt-6\">{children}</main>\n+        <main className=\"min-h-screen px-2 sm:px-2 lg:px-32 pt-2\">{children}</main>\n         <Footer />\n       </body>\n     </html>\n   );\n }\n-// app/layout.tsx\n-import './globals.css';\n-import type { Metadata } from 'next';\n-import { Inter } from 'next/font/google';\n-import Navbar from '@/components/Navbar';\n-import Footer from '@/components/Footer';\n-\n-const inter = Inter({ subsets: ['latin'] });\n-\n-export const metadata: Metadata = {\n-  title: 'SmartCanteen',\n-  description: 'Modern canteen management system for colleges',\n-};\n-\n-export default function RootLayout({\n-  children,\n-}: {\n-  children: React.ReactNode;\n-}) {\n-  return (\n-    <html lang=\"en\">\n-      <body className={`${inter.className} bg-gray-50 text-gray-900`}>\n-        <Navbar />\n-        <main className=\"min-h-screen px-2 sm:px-2 lg:px-32 xl:px-64 pt-6\">{children}</main>\n-        <Footer />\n-      </body>\n-    </html>\n-  );\n-}\n-// app/layout.tsx\n-import './globals.css';\n-import type { Metadata } from 'next';\n-import { Inter } from 'next/font/google';\n-import Navbar from '@/components/Navbar';\n-import Footer from '@/components/Footer';\n-\n-const inter = Inter({ subsets: ['latin'] });\n-\n-export const metadata: Metadata = {\n-  title: 'SmartCanteen',\n-  description: 'Modern canteen management system for colleges',\n-};\n-\n-export default function RootLayout({\n-  children,\n-}: {\n-  children: React.ReactNode;\n-}) {\n-  return (\n-    <html lang=\"en\">\n-      <body className={`${inter.className} bg-gray-50 text-gray-900`}>\n-        <Navbar />\n-        <main className=\"min-h-screen px-2 sm:px-2 lg:px-32 xl:px-64 pt-6\">{children}</main>\n-        <Footer />\n-      </body>\n-    </html>\n-  );\n-}\n"
                 }
             ],
             "date": 1748771316342,

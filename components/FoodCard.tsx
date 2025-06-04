@@ -26,7 +26,7 @@ export function FoodCard({ imageSrc, name, description, price, onAddToCart }: Fo
         <h3 className="font-bold text-xl mb-2">{name}</h3>
         <p className="text-gray-700 text-base flex-grow">{description}</p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-lg font-semibold text-green-700">₹{price.toFixed(2)}</span>
+          <span className="text-lg font-semibold text-green-700">Rs {price.toFixed(2)}</span>
           <button
             onClick={onAddToCart}
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"

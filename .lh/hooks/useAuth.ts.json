@@ -1,0 +1,42 @@
+{
+    "sourceFile": "hooks/useAuth.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1749019210569,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1749019251044,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,15 @@\n           withCredentials: true,\r\n         });\r\n         setAuthData(res.data);\r\n       } catch (err) {\r\n-        setAuthData({ authenticated: false });\r\n+        setAuthData({\r\n+          authenticated: false,\r\n+          username: \"\",\r\n+          email: \"\",\r\n+          is_staff: false,\r\n+          is_superuser: false,\r\n+        });\r\n       } finally {\r\n         setLoading(false);\r\n       }\r\n     };\r\n"
+                },
+                {
+                    "date": 1749019256336,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,15 +19,9 @@\n           withCredentials: true,\r\n         });\r\n         setAuthData(res.data);\r\n       } catch (err) {\r\n-        setAuthData({\r\n-          authenticated: false,\r\n-          username: \"\",\r\n-          email: \"\",\r\n-          is_staff: false,\r\n-          is_superuser: false,\r\n-        });\r\n+        setAuthData({ authenticated: false });\r\n       } finally {\r\n         setLoading(false);\r\n       }\r\n     };\r\n"
+                },
+                {
+                    "date": 1749019280204,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -19,9 +19,15 @@\n           withCredentials: true,\r\n         });\r\n         setAuthData(res.data);\r\n       } catch (err) {\r\n-        setAuthData({ authenticated: false });\r\n+        setAuthData({\r\n+          authenticated: false,\r\n+          username: \"\",\r\n+          email: \"\",\r\n+          is_staff: false,\r\n+          is_superuser: false,\r\n+        });\r\n       } finally {\r\n         setLoading(false);\r\n       }\r\n     };\r\n"
+                },
+                {
+                    "date": 1749019436634,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,5 +1,4 @@\n-// hooks/useAuth.ts\r\n import { useEffect, useState } from \"react\";\r\n import axios from \"axios\";\r\n \r\n export default function useAuth() {\r\n@@ -15,24 +14,25 @@\n   useEffect(() => {\r\n     const checkAuth = async () => {\r\n       try {\r\n         const res = await axios.get(\"http://localhost:8000/api/auth/check-auth/\", {\r\n-          withCredentials: true,\r\n+          withCredentials: true, // ✅ Very important for HttpOnly cookies\r\n         });\r\n-        setAuthData(res.data);\r\n+        setAuthData(res.data); // ✅ Backend sends the structure correctly\r\n       } catch (err) {\r\n+        // ✅ Safe fallback if user is not logged in or error\r\n         setAuthData({\r\n           authenticated: false,\r\n           username: \"\",\r\n           email: \"\",\r\n           is_staff: false,\r\n           is_superuser: false,\r\n         });\r\n       } finally {\r\n-        setLoading(false);\r\n+        setLoading(false); // ✅ Important to trigger UI rendering\r\n       }\r\n     };\r\n-    checkAuth();\r\n+    checkAuth(); // ✅ Call once on component mount\r\n   }, []);\r\n \r\n-  return { ...authData, loading };\r\n+  return { ...authData, loading }; // ✅ Reusable and clean\r\n }\r\n"
+                },
+                {
+                    "date": 1749019749914,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,38 @@\n+import { useEffect, useState } from \"react\";\r\n+import axios from \"axios\";\r\n+\r\n+export default function useAuth() {\r\n+  const [loading, setLoading] = useState(true);\r\n+  const [authData, setAuthData] = useState({\r\n+    authenticated: false,\r\n+    username: \"\",\r\n+    email: \"\",\r\n+    is_staff: false,\r\n+    is_superuser: false,\r\n+  });\r\n+\r\n+  useEffect(() => {\r\n+    const checkAuth = async () => {\r\n+      try {\r\n+        const res = await axios.get(\"http://localhost:8000/api/auth/check-auth/\", {\r\n+          withCredentials: true, // ✅ Very important for HttpOnly cookies\r\n+        });\r\n+        setAuthData(res.data); // ✅ Backend sends the structure correctly\r\n+      } catch (err) {\r\n+        // ✅ Safe fallback if user is not logged in or error\r\n+        setAuthData({\r\n+          authenticated: false,\r\n+          username: \"\",\r\n+          email: \"\",\r\n+          is_staff: false,\r\n+          is_superuser: false,\r\n+        });\r\n+      } finally {\r\n+        setLoading(false); // ✅ Important to trigger UI rendering\r\n+      }\r\n+    };\r\n+    checkAuth(); // ✅ Call once on component mount\r\n+  }, []);\r\n+\r\n+  return { ...authData, loading }; // ✅ Reusable and clean\r\n+}\r\n"
+                },
+                {
+                    "date": 1749020028697,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -0,0 +1,38 @@\n+import { useEffect, useState } from \"react\";\r\n+import axios from \"axios\";\r\n+\r\n+export default function useAuth() {\r\n+  const [loading, setLoading] = useState(true);\r\n+  const [authData, setAuthData] = useState({\r\n+    authenticated: false,\r\n+    username: \"\",\r\n+    email: \"\",\r\n+    is_staff: false,\r\n+    is_superuser: false,\r\n+  });\r\n+\r\n+  useEffect(() => {\r\n+    const checkAuth = async () => {\r\n+      try {\r\n+        const res = await axios.get(\"http://localhost:8000/api/auth/check-auth/\", {\r\n+          withCredentials: true, // ✅ Very important for HttpOnly cookies\r\n+        });\r\n+        setAuthData(res.data); // ✅ Backend sends the structure correctly\r\n+      } catch (err) {\r\n+        // ✅ Safe fallback if user is not logged in or error\r\n+        setAuthData({\r\n+          authenticated: false,\r\n+          username: \"\",\r\n+          email: \"\",\r\n+          is_staff: false,\r\n+          is_superuser: false,\r\n+        });\r\n+      } finally {\r\n+        setLoading(false); // ✅ Important to trigger UI rendering\r\n+      }\r\n+    };\r\n+    checkAuth(); // ✅ Call once on component mount\r\n+  }, []);\r\n+\r\n+  return { ...authData, loading }; // ✅ Reusable and clean\r\n+}\r\n"
+                }
+            ],
+            "date": 1749019210569,
+            "name": "Commit-0",
+            "content": "// hooks/useAuth.ts\r\nimport { useEffect, useState } from \"react\";\r\nimport axios from \"axios\";\r\n\r\nexport default function useAuth() {\r\n  const [loading, setLoading] = useState(true);\r\n  const [authData, setAuthData] = useState({\r\n    authenticated: false,\r\n    username: \"\",\r\n    email: \"\",\r\n    is_staff: false,\r\n    is_superuser: false,\r\n  });\r\n\r\n  useEffect(() => {\r\n    const checkAuth = async () => {\r\n      try {\r\n        const res = await axios.get(\"http://localhost:8000/api/auth/check-auth/\", {\r\n          withCredentials: true,\r\n        });\r\n        setAuthData(res.data);\r\n      } catch (err) {\r\n        setAuthData({ authenticated: false });\r\n      } finally {\r\n        setLoading(false);\r\n      }\r\n    };\r\n    checkAuth();\r\n  }, []);\r\n\r\n  return { ...authData, loading };\r\n}\r\n"
+        }
+    ]
+}

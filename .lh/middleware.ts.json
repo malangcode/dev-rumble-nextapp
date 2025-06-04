@@ -1,0 +1,42 @@
+{
+    "sourceFile": "middleware.ts",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 6,
+            "patches": [
+                {
+                    "date": 1749043848425,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1749047257948,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { NextResponse } from 'next/server';\r\n import type { NextRequest } from 'next/server';\r\n \r\n-const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password'];\r\n+const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password /'];\r\n \r\n export async function middleware(request: NextRequest) {\r\n   const { pathname } = request.nextUrl;\r\n \r\n"
+                },
+                {
+                    "date": 1749047264646,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { NextResponse } from 'next/server';\r\n import type { NextRequest } from 'next/server';\r\n \r\n-const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password /'];\r\n+const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password', /pu];\r\n \r\n export async function middleware(request: NextRequest) {\r\n   const { pathname } = request.nextUrl;\r\n \r\n"
+                },
+                {
+                    "date": 1749047271462,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { NextResponse } from 'next/server';\r\n import type { NextRequest } from 'next/server';\r\n \r\n-const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password', /pu];\r\n+const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password', /public\\/.*/];\r\n \r\n export async function middleware(request: NextRequest) {\r\n   const { pathname } = request.nextUrl;\r\n \r\n"
+                },
+                {
+                    "date": 1749047279303,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { NextResponse } from 'next/server';\r\n import type { NextRequest } from 'next/server';\r\n \r\n-const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password', /public\\/.*/];\r\n+const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password', /public];\r\n \r\n export async function middleware(request: NextRequest) {\r\n   const { pathname } = request.nextUrl;\r\n \r\n"
+                },
+                {
+                    "date": 1749047284768,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,8 +1,8 @@\n import { NextResponse } from 'next/server';\r\n import type { NextRequest } from 'next/server';\r\n \r\n-const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password', /public];\r\n+const PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password'];\r\n \r\n export async function middleware(request: NextRequest) {\r\n   const { pathname } = request.nextUrl;\r\n \r\n"
+                },
+                {
+                    "date": 1749047381587,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -5,14 +5,25 @@\n \r\n export async function middleware(request: NextRequest) {\r\n   const { pathname } = request.nextUrl;\r\n \r\n-  // Allow public paths\r\n+  // ✅ Allow Next.js static files and public assets\r\n+  if (\r\n+    pathname.startsWith('/_next') ||\r\n+    pathname.startsWith('/favicon.ico') ||\r\n+    pathname.startsWith('/logo') ||\r\n+    pathname.startsWith('/images') || // optional: if you have /public/images/*\r\n+    pathname.startsWith('/uploads')   // optional: if you store files in /public/uploads\r\n+  ) {\r\n+    return NextResponse.next();\r\n+  }\r\n+\r\n+  // ✅ Allow public routes\r\n   if (PUBLIC_PATHS.includes(pathname)) {\r\n     return NextResponse.next();\r\n   }\r\n \r\n-  // Send request to Django to check authentication\r\n+  // ✅ Check authentication from Django backend\r\n   const res = await fetch('http://localhost:8000/auth/status/', {\r\n     headers: {\r\n       Cookie: request.headers.get('cookie') || '',\r\n     },\r\n@@ -21,17 +32,17 @@\n \r\n   if (res.ok) {\r\n     const data = await res.json();\r\n     if (data.authenticated) {\r\n-      return NextResponse.next(); // allow access\r\n+      return NextResponse.next();\r\n     }\r\n   }\r\n \r\n-  // If not authenticated, redirect to login\r\n+  // ❌ Not authenticated, redirect to login\r\n   const loginUrl = request.nextUrl.clone();\r\n   loginUrl.pathname = '/login';\r\n   return NextResponse.redirect(loginUrl);\r\n }\r\n \r\n export const config = {\r\n-  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],\r\n+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|logo|images|uploads).*)'],\r\n };\r\n"
+                }
+            ],
+            "date": 1749043848425,
+            "name": "Commit-0",
+            "content": "import { NextResponse } from 'next/server';\r\nimport type { NextRequest } from 'next/server';\r\n\r\nconst PUBLIC_PATHS = ['/', '/login', '/signup', '/change-password'];\r\n\r\nexport async function middleware(request: NextRequest) {\r\n  const { pathname } = request.nextUrl;\r\n\r\n  // Allow public paths\r\n  if (PUBLIC_PATHS.includes(pathname)) {\r\n    return NextResponse.next();\r\n  }\r\n\r\n  // Send request to Django to check authentication\r\n  const res = await fetch('http://localhost:8000/auth/status/', {\r\n    headers: {\r\n      Cookie: request.headers.get('cookie') || '',\r\n    },\r\n    credentials: 'include',\r\n  });\r\n\r\n  if (res.ok) {\r\n    const data = await res.json();\r\n    if (data.authenticated) {\r\n      return NextResponse.next(); // allow access\r\n    }\r\n  }\r\n\r\n  // If not authenticated, redirect to login\r\n  const loginUrl = request.nextUrl.clone();\r\n  loginUrl.pathname = '/login';\r\n  return NextResponse.redirect(loginUrl);\r\n}\r\n\r\nexport const config = {\r\n  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],\r\n};\r\n"
+        }
+    ]
+}
