@@ -1,11 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { FaPlus, FaMinus, FaTrash } from 'react-icons/fa';
-import CartSkeleton from '@/components/CartSkeleton';
-import { axiosWithCsrf } from '@/lib/axiosWithCsrf';
-import { useRouter } from 'next/navigation';
-import BackButton from '@/components/BackButton';
+import { useState, useEffect } from "react";
+import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
+import CartSkeleton from "@/components/CartSkeleton";
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
+import { useRouter } from "next/navigation";
+import BackButton from "@/components/BackButton";
+import { useNotification } from "@/context/messageContext";
 
 type CartItem = {
   id: number;
@@ -19,11 +20,13 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { showNotification } = useNotification();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const res = await axiosWithCsrf.get('/api/cart/items/');
+        const res = await axiosWithCsrf.get("/api/cart/items/");
         const mappedItems = res.data.map((item: any) => ({
           id: item.id,
           name: item.product_name,
@@ -33,7 +36,16 @@ export default function CartPage() {
         }));
         setCartItems(mappedItems);
       } catch (err: any) {
-        setError(err.message || 'Failed to fetch cart');
+        if (err.response && err.response.status === 404) {
+          showNotification(
+            "error",
+            "Your cart is empty. Please add items first."
+          );
+          router.push("/menu");
+        } else {
+          showNotification("error", err.message || "Failed to fetch cart.");
+        }
+        // setError(err.message || 'Failed to fetch cart');
       } finally {
         setLoading(false);
       }
@@ -47,31 +59,31 @@ export default function CartPage() {
 
     try {
       // Send update to backend
-      await axiosWithCsrf.post('/api/cart/update/', {
+      await axiosWithCsrf.post("/api/cart/update/", {
         cart_item_id: id,
         quantity: newQty,
       });
 
       // Update frontend state only if backend call successful
-      setCartItems(items =>
-        items.map(item =>
+      setCartItems((items) =>
+        items.map((item) =>
           item.id === id ? { ...item, quantity: newQty } : item
         )
       );
     } catch (error) {
-      console.error('Failed to update quantity:', error);
+      console.error("Failed to update quantity:", error);
       // Optional: show some UI error feedback here
     }
   };
 
   const increaseQty = (id: number) => {
-    const item = cartItems.find(item => item.id === id);
+    const item = cartItems.find((item) => item.id === id);
     if (!item) return;
     updateQuantity(id, item.quantity + 1);
   };
 
   const decreaseQty = (id: number) => {
-    const item = cartItems.find(item => item.id === id);
+    const item = cartItems.find((item) => item.id === id);
     if (!item) return;
     if (item.quantity === 1) return; // or you can remove if quantity 0 allowed
     updateQuantity(id, item.quantity - 1);
@@ -79,10 +91,10 @@ export default function CartPage() {
 
   const removeItem = async (id: number) => {
     try {
-      await axiosWithCsrf.post('/api/cart/remove/', { cart_item_id: id });
-      setCartItems(items => items.filter(item => item.id !== id));
+      await axiosWithCsrf.post("/api/cart/remove/", { cart_item_id: id });
+      setCartItems((items) => items.filter((item) => item.id !== id));
     } catch (error) {
-      console.error('Failed to remove item:', error);
+      console.error("Failed to remove item:", error);
       // Optional: show error feedback
     }
   };
@@ -96,14 +108,13 @@ export default function CartPage() {
 
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
-  const router = useRouter();
 
   const gotoCheckout = () => {
-    router.push('/checkout'); // replace '/checkout' with your actual checkout route
+    router.push("/checkout"); // replace '/checkout' with your actual checkout route
   };
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6 lg:p-8">
+    <div className="py-6">
       <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-blue-700">
         Your Cart
       </h1>
@@ -111,14 +122,15 @@ export default function CartPage() {
       <BackButton />
 
       <div className="bg-yellow-100 border border-yellow-300 text-yellow-800 rounded-md p-4 text-sm sm:text-base mb-6">
-        <strong>Note:</strong> Please review your items before proceeding to checkout. Ensure quantities are correct and items are as expected !.
+        <strong>Note:</strong> Please review your items before proceeding to
+        checkout. Ensure quantities are correct and items are as expected !.
       </div>
 
       {cartItems.length === 0 ? (
         <p className="text-gray-600 text-center text-lg">Your cart is empty.</p>
       ) : (
         <div className="space-y-6">
-          {cartItems.map(item => (
+          {cartItems.map((item) => (
             <div
               key={item.id}
               className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg shadow-md bg-white"
@@ -130,7 +142,9 @@ export default function CartPage() {
               />
 
               <div className="flex-1 flex flex-col gap-1">
-                <h2 className="font-semibold text-lg sm:text-xl">{item.name}</h2>
+                <h2 className="font-semibold text-lg sm:text-xl">
+                  {item.name}
+                </h2>
                 <p className="text-gray-600">Rs {item.price.toFixed(2)}</p>
 
                 <div className="flex items-center mt-2 space-x-3">

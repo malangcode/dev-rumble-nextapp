@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 74,
+            "activePatchIndex": 77,
             "patches": [
                 {
                     "date": 1748772323399,
@@ -304,6 +304,18 @@
                 {
                     "date": 1749073650087,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,11 +1,11 @@\n-'use client';\r\n+\"use client\";\r\n \r\n-import { useEffect, useState } from 'react';\r\n-import { axiosWithCsrf } from '@/lib/axiosWithCsrf';\r\n-import { FoodCard } from '@/components/FoodCard';\r\n-import { FoodCardSkeleton } from '@/components/FoodCardSkeleton';\r\n-import PopupMessage from '@/components/PopupMessage';\r\n+import { useEffect, useState } from \"react\";\r\n+import { axiosWithCsrf } from \"@/lib/axiosWithCsrf\";\r\n+import { FoodCard } from \"@/components/FoodCard\";\r\n+import { FoodCardSkeleton } from \"@/components/FoodCardSkeleton\";\r\n+import PopupMessage from \"@/components/PopupMessage\";\r\n \r\n type Product = {\r\n   id: number;\r\n   name: string;\r\n@@ -19,18 +19,18 @@\n   const [products, setProducts] = useState<Product[]>([]);\r\n   const [loading, setLoading] = useState(true);\r\n   const [popup, setPopup] = useState<{\r\n     message: string;\r\n-    type: 'success' | 'error' | 'info';\r\n+    type: \"success\" | \"error\" | \"info\";\r\n   } | null>(null);\r\n \r\n   useEffect(() => {\r\n     const fetchProducts = async () => {\r\n       try {\r\n-        const res = await axiosWithCsrf.get<Product[]>('/api/products/');\r\n+        const res = await axiosWithCsrf.get<Product[]>(\"/api/products/\");\r\n         setProducts(res.data);\r\n       } catch (err) {\r\n-        console.error('Failed to fetch products:', err);\r\n+        console.error(\"Failed to fetch products:\", err);\r\n       } finally {\r\n         setLoading(false);\r\n       }\r\n     };\r\n@@ -39,36 +39,36 @@\n   }, []);\r\n \r\n   const addToCart = async (productId: number) => {\r\n     try {\r\n-      const response = await axiosWithCsrf.post('/api/cart/add/', {\r\n+      const response = await axiosWithCsrf.post(\"/api/cart/add/\", {\r\n         product_id: productId,\r\n         quantity: 1,\r\n       });\r\n \r\n       const data = response.data;\r\n \r\n-      if (data.status === 'exists') {\r\n+      if (data.status === \"exists\") {\r\n         setPopup({\r\n           message: `\"${data.product}\" is already in your cart (Qty: ${data.quantity}).`,\r\n-          type: 'info',\r\n+          type: \"info\",\r\n         });\r\n-      } else if (data.status === 'success') {\r\n+      } else if (data.status === \"success\") {\r\n         setPopup({\r\n           message: `\"${data.product}\" added to cart successfully!`,\r\n-          type: 'success',\r\n+          type: \"success\",\r\n         });\r\n       } else {\r\n         setPopup({\r\n-          message: 'Unexpected response from server.',\r\n-          type: 'error',\r\n+          message: \"Unexpected response from server.\",\r\n+          type: \"error\",\r\n         });\r\n       }\r\n     } catch (error) {\r\n-      console.error('Failed to add to cart:', error);\r\n+      console.error(\"Failed to add to cart:\", error);\r\n       setPopup({\r\n-        message: 'Failed to add to cart. Please try again.',\r\n-        type: 'error',\r\n+        message: \"Failed to add to cart. Please try again.\",\r\n+        type: \"error\",\r\n       });\r\n     }\r\n   };\r\n \r\n"
+                },
+                {
+                    "date": 1749119580855,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -91,9 +91,9 @@\n   }\r\n \r\n   return (\r\n     <>\r\n-      <div className=\"p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 pt-5\">\r\n+      <div className=\"p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 pt-5\">\r\n         {products.map((product) => (\r\n           <FoodCard\r\n             key={product.id}\r\n             imageSrc={product.image}\r\n"
+                },
+                {
+                    "date": 1749119588317,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -91,9 +91,9 @@\n   }\r\n \r\n   return (\r\n     <>\r\n-      <div className=\"p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 pt-5\">\r\n+      <div className=\"p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 pt-5\">\r\n         {products.map((product) => (\r\n           <FoodCard\r\n             key={product.id}\r\n             imageSrc={product.image}\r\n"
+                },
+                {
+                    "date": 1749119595146,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -91,9 +91,9 @@\n   }\r\n \r\n   return (\r\n     <>\r\n-      <div className=\"p-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 pt-5\">\r\n+      <div className=\"p-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-6 pt-5\">\r\n         {products.map((product) => (\r\n           <FoodCard\r\n             key={product.id}\r\n             imageSrc={product.image}\r\n"
                 }
             ],
             "date": 1748772323399,

@@ -6,6 +6,7 @@ import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import PopupMessage from "@/components/PopupMessage";
 import { useRouter } from 'next/navigation';
 import BackButton from '@/components/BackButton';
+import { useNotification } from "@/context/messageContext";
 
 interface CartItem {
   id: number;
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [checkoutSuccess, setCheckoutSuccess] = useState<string | null>(null);
+  const { showNotification } = useNotification();
 
   const router = useRouter();
 
@@ -38,7 +40,16 @@ export default function CheckoutPage() {
         }));
         setCartItems(mappedItems);
       } catch (err: any) {
-        setError(err.message || "Failed to fetch cart");
+        if (err.response && err.response.status === 404) {
+          showNotification(
+            "error",
+            "Your cart is empty. Please add items first."
+          );
+          router.push("/menu");
+        } else {
+          showNotification("error", err.message || "Failed to fetch cart.");
+        }
+        // setError(err.message || "Failed to fetch cart");
       } finally {
         setLoading(false);
       }
@@ -100,7 +111,7 @@ export default function CheckoutPage() {
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
+    <div className="py-6">
       <h1 className="text-3xl font-bold text-blue-700 text-left mb-1">
         Checkout
       </h1>

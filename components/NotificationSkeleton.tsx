@@ -2,7 +2,7 @@
 
 export default function NotificationSkeleton() {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="py-6">
       <h1 className="text-2xl font-semibold mb-6 text-blue-700 animate-pulse bg-gray-200 rounded w-48 h-8"></h1>
       <div className="space-y-4">
         {[1, 2, 3, 4].map((_, i) => (

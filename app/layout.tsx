@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { NotificationProvider } from "@/context/messageContext";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,9 +21,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-gray-50 text-gray-900`}>
-        <Navbar />
-        <main className="min-h-screen px-2 sm:px-2 lg:px-32 pt-2">{children}</main>
-        <Footer />
+        <NotificationProvider>
+          <Navbar />
+          <div className="min-h-screen flex justify-center px-4 pt-3">
+          <main className="w-full max-w-[1200px]">{children}</main>
+          </div>
+          <Footer />
+        </NotificationProvider>
       </body>
     </html>
   );

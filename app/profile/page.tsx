@@ -1,26 +1,46 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { Button } from '@/components/ui/button';
-import SkeletonProfile from '@/components/SkeletonProfile'; // adjust path accordingly
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import SkeletonProfile from "@/components/SkeletonProfile"; // adjust path accordingly
+import { useRouter } from "next/navigation";
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf"; // Assuming you have axiosWithCsrf like in EditProfilePage
 
-const tabs = ['Orders', 'History', 'Tracking', 'Profile'];
+const tabs = ["Orders", "History", "Tracking", "Profile"];
 
 export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('Orders');
+  const [activeTab, setActiveTab] = useState("Orders");
   const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  // Simulate loading for 1.5 seconds
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
-    return () => clearTimeout(timer);
+    const fetchProfile = async () => {
+      try {
+        const res = await axiosWithCsrf.get("/api/get-profile/");
+        setProfile(res.data);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load profile.");
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
   }, []);
 
   if (loading) return <SkeletonProfile />;
+  if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
+
+  const gotoEditPage = () => {
+    router.push("/editProfile");
+  };
 
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100">
       {/* Cover Section */}
       <div className="relative h-60 sm:h-72 bg-white shadow-md">
         <Image
@@ -30,26 +50,41 @@ export default function ProfilePage() {
           objectFit="cover"
           className="rounded-b-xl"
         />
-        <div className="absolute bottom-[-50px] left-4 sm:left-10">
-          <Image
-            src="/images/profile.jpg"
-            alt="User"
-            width={100}
-            height={100}
-            className="rounded-full border-4 border-white"
-          />
+        <div className="absolute bottom-[-80px] left-4 sm:left-10 flex flex-col items-center w-[100px]">
+          <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-white">
+            <Image
+              src={
+                profile?.profile_pic
+                  ? BASE_URL + profile.profile_pic
+                  : "/images/profile2.jpg"
+              }
+              alt="User"
+              width={100}
+              height={100}
+              className="object-cover"
+            />
+          </div>
+          <p className="text-center text-sm text-gray-600 mt-1 w-full truncate">
+            @{profile?.username || "anonymous"}
+          </p>
         </div>
       </div>
 
       {/* Profile Header */}
-      <div className="bg-white pt-16 pb-6 px-4 sm:px-10 shadow">
+      <div className="bg-white pt-24 pb-6 px-4 sm:px-10 shadow">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-blue-800">Rahish Sheikh</h1>
-            <p className="text-gray-600 text-sm">Texas College of Management & IT</p>
+            <h1 className="text-2xl font-bold text-blue-800">
+              {profile?.full_name || "No Name"}
+            </h1>
+            <p className="text-gray-600 text-sm">
+              {profile?.faculty || "No Faculty Info"}
+            </p>
           </div>
           <div className="mt-4 sm:mt-0 flex gap-2">
-            <Button variant="default">Edit Profile</Button>
+            <Button onClick={gotoEditPage} variant="default">
+              Edit Profile
+            </Button>
             <Button variant="outline">Logout</Button>
           </div>
         </div>
@@ -62,8 +97,8 @@ export default function ProfilePage() {
               onClick={() => setActiveTab(tab)}
               className={`pb-2 ${
                 activeTab === tab
-                  ? 'border-blue-600 text-blue-700 font-medium border-b-2'
-                  : 'text-gray-500 hover:text-blue-500'
+                  ? "border-blue-600 text-blue-700 font-medium border-b-2"
+                  : "text-gray-500 hover:text-blue-500"
               }`}
             >
               {tab}
@@ -74,25 +109,32 @@ export default function ProfilePage() {
 
       {/* Tab Content */}
       <div className="p-4 sm:p-8 max-w-4xl mx-auto">
-        {activeTab === 'Orders' && (
+        {activeTab === "Orders" && (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-bold mb-4">Current Orders</h2>
+            {/* You can fetch orders dynamically later if you want */}
             <ul className="space-y-4">
               <li className="border p-4 rounded-md">
-                <p><strong>Order #2345</strong></p>
+                <p>
+                  <strong>Order #2345</strong>
+                </p>
                 <p>2x Veg Chowmein, 1x Lassi</p>
-                <p className="text-sm text-yellow-600">Status: Preparing</p>
+                <p className="text-yellow-600 text-sm">Status: Preparing</p>
               </li>
               <li className="border p-4 rounded-md">
-                <p><strong>Order #2346</strong></p>
+                <p>
+                  <strong>Order #2346</strong>
+                </p>
                 <p>1x Cheese Burger, 1x Coke</p>
-                <p className="text-sm text-green-600">Status: Ready for Pickup</p>
+                <p className="text-green-600 text-sm">
+                  Status: Ready for Pickup
+                </p>
               </li>
             </ul>
           </div>
         )}
 
-        {activeTab === 'History' && (
+        {activeTab === "History" && (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-bold mb-4">Order History</h2>
             <table className="w-full text-left text-sm">
@@ -119,19 +161,23 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {activeTab === 'Tracking' && (
+        {activeTab === "Tracking" && (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-bold mb-4">Track Your Order</h2>
             <div className="flex flex-col space-y-4">
               <div className="bg-gray-100 p-4 rounded">
-                <p><strong>Order #2346</strong></p>
+                <p>
+                  <strong>Order #2346</strong>
+                </p>
                 <p className="text-sm">Expected Pickup: 10 mins</p>
                 <div className="mt-2 w-full bg-gray-200 h-2 rounded-full">
                   <div className="bg-blue-500 h-2 w-[80%] rounded-full"></div>
                 </div>
               </div>
               <div className="bg-gray-100 p-4 rounded">
-                <p><strong>Order #2345</strong></p>
+                <p>
+                  <strong>Order #2345</strong>
+                </p>
                 <p className="text-sm">Expected Pickup: 5 mins</p>
                 <div className="mt-2 w-full bg-gray-200 h-2 rounded-full">
                   <div className="bg-blue-500 h-2 w-[60%] rounded-full"></div>
@@ -141,14 +187,33 @@ export default function ProfilePage() {
           </div>
         )}
 
-        {activeTab === 'Profile' && (
-          <div className="bg-white shadow rounded-lg p-6">
+        {activeTab === "Profile" && (
+          <div className="bg-white shadow rounded-lg p-6 space-y-2">
             <h2 className="text-xl font-bold mb-4">Profile Info</h2>
-            <p><strong>Name:</strong> Rahish Sheikh</p>
-            <p><strong>Student ID:</strong> TX123456</p>
-            <p><strong>Email:</strong> rahish@texas.edu.np</p>
-            <p><strong>Department:</strong> Bachelor of IT</p>
-            <p><strong>Joined:</strong> 2023</p>
+            <p>
+              <strong>Name:</strong> {profile?.full_name || "N/A"}
+            </p>
+            <p>
+              <strong>Student ID:</strong> {profile?.lcid || "N/A"}
+            </p>
+            <p>
+              <strong>Email:</strong> {profile?.email || "N/A"}
+            </p>
+            <p>
+              <strong>Department:</strong> {profile?.program || "N/A"}
+            </p>
+            <p>
+              <strong>Faculty:</strong> {profile?.faculty || "N/A"}
+            </p>
+            <p>
+              <strong>Phone Number:</strong> {profile?.phone_number || "N/A"}
+            </p>
+            <p>
+              <strong>Section:</strong> {profile?.section || "N/A"}
+            </p>
+            <p>
+              <strong>Joined:</strong> {profile?.joined || "N/A"}
+            </p>
           </div>
         )}
       </div>

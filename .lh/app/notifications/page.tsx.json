@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 9,
+            "activePatchIndex": 10,
             "patches": [
                 {
                     "date": 1748774471538,
@@ -44,6 +44,10 @@
                 {
                     "date": 1748784201188,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -58,9 +58,9 @@\n     return <NotificationSkeleton />;\r\n   }\r\n \r\n   return (\r\n-    <div className=\"max-w-4xl mx-auto px-1 py-8\">\r\n+    <div className=\"max-w-4xl mx-auto px-2 py-8\">\r\n       <h1 className=\"text-2xl font-semibold mb-6 text-blue-700\">Notifications</h1>\r\n       <div className=\"space-y-4\">\r\n         {data.map((notif) => (\r\n           <div\r\n"
+                },
+                {
+                    "date": 1749118896486,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -58,9 +58,9 @@\n     return <NotificationSkeleton />;\r\n   }\r\n \r\n   return (\r\n-    <div className=\"max-w-4xl mx-auto px-2 py-8\">\r\n+    <div className=\"max-w-4xl mx-auto px-2 py-6\">\r\n       <h1 className=\"text-2xl font-semibold mb-6 text-blue-700\">Notifications</h1>\r\n       <div className=\"space-y-4\">\r\n         {data.map((notif) => (\r\n           <div\r\n"
                 }
             ],
             "date": 1748774471538,

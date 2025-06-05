@@ -2,7 +2,7 @@
 
 export default function CartSkeleton() {
   return (
-    <div className="space-y-6 px-2 max-w-4xl mx-auto">
+    <div className="py-6 animate-pulse">
       {[1, 2, 3].map((i) => (
         <div
           key={i}

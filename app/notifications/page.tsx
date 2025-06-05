@@ -59,7 +59,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-2 py-8">
+    <div className="py-6">
       <h1 className="text-2xl font-semibold mb-6 text-blue-700">Notifications</h1>
       <div className="space-y-4">
         {data.map((notif) => (
