@@ -26,7 +26,6 @@ import {
 const navLinks = [
   { name: 'Home', href: '/', icon: HiHome },
   { name: 'Menu', href: '/menu', icon: HiOutlineShoppingBag },
-  { name: 'Checkout', href: '/checkout', icon: HiOutlineShoppingCart },
   { name: 'Notifications', href: '/notifications', icon: HiOutlineBell },
   { name: 'Cart', href: '/cart', icon: HiOutlineShoppingCart },
 ];
@@ -118,7 +117,6 @@ export default function Navbar() {
             { href: '/', label: 'Home', icon: HiOutlineHome },
             { href: '/menu', label: 'Menu', icon: HiOutlineMenu },
             { href: '/cart', label: 'Cart', icon: HiOutlineShoppingCart },
-            { href: '/checkout', label: 'Checkout', icon: HiOutlineCreditCard },
             { href: '/notifications', label: 'Notifications', icon: HiOutlineBell },
             { href: '/profile', label: 'My Profile', icon: HiOutlineUserCircle },
             { href: '/settings', label: 'Settings', icon: HiOutlineCog },
@@ -137,7 +135,7 @@ export default function Navbar() {
           {/* Admin Panel Link */}
           {user?.is_superuser && (
             <Link
-              href="/admin/dashboard"
+              href="/admin"
               onClick={toggleSidebar}
               className="flex items-center space-x-3 px-3 py-2 rounded bg-yellow-100 text-yellow-800 hover:bg-yellow-200 transition"
             >

@@ -3,45 +3,77 @@
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import SkeletonProfile from "@/components/SkeletonProfile"; // adjust path accordingly
+import SkeletonProfile from "@/components/SkeletonProfile";
 import { useRouter } from "next/navigation";
-import { axiosWithCsrf } from "@/lib/axiosWithCsrf"; // Assuming you have axiosWithCsrf like in EditProfilePage
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
+import OrderTrackingTab from "@/components/profile/OrderTrackingTab";
+import { logout } from "@/utils/auth";
 
-const tabs = ["Orders", "History", "Tracking", "Profile"];
+const tabs = ["Orders", "History", "Cancelled", "Tracking", "Profile"];
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("Orders");
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [history, setHistory] = useState<any[]>([]);
+  const [cancelledOrders, setCancelledOrders] = useState<any[]>([]);
+  const [orderHistoryPagination, setOrderHistoryPagination] = useState<any>({});
+  const [cancelledOrderPagination, setCancelledOrderPagination] = useState<any>({});
   const router = useRouter();
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
-    const fetchProfile = async () => {
+    const fetchProfileAndOrders = async () => {
       try {
         const res = await axiosWithCsrf.get("/api/get-profile/");
+        const ordersRes = await axiosWithCsrf.get("/api/orders/");
         setProfile(res.data);
+        setOrders(ordersRes.data.current_orders);
+        setHistory(ordersRes.data.order_history);
+        setCancelledOrders(ordersRes.data.cancelled_order);
+        setOrderHistoryPagination(ordersRes.data.order_history_pagination);
+        setCancelledOrderPagination(ordersRes.data.cancelled_order_pagination);
         setLoading(false);
       } catch (err) {
-        setError("Failed to load profile.");
+        setError("Failed to load profile or orders.");
         setLoading(false);
       }
     };
 
-    fetchProfile();
+    fetchProfileAndOrders();
   }, []);
+
+  const fetchOrderPageData = async (url: string, type: "history" | "cancelled") => {
+    try {
+      const response = await axiosWithCsrf.get(url.replace(BASE_URL || "", ""));
+      if (type === "history") {
+        setHistory(response.data.order_history);
+        setOrderHistoryPagination(response.data.order_history_pagination);
+      } else {
+        setCancelledOrders(response.data.cancelled_order);
+        setCancelledOrderPagination(response.data.cancelled_order_pagination);
+      }
+    } catch (err) {
+      console.error("Failed to fetch paginated data:", err);
+    }
+  };
 
   if (loading) return <SkeletonProfile />;
   if (error) return <p className="text-red-500 text-center mt-10">{error}</p>;
 
-  const gotoEditPage = () => {
-    router.push("/editProfile");
-  };
+  const gotoEditPage = () => router.push("/editProfile");
+
+  const handleLogout = async () => {
+      await logout();
+      // setUser(null);
+      router.push('/login');
+    };
 
   return (
     <div className="bg-gray-100">
-      {/* Cover Section */}
+      {/* Cover */}
       <div className="relative h-60 sm:h-72 bg-white shadow-md">
         <Image
           src="/images/cover.png"
@@ -53,11 +85,7 @@ export default function ProfilePage() {
         <div className="absolute bottom-[-80px] left-4 sm:left-10 flex flex-col items-center w-[100px]">
           <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-white">
             <Image
-              src={
-                profile?.profile_pic
-                  ? BASE_URL + profile.profile_pic
-                  : "/images/profile2.jpg"
-              }
+              src={profile?.profile_pic ? BASE_URL + profile.profile_pic : "/images/profile2.jpg"}
               alt="User"
               width={100}
               height={100}
@@ -77,15 +105,11 @@ export default function ProfilePage() {
             <h1 className="text-2xl font-bold text-blue-800">
               {profile?.full_name || "No Name"}
             </h1>
-            <p className="text-gray-600 text-sm">
-              {profile?.faculty || "No Faculty Info"}
-            </p>
+            <p className="text-gray-600 text-sm">{profile?.faculty || "No Faculty Info"}</p>
           </div>
           <div className="mt-4 sm:mt-0 flex gap-2">
-            <Button onClick={gotoEditPage} variant="default">
-              Edit Profile
-            </Button>
-            <Button variant="outline">Logout</Button>
+            <Button onClick={gotoEditPage}>Edit Profile</Button>
+            <Button onClick={handleLogout} variant="outline">Logout</Button>
           </div>
         </div>
 
@@ -107,29 +131,23 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Tab Content */}
+      {/* Content */}
       <div className="p-4 sm:p-8 max-w-4xl mx-auto">
         {activeTab === "Orders" && (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-bold mb-4">Current Orders</h2>
-            {/* You can fetch orders dynamically later if you want */}
             <ul className="space-y-4">
-              <li className="border p-4 rounded-md">
-                <p>
-                  <strong>Order #2345</strong>
-                </p>
-                <p>2x Veg Chowmein, 1x Lassi</p>
-                <p className="text-yellow-600 text-sm">Status: Preparing</p>
-              </li>
-              <li className="border p-4 rounded-md">
-                <p>
-                  <strong>Order #2346</strong>
-                </p>
-                <p>1x Cheese Burger, 1x Coke</p>
-                <p className="text-green-600 text-sm">
-                  Status: Ready for Pickup
-                </p>
-              </li>
+              {orders.length === 0 ? (
+                <p className="text-gray-500">You have no current orders.</p>
+              ) : (
+                orders.map((order) => (
+                  <li key={order.id} className="shadow p-4 rounded-md">
+                    <p><strong>Order #{order.id}</strong></p>
+                    <p>{order.items.map((item: any) => `${item.quantity}x ${item.product_name}`).join(", ")}</p>
+                    <p className="text-yellow-600 text-sm">Status: {order.status}</p>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         )}
@@ -137,57 +155,127 @@ export default function ProfilePage() {
         {activeTab === "History" && (
           <div className="bg-white shadow rounded-lg p-6">
             <h2 className="text-xl font-bold mb-4">Order History</h2>
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="text-gray-600 border-b">
-                  <th className="py-2">Date</th>
-                  <th>Items</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b">
-                  <td className="py-2">May 31, 2025</td>
-                  <td>Pizza, Cold Coffee</td>
-                  <td>Rs. 450</td>
-                </tr>
-                <tr>
-                  <td className="py-2">May 30, 2025</td>
-                  <td>Chowmein, Iced Tea</td>
-                  <td>Rs. 300</td>
-                </tr>
-              </tbody>
-            </table>
+            {history.length === 0 ? (
+              <p className="text-gray-500 text-center">No order history yet.</p>
+            ) : (
+              <>
+                <table className="w-full text-left text-sm">
+                  <thead>
+                    <tr className="text-gray-600 border-b">
+                      <th className="py-2">Date</th>
+                      <th>Items</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {history.map((order) => (
+                      <tr key={order.id} className="border-b">
+                        <td className="py-2">
+                          {new Date(order.ordered_at).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          })}
+                        </td>
+                        <td>{order.items.map((item: any) => `${item.quantity}x ${item.product_name}`).join(", ")}</td>
+                        <td>Rs. {order.total_price}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <div className="flex justify-between items-center mt-4">
+                  <p className="text-sm text-gray-700">
+                    Showing {history.length} of {orderHistoryPagination.count} orders
+                  </p>
+                  <div className="flex gap-2">
+                    <Button
+                      disabled={!orderHistoryPagination.previous}
+                      onClick={() =>
+                        fetchOrderPageData(orderHistoryPagination.previous, "history")
+                      }
+                      variant="outline"
+                    >
+                      Previous
+                    </Button>
+                    <Button
+                      disabled={!orderHistoryPagination.next}
+                      onClick={() =>
+                        fetchOrderPageData(orderHistoryPagination.next, "history")
+                      }
+                      variant="outline"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "Cancelled" && (
+          <div className="bg-white shadow rounded-lg p-6">
+            <h2 className="text-xl font-bold mb-4">Cancelled Orders</h2>
+            {cancelledOrders.length === 0 ? (
+              <p className="text-gray-500">You have no cancelled orders.</p>
+            ) : (
+              <>
+                <ul className="space-y-4">
+                  {cancelledOrders.map((order) => (
+                    <li key={order.id} className="shadow p-4 rounded-md bg-red-50">
+                      <p><strong>Order #{order.id}</strong></p>
+                      <p>{order.items.map((item: any) => `${item.quantity}x ${item.product_name}`).join(", ")}</p>
+                      <p className="text-red-600 text-sm">Status: {order.status}</p>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="flex justify-end gap-2 mt-4">
+                  <Button
+                    disabled={!cancelledOrderPagination.previous}
+                    onClick={() =>
+                      fetchOrderPageData(cancelledOrderPagination.previous, "cancelled")
+                    }
+                    variant="outline"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    disabled={!cancelledOrderPagination.next}
+                    onClick={() =>
+                      fetchOrderPageData(cancelledOrderPagination.next, "cancelled")
+                    }
+                    variant="outline"
+                  >
+                    Next
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         )}
 
         {activeTab === "Tracking" && (
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Track Your Order</h2>
-            <div className="flex flex-col space-y-4">
-              <div className="bg-gray-100 p-4 rounded">
-                <p>
-                  <strong>Order #2346</strong>
-                </p>
-                <p className="text-sm">Expected Pickup: 10 mins</p>
-                <div className="mt-2 w-full bg-gray-200 h-2 rounded-full">
-                  <div className="bg-blue-500 h-2 w-[80%] rounded-full"></div>
-                </div>
+          <>
+            {orders.some((o) =>
+              ["pending", "confirmed", "preparing"].includes(o.status)
+            ) ? (
+              <OrderTrackingTab
+                trackingOrders={orders.filter((o) =>
+                  ["pending", "confirmed", "preparing"].includes(o.status)
+                )}
+              />
+            ) : (
+              <div className="p-4 text-center text-gray-500">
+                No active orders to track.
               </div>
-              <div className="bg-gray-100 p-4 rounded">
-                <p>
-                  <strong>Order #2345</strong>
-                </p>
-                <p className="text-sm">Expected Pickup: 5 mins</p>
-                <div className="mt-2 w-full bg-gray-200 h-2 rounded-full">
-                  <div className="bg-blue-500 h-2 w-[60%] rounded-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+            )}
+          </>
         )}
 
-        {activeTab === "Profile" && (
+      {activeTab === "Profile" && (
+        <>
           <div className="bg-white shadow rounded-lg p-6 space-y-2">
             <h2 className="text-xl font-bold mb-4">Profile Info</h2>
             <p>
@@ -215,6 +303,7 @@ export default function ProfilePage() {
               <strong>Joined:</strong> {profile?.joined || "N/A"}
             </p>
           </div>
+          </>
         )}
       </div>
     </div>
