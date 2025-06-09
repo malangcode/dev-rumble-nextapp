@@ -3,13 +3,16 @@
 import { useState, useEffect } from "react";
 import CheckoutSkeleton from "@/components/CheckoutSkeleton";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
-import PopupMessage from "@/components/PopupMessage";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/BackButton";
 import { useNotification } from "@/context/messageContext";
 import { useAuth } from "@/context/AuthContext";
-// import PaymentMethodSelector from '@/components/checkout/PaymentMethodSelector';
 import { FaWallet, FaQrcode, FaStore, FaCamera } from "react-icons/fa";
+import {
+  HiOutlineTable,
+  HiOutlineCheckCircle,
+  HiOutlineXCircle,
+} from "react-icons/hi";
 
 interface CartItem {
   id: number;
@@ -24,14 +27,21 @@ export default function CheckoutPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
-  const [checkoutSuccess, setCheckoutSuccess] = useState<string | null>(null);
   const { showNotification } = useNotification();
   const [selectedMethod, setSelectedMethod] = useState<string>("wallet");
   const [screenshotPreview, setScreenshotPreview] = useState<string | null>(
     null
   );
   const { user } = useAuth();
+  interface Table {
+    id: number;
+    number: number;
+    capacity: number;
+    isOccupied: boolean;
+  }
+  const [tables, setTables] = useState<Table[]>([]);
+  const [selectedTable, setSelectedTable] = useState<number | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   const paymentMethods = [
     {
@@ -52,6 +62,27 @@ export default function CheckoutPage() {
   ];
 
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchTables = async () => {
+      try {
+        const res = await axiosWithCsrf.get("fetch-tables/");
+        const mappedTables = res.data.map((table: any) => ({
+          id: table.id,
+          number: table.number,
+          capacity: table.capacity,
+          isOccupied: table.is_occupied,
+        }));
+        setTables(mappedTables); // you need a state like: const [tables, setTables] = useState([]);
+      } catch (err: any) {
+        showNotification("error", err.message || "Failed to fetch tables.");
+      } finally {
+        setLoading(false); // you can set loading state if needed
+      }
+    };
+
+    fetchTables();
+  }, []);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -75,7 +106,7 @@ export default function CheckoutPage() {
         } else {
           showNotification("error", err.message || "Failed to fetch cart.");
         }
-        // setError(err.message || "Failed to fetch cart");
+        setError(err.message || "Failed to fetch cart");
       } finally {
         setLoading(false);
       }
@@ -116,12 +147,19 @@ export default function CheckoutPage() {
 
   const handleCheckout = async () => {
     setCheckoutLoading(true);
-    setCheckoutError(null);
-    setCheckoutSuccess(null);
 
     const formData = new FormData();
     formData.append("method", selectedMethod);
     formData.append("amount", total.toString());
+
+    if (selectedTable) {
+      formData.append("table_id", selectedTable.toString());
+    }else {
+      // setCheckoutError("Please select a table for your order.");
+      showNotification("error", "Please select a table for your order.");
+      setCheckoutLoading(false);
+      return;
+    }
 
     // Handle QR payment
     if (selectedMethod === "qr") {
@@ -135,7 +173,8 @@ export default function CheckoutPage() {
       if (fileInput?.files?.length) {
         formData.append("screenshot", fileInput.files[0]);
       } else {
-        setCheckoutError("Please upload a screenshot for QR payment.");
+        // setCheckoutError("Please upload a screenshot for QR payment.");
+        showNotification("error", "please upload a screenshot for QR payment.");
         setCheckoutLoading(false);
         return;
       }
@@ -144,7 +183,9 @@ export default function CheckoutPage() {
       if (remarksInput?.value) {
         formData.append("remarks", remarksInput.value);
       } else {
-        setCheckoutError("Please enter remarks for QR payment.");
+        // setCheckoutError("Please enter remarks for QR payment.");
+
+        showNotification("error", "Please enter remarks for QR payment.");
         setCheckoutLoading(false);
         return;
       }
@@ -168,7 +209,8 @@ export default function CheckoutPage() {
       setCartItems([]);
       router.push("/profile");
     } catch (err: any) {
-      setCheckoutError(err.response?.data?.error || "Checkout failed");
+      // setCheckoutError(err.response?.data?.error || "Checkout failed");
+      showNotification("error", err.response?.data?.error || "Checkout failed");
     } finally {
       setCheckoutLoading(false);
     }
@@ -189,7 +231,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="py-6 px-4">
+    <div className="py-6 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto ">
       <h1 className="text-3xl font-bold text-blue-700 text-left mb-1">
         Checkout
       </h1>
@@ -252,6 +294,73 @@ export default function CheckoutPage() {
             ))}
           </div>
 
+          {/* button for triggering table selection modal  */}
+
+          <div className="mt-6 flex items-center justify-between shadow-md p-4 bg-white rounded-lg">
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition flex items-center space-x-2"
+              onClick={() => setShowModal(true)}
+            >
+              <HiOutlineTable className="text-lg" />
+              <span>Select Table</span>
+            </button>
+          </div>
+
+          {/* modal for table selection  */}
+
+          {showModal && (
+            <div className="fixed inset-0 bg-[rgba(0,0,0,0.3)] flex items-center z-40 justify-center z-50">
+              <div className="bg-white m-3 rounded-lg shadow-lg p-6 max-w-md w-full relative">
+                <h2 className="text-xl font-semibold mb-4">Choose a Table</h2>
+                <div className="grid grid-cols-2 gap-4 max-h-80 overflow-y-auto">
+                  {tables.map((table) => (
+                    <div
+                      key={table.id}
+                      onClick={() => {
+                        if (!table.isOccupied) {
+                          setSelectedTable(table.id);
+                          // setShowModal(false);
+                        }
+                      }}
+                      className={`cursor-pointer transition-all duration-200 border rounded-lg flex flex-col items-center justify-center p-4 h-32 ${
+                        table.isOccupied
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : selectedTable === table.id
+                          ? "bg-blue-600 text-white"
+                          : "hover:bg-blue-100"
+                      }`}
+                    >
+                      <HiOutlineTable className="text-3xl mb-2" />
+                      <span className="text-sm font-semibold">
+                        Table #{table.number}
+                      </span>
+                      <span className="text-xs">
+                        {table.isOccupied ? (
+                          <>
+                            <HiOutlineXCircle className="inline-block mr-1 text-red-500" />
+                            Occupied
+                          </>
+                        ) : (
+                          <>
+                            <HiOutlineCheckCircle className="inline-block mr-1 text-green-500" />
+                            Available
+                          </>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="absolute top-2 right-2 text-gray-600 hover:text-black"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* payment method */}
 
           <div className="max-w-6.5xl mx-auto mt-6 bg-white shadow-md rounded-xl p-4 md:p-6">
@@ -301,10 +410,12 @@ export default function CheckoutPage() {
                       Pay Using Wallet
                     </h2>
                     <p className="text-gray-700 mb-1">
-                      Available Balance: <strong>Rs. {user?.wallet_balance} </strong>
+                      Available Balance:{" "}
+                      <strong>Rs. {user?.wallet_balance} </strong>
                     </p>
                     <p className="text-gray-700">
-                      Amount to be deducted: <strong>Rs. {total.toFixed(2)}</strong>
+                      Amount to be deducted:{" "}
+                      <strong>Rs. {total.toFixed(2)}</strong>
                     </p>
                   </div>
                 )}
@@ -405,7 +516,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Total section only shows grand total */}
-          <div className="mt-10 w-full bg-green-50 border border-green-200 rounded-xl p-6 shadow-md text-center sm:text-left">
+          <div className="mt-6 w-full bg-green-50 border border-green-200 rounded-xl p-6 shadow-md text-center sm:text-left">
             <h3 className="text-lg font-semibold text-green-800 mb-2">
               Total Amount
             </h3>
@@ -429,30 +540,8 @@ export default function CheckoutPage() {
             >
               {checkoutLoading ? "Processing..." : "Proceed to Payment"}
             </button>
-
-            {checkoutError && (
-              <p className="text-red-600 mt-2">{checkoutError}</p>
-            )}
-            {checkoutSuccess && (
-              <p className="text-green-600 mt-2">{checkoutSuccess}</p>
-            )}
           </div>
         </>
-      )}
-      {checkoutSuccess && (
-        <PopupMessage
-          type="success"
-          message={checkoutSuccess}
-          onClose={() => setCheckoutSuccess(null)}
-        />
-      )}
-
-      {checkoutError && (
-        <PopupMessage
-          type="error"
-          message={checkoutError}
-          onClose={() => setCheckoutError(null)}
-        />
       )}
     </div>
   );
