@@ -114,7 +114,7 @@ export default function CartPage() {
   };
 
   return (
-    <div className="py-6">
+    <div className="py-6 px-4">
       <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-blue-700">
         Your Cart
       </h1>

@@ -1,19 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
-import HomePageSkeleton from '@/components/HomePageSkeleton'
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import HomePageSkeleton from "@/components/HomePageSkeleton";
+import { useAuth } from "@/context/AuthContext";
 
 export default function HomePage() {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
+  const { user, logout, loading } = useAuth();
 
-  useEffect(() => {
-    // Simulate a loading delay (e.g., fetching data)
-    const timer = setTimeout(() => setLoading(false), 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  // useEffect(() => {
+  //   // Simulate a loading delay (e.g., fetching data)
+  //   const timer = setTimeout(() => setLoading(false), 1000);
+  //   return () => clearTimeout(timer);
+  // }, []);
 
   if (loading) return <HomePageSkeleton />;
 
@@ -24,7 +26,8 @@ export default function HomePage() {
           Welcome to SmartCanteen 🍽️
         </h1>
         <p className="text-lg sm:text-xl text-gray-700 mb-6">
-          A modern solution for college canteens to manage orders, inventory, and payments effortlessly.
+          A modern solution for college canteens to manage orders, inventory,
+          and payments effortlessly.
         </p>
 
         <div className="w-full flex justify-center mb-10">
@@ -38,31 +41,51 @@ export default function HomePage() {
         </div>
 
         <div className="space-x-4 mb-8">
-          <Link href="/menu">
-            <Button size="lg">Order Now</Button>
-          </Link>
-          <Link href="/login">
-            <Button variant="outline" size="lg">Login</Button>
-          </Link>
+          {user ? (
+            <>
+              <Link href="/menu">
+                <Button size="lg">View Menu</Button>
+              </Link>
+
+              {user.is_superuser && user.is_staff && (
+                <Link href="/admin">
+                  <Button variant="outline" size="lg">
+                    Admin Panel
+                  </Button>
+                </Link>
+              )}
+            </>
+          ) : (
+            <>
+              <Link href="/menu">
+                <Button size="lg">View Menu</Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="outline" size="lg">
+                  Login
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3 w-full max-w-5xl mt-8 px-4">
         {[
           {
-            title: 'Digital Menu',
-            desc: 'Browse, customize, and place food orders from your device.',
-            icon: '🍕',
+            title: "Digital Menu",
+            desc: "Browse, customize, and place food orders from your device.",
+            icon: "🍕",
           },
           {
-            title: 'Smart Inventory',
-            desc: 'Real-time stock management and automated alerts.',
-            icon: '📦',
+            title: "Smart Inventory",
+            desc: "Real-time stock management and automated alerts.",
+            icon: "📦",
           },
           {
-            title: 'Instant Payments',
-            desc: 'Pay securely with UPI, cards, or wallet.',
-            icon: '💳',
+            title: "Instant Payments",
+            desc: "Pay securely with UPI, cards, or wallet.",
+            icon: "💳",
           },
         ].map((feature, idx) => (
           <div

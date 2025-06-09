@@ -13,6 +13,7 @@ export default function EditProfilePage() {
     phone_number: "",
     section: "",
     faculty: "",
+    semester: "",
     program: "",
     profile_pic: null as File | null,
   });
@@ -36,6 +37,7 @@ export default function EditProfilePage() {
           lcid: data.lcid || "",
           phone_number: data.phone_number || "",
           section: data.section || "",
+          semester: data.semester || "",
           faculty: data.faculty || "",
           program: data.program || "",
         }));
@@ -167,6 +169,15 @@ export default function EditProfilePage() {
             name="phone_number"
             placeholder="Phone Number"
             value={form.phone_number}
+            onChange={handleChange}
+            required
+            className="border border-gray-300 rounded-lg p-2"
+          />
+          <input
+            type="text"
+            name="semester"
+            placeholder="Semester"
+            value={form.semester}
             onChange={handleChange}
             required
             className="border border-gray-300 rounded-lg p-2"

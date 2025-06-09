@@ -33,7 +33,7 @@ export default function Notification({ type, message, onClose }: NotificationPro
         transition={{ duration: 0.3 }}
         className={`fixed z-50 top-35 left-1/2 transform -translate-x-1/2 -translate-y-1/2 
           max-w-85 w-full p-4 rounded-xl shadow-lg border text-white
-          ${type === "success" ? "bg-green-600 border-green-700" : "bg-red-600 border-red-700"}
+          ${type === "success" ? "bg-green-500" : "bg-red-500"}
         `}
       >
         <div className="flex justify-between items-start">

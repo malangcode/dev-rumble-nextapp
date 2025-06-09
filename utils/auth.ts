@@ -7,6 +7,8 @@ export interface UserAuthStatus {
   is_staff: boolean;
   is_superuser: boolean;
   email: string;
+  wallet_balance: string;
+  photo: string | null;
 }
 
 // Check if user is authenticated and return status object

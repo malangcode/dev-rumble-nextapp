@@ -20,7 +20,9 @@ export default function ProfilePage() {
   const [history, setHistory] = useState<any[]>([]);
   const [cancelledOrders, setCancelledOrders] = useState<any[]>([]);
   const [orderHistoryPagination, setOrderHistoryPagination] = useState<any>({});
-  const [cancelledOrderPagination, setCancelledOrderPagination] = useState<any>({});
+  const [cancelledOrderPagination, setCancelledOrderPagination] = useState<any>(
+    {}
+  );
   const router = useRouter();
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -45,7 +47,10 @@ export default function ProfilePage() {
     fetchProfileAndOrders();
   }, []);
 
-  const fetchOrderPageData = async (url: string, type: "history" | "cancelled") => {
+  const fetchOrderPageData = async (
+    url: string,
+    type: "history" | "cancelled"
+  ) => {
     try {
       const response = await axiosWithCsrf.get(url.replace(BASE_URL || "", ""));
       if (type === "history") {
@@ -66,17 +71,17 @@ export default function ProfilePage() {
   const gotoEditPage = () => router.push("/editProfile");
 
   const handleLogout = async () => {
-      await logout();
-      // setUser(null);
-      router.push('/login');
-    };
+    await logout();
+    // setUser(null);
+    router.push("/login");
+  };
 
   return (
     <div className="bg-gray-100">
       {/* Cover */}
       <div className="relative h-60 sm:h-72 bg-white shadow-md">
         <Image
-          src="/images/cover.png"
+          src="/images/texas-cover.webp"
           alt="Cover"
           layout="fill"
           objectFit="cover"
@@ -85,7 +90,11 @@ export default function ProfilePage() {
         <div className="absolute bottom-[-80px] left-4 sm:left-10 flex flex-col items-center w-[100px]">
           <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-white">
             <Image
-              src={profile?.profile_pic ? BASE_URL + profile.profile_pic : "/images/profile2.jpg"}
+              src={
+                profile?.profile_pic
+                  ? BASE_URL + profile.profile_pic
+                  : "/images/profile2.jpg"
+              }
               alt="User"
               width={100}
               height={100}
@@ -105,11 +114,15 @@ export default function ProfilePage() {
             <h1 className="text-2xl font-bold text-blue-800">
               {profile?.full_name || "No Name"}
             </h1>
-            <p className="text-gray-600 text-sm">{profile?.faculty || "No Faculty Info"}</p>
+            <p className="text-gray-600 text-sm">
+              {profile?.faculty || "No Faculty Info"}
+            </p>
           </div>
           <div className="mt-4 sm:mt-0 flex gap-2">
             <Button onClick={gotoEditPage}>Edit Profile</Button>
-            <Button onClick={handleLogout} variant="outline">Logout</Button>
+            <Button onClick={handleLogout} variant="outline">
+              Logout
+            </Button>
           </div>
         </div>
 
@@ -142,9 +155,20 @@ export default function ProfilePage() {
               ) : (
                 orders.map((order) => (
                   <li key={order.id} className="shadow p-4 rounded-md">
-                    <p><strong>Order #{order.id}</strong></p>
-                    <p>{order.items.map((item: any) => `${item.quantity}x ${item.product_name}`).join(", ")}</p>
-                    <p className="text-yellow-600 text-sm">Status: {order.status}</p>
+                    <p>
+                      <strong>Order #{order.id}</strong>
+                    </p>
+                    <p>
+                      {order.items
+                        .map(
+                          (item: any) =>
+                            `${item.quantity}x ${item.product_name}`
+                        )
+                        .join(", ")}
+                    </p>
+                    <p className="text-yellow-600 text-sm">
+                      Status: {order.status}
+                    </p>
                   </li>
                 ))
               )}
@@ -171,13 +195,23 @@ export default function ProfilePage() {
                     {history.map((order) => (
                       <tr key={order.id} className="border-b">
                         <td className="py-2">
-                          {new Date(order.ordered_at).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {new Date(order.ordered_at).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
                         </td>
-                        <td>{order.items.map((item: any) => `${item.quantity}x ${item.product_name}`).join(", ")}</td>
+                        <td>
+                          {order.items
+                            .map(
+                              (item: any) =>
+                                `${item.quantity}x ${item.product_name}`
+                            )
+                            .join(", ")}
+                        </td>
                         <td>Rs. {order.total_price}</td>
                       </tr>
                     ))}
@@ -186,13 +220,17 @@ export default function ProfilePage() {
 
                 <div className="flex justify-between items-center mt-4">
                   <p className="text-sm text-gray-700">
-                    Showing {history.length} of {orderHistoryPagination.count} orders
+                    Showing {history.length} of {orderHistoryPagination.count}{" "}
+                    orders
                   </p>
                   <div className="flex gap-2">
                     <Button
                       disabled={!orderHistoryPagination.previous}
                       onClick={() =>
-                        fetchOrderPageData(orderHistoryPagination.previous, "history")
+                        fetchOrderPageData(
+                          orderHistoryPagination.previous,
+                          "history"
+                        )
                       }
                       variant="outline"
                     >
@@ -201,7 +239,10 @@ export default function ProfilePage() {
                     <Button
                       disabled={!orderHistoryPagination.next}
                       onClick={() =>
-                        fetchOrderPageData(orderHistoryPagination.next, "history")
+                        fetchOrderPageData(
+                          orderHistoryPagination.next,
+                          "history"
+                        )
                       }
                       variant="outline"
                     >
@@ -223,10 +264,24 @@ export default function ProfilePage() {
               <>
                 <ul className="space-y-4">
                   {cancelledOrders.map((order) => (
-                    <li key={order.id} className="shadow p-4 rounded-md bg-red-50">
-                      <p><strong>Order #{order.id}</strong></p>
-                      <p>{order.items.map((item: any) => `${item.quantity}x ${item.product_name}`).join(", ")}</p>
-                      <p className="text-red-600 text-sm">Status: {order.status}</p>
+                    <li
+                      key={order.id}
+                      className="shadow p-4 rounded-md bg-red-50"
+                    >
+                      <p>
+                        <strong>Order #{order.id}</strong>
+                      </p>
+                      <p>
+                        {order.items
+                          .map(
+                            (item: any) =>
+                              `${item.quantity}x ${item.product_name}`
+                          )
+                          .join(", ")}
+                      </p>
+                      <p className="text-red-600 text-sm">
+                        Status: {order.status}
+                      </p>
                     </li>
                   ))}
                 </ul>
@@ -235,7 +290,10 @@ export default function ProfilePage() {
                   <Button
                     disabled={!cancelledOrderPagination.previous}
                     onClick={() =>
-                      fetchOrderPageData(cancelledOrderPagination.previous, "cancelled")
+                      fetchOrderPageData(
+                        cancelledOrderPagination.previous,
+                        "cancelled"
+                      )
                     }
                     variant="outline"
                   >
@@ -244,7 +302,10 @@ export default function ProfilePage() {
                   <Button
                     disabled={!cancelledOrderPagination.next}
                     onClick={() =>
-                      fetchOrderPageData(cancelledOrderPagination.next, "cancelled")
+                      fetchOrderPageData(
+                        cancelledOrderPagination.next,
+                        "cancelled"
+                      )
                     }
                     variant="outline"
                   >
@@ -274,35 +335,48 @@ export default function ProfilePage() {
           </>
         )}
 
-      {activeTab === "Profile" && (
-        <>
-          <div className="bg-white shadow rounded-lg p-6 space-y-2">
-            <h2 className="text-xl font-bold mb-4">Profile Info</h2>
-            <p>
-              <strong>Name:</strong> {profile?.full_name || "N/A"}
-            </p>
-            <p>
-              <strong>Student ID:</strong> {profile?.lcid || "N/A"}
-            </p>
-            <p>
-              <strong>Email:</strong> {profile?.email || "N/A"}
-            </p>
-            <p>
-              <strong>Department:</strong> {profile?.program || "N/A"}
-            </p>
-            <p>
-              <strong>Faculty:</strong> {profile?.faculty || "N/A"}
-            </p>
-            <p>
-              <strong>Phone Number:</strong> {profile?.phone_number || "N/A"}
-            </p>
-            <p>
-              <strong>Section:</strong> {profile?.section || "N/A"}
-            </p>
-            <p>
-              <strong>Joined:</strong> {profile?.joined || "N/A"}
-            </p>
-          </div>
+        {activeTab === "Profile" && (
+          <>
+            <div className="bg-white shadow rounded-lg p-6 space-y-2">
+              <h2 className="text-xl font-bold mb-4">Profile Info</h2>
+              <p>
+                <strong>Name:</strong> {profile?.full_name || "N/A"}
+              </p>
+              <p>
+                <strong>Student ID:</strong> {profile?.lcid || "N/A"}
+              </p>
+              <p>
+                <strong>Semester:</strong> {profile?.semester || "N/A"}
+              </p>
+              <p>
+                <strong>Department:</strong> {profile?.program || "N/A"}
+              </p>
+              <p>
+                <strong>Faculty:</strong> {profile?.faculty || "N/A"}
+              </p>
+              <p>
+                <strong>Section:</strong> {profile?.section || "N/A"}
+              </p>
+              <p>
+                <strong>Phone Number:</strong> {profile?.phone_number || "N/A"}
+              </p>
+              <p>
+                <strong>Email:</strong> {profile?.email || "N/A"}
+              </p>
+              <p>
+               <strong>Created at:</strong> {profile?.created_at
+                  ? new Date(profile.created_at).toLocaleString("en-US", {
+                      month: "long", // June
+                      day: "numeric", // 5
+                      year: "numeric", // 2025
+                      weekday: "short", // Sun
+                      hour: "numeric", // 9
+                      hour12: true, // PM
+                      minute: undefined, // Skip minutes if not needed
+                    })
+                  : "N/A"}
+              </p>
+            </div>
           </>
         )}
       </div>

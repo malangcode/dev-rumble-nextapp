@@ -45,7 +45,7 @@ export default function SignupPage() {
       });
 
       console.log('Login successful after signup');
-      router.push('/');
+      window.location.href = '/';
 
     } catch (err: any) {
       console.error(err);
