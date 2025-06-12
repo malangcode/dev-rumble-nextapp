@@ -45,7 +45,7 @@ export default function CartPage() {
         } else {
           showNotification("error", err.message || "Failed to fetch cart.");
         }
-        // setError(err.message || 'Failed to fetch cart');
+        setError(err.message || 'Failed to fetch cart');
       } finally {
         setLoading(false);
       }
@@ -110,14 +110,35 @@ export default function CartPage() {
 
 
   const gotoCheckout = () => {
-    router.push("/checkout"); // replace '/checkout' with your actual checkout route
+    // router.push("/checkout"); 
+    window.location.href = "/checkout"; // Use window.location.href for client-side navigation
   };
 
+  if (error) {
+    return (
+      <div className="py-3 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto">
+        <div className="max-w-6.5xl mx-auto">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+            <p>Error loading cart: {error}</p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-2 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="py-6 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-1 text-blue-700">
-        Your Cart
-      </h1>
+    <div className="py-3 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto">
+      {/* Header */}
+        <div className="mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-blue-700">My Cart</h1>
+          <p className="text-gray-600">Manage your cart increase, decrease or delete the quantity as your choice.</p>
+        </div>
 
       <BackButton />
 

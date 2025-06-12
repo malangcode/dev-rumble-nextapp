@@ -38,6 +38,7 @@ export default function CheckoutPage() {
     number: number;
     capacity: number;
     isOccupied: boolean;
+    available_seats: number;
   }
   const [tables, setTables] = useState<Table[]>([]);
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
@@ -72,6 +73,7 @@ export default function CheckoutPage() {
           number: table.number,
           capacity: table.capacity,
           isOccupied: table.is_occupied,
+          available_seats: table.available_seats,
         }));
         setTables(mappedTables); // you need a state like: const [tables, setTables] = useState([]);
       } catch (err: any) {
@@ -154,7 +156,7 @@ export default function CheckoutPage() {
 
     if (selectedTable) {
       formData.append("table_id", selectedTable.toString());
-    }else {
+    } else {
       // setCheckoutError("Please select a table for your order.");
       showNotification("error", "Please select a table for your order.");
       setCheckoutLoading(false);
@@ -309,41 +311,55 @@ export default function CheckoutPage() {
           {/* modal for table selection  */}
 
           {showModal && (
-            <div className="fixed inset-0 bg-[rgba(0,0,0,0.3)] flex items-center z-40 justify-center z-50">
-              <div className="bg-white m-3 rounded-lg shadow-lg p-6 max-w-md w-full relative">
-                <h2 className="text-xl font-semibold mb-4">Choose a Table</h2>
-                <div className="grid grid-cols-2 gap-4 max-h-80 overflow-y-auto">
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 transition-all duration-300">
+              <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 sm:p-8 max-w-lg w-full relative animate-fadeIn">
+                {/* Modal Header */}
+                <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 text-center">
+                  Select a Table
+                </h2>
+
+                {/* Tables Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-80 overflow-y-auto custom-scrollbar">
                   {tables.map((table) => (
                     <div
                       key={table.id}
                       onClick={() => {
                         if (!table.isOccupied) {
                           setSelectedTable(table.id);
-                          // setShowModal(false);
                         }
                       }}
-                      className={`cursor-pointer transition-all duration-200 border rounded-lg flex flex-col items-center justify-center p-4 h-32 ${
+                      className={`group transition-all duration-200 rounded-xl border-2 p-4 flex flex-col items-center justify-center h-36 cursor-pointer text-center ${
                         table.isOccupied
-                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          ? "bg-gray-200 border-gray-300 text-gray-500 cursor-not-allowed"
                           : selectedTable === table.id
-                          ? "bg-blue-600 text-white"
-                          : "hover:bg-blue-100"
+                          ? "bg-blue-600 text-white border-blue-700"
+                          : "hover:bg-blue-50 border-gray-200"
                       }`}
                     >
-                      <HiOutlineTable className="text-3xl mb-2" />
-                      <span className="text-sm font-semibold">
+                      <HiOutlineTable className="text-4xl mb-2" />
+
+                      <span className="text-base font-semibold">
                         Table #{table.number}
                       </span>
-                      <span className="text-xs">
+
+                      <span className="text-xs mt-1 flex flex-col items-center">
                         {table.isOccupied ? (
                           <>
-                            <HiOutlineXCircle className="inline-block mr-1 text-red-500" />
-                            Occupied
+                            <span className="inline-flex items-center gap-1 text-red-500 font-medium">
+                              <HiOutlineXCircle className="text-sm" />
+                              Occupied
+                            </span>
                           </>
                         ) : (
                           <>
-                            <HiOutlineCheckCircle className="inline-block mr-1 text-green-500" />
-                            Available
+                            <span className="inline-flex items-center gap-1 text-green-600 font-medium">
+                              <HiOutlineCheckCircle className="text-sm" />
+                              Available
+                            </span>
+                            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-1">
+                              Seats Available:{" "}
+                              <strong>{table.available_seats}</strong>
+                            </span>
                           </>
                         )}
                       </span>
@@ -351,11 +367,13 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
+                {/* Close Button */}
                 <button
                   onClick={() => setShowModal(false)}
-                  className="absolute top-2 right-2 text-gray-600 hover:text-black"
+                  className="absolute top-3 right-3 text-gray-500 hover:text-red-500 text-5xl font-bold focus:outline-none transition"
+                  aria-label="Close"
                 >
-                  ✕
+                  &times;
                 </button>
               </div>
             </div>

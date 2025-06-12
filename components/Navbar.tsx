@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
+import { IoWalletOutline } from "react-icons/io5";
 
 import {
   HiHome,
@@ -28,6 +29,7 @@ import {
 const navLinks = [
   { name: "Home", href: "/", icon: HiHome },
   { name: "Menu", href: "/menu", icon: HiOutlineShoppingBag },
+  { name: "Wallet", href: "/wallet", icon: IoWalletOutline },
   { name: "Notifications", href: "/notifications", icon: HiOutlineBell },
   { name: "Cart", href: "/cart", icon: HiOutlineShoppingCart },
 ];
@@ -138,6 +140,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Home", icon: HiOutlineHome },
                 { href: "/menu", label: "Menu", icon: HiOutlineMenu },
+                { href: "/wallet", label: "Wallet", icon: IoWalletOutline  },
                 { href: "/cart", label: "Cart", icon: HiOutlineShoppingCart },
                 {
                   href: "/notifications",
