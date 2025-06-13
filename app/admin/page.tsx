@@ -16,6 +16,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import AdminOrdersComponent from "@/adminComponents/orders/orderComponent";
+import AdminMenuComponent from "@/adminComponents/menu/MenuComponent";
 
 // Media Query Hook
 function useMediaQuery(query: string): boolean {
@@ -137,6 +138,9 @@ export default function AdminPage() {
 
       case "orders":
         return <AdminOrdersComponent />;
+      
+      case "menu":
+        return <AdminMenuComponent />;
       default:
         return (
           <div className="text-gray-700 text-xl font-semibold">
