@@ -10,6 +10,7 @@ export interface UserAuthStatus {
   email: string;
   wallet_balance: string;
   photo: string | null;
+  exp: number; // 👈 new
 }
 
 export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {

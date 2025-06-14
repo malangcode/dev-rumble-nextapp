@@ -31,7 +31,7 @@ const AdminMenuComponent = () => {
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
-  const debouncedSearch = useDebounce(search, 500);
+  const [debouncedSearch] = useDebounce(search, 500);
 
   const fetchMenuItems = async (showloading = true) => {
     try {
@@ -61,7 +61,6 @@ const AdminMenuComponent = () => {
     const delayedFetch = setTimeout(() => {
       fetchMenuItems();
     }, 500);
-    return () => clearTimeout(delayedFetch);
   }, [page]);
 
   const formatDate = (dateString: string) => {
