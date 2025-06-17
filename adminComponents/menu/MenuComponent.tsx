@@ -6,6 +6,7 @@ import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import { useNotification } from "@/context/messageContext";
 import ProductEditPopup from "./ProductEditPopup";
 import CreateProductPopup from "./CreateProductPopup";
+import ViewMenuPopup from "./ViewMenuPopup";
 import { useDebounce } from "use-debounce";
 
 interface MenuItem {
@@ -32,6 +33,8 @@ const AdminMenuComponent = () => {
   const [limit] = useState(10);
   const [totalPages, setTotalPages] = useState(1);
   const [debouncedSearch] = useDebounce(search, 500);
+  const [showViewPopup, setShowViewPopup] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | string | null>(null);
 
   const fetchMenuItems = async (showloading = true) => {
     try {
@@ -45,8 +48,21 @@ const AdminMenuComponent = () => {
       });
       setMenuItems(response.data.results);
       setTotalPages(response.data.total_pages);
-    } catch (error) {
-      console.error("Error fetching menu:", error);
+    } catch (err) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "response" in err &&
+        typeof (err as any).response === "object" &&
+        (err as any).response !== null &&
+        ((err as any).response.status === 404 ||
+          (err as any).response.status === 500 ||
+          (err as any).response.data?.detail === "Invalid page.")
+      ) {
+        setPage(1);
+        return;
+      }
+      console.error("Error fetching menu:", err);
       showNotification("error", "Failed to fetch menu items");
     } finally {
       if (showloading) setLoading(false);
@@ -325,7 +341,10 @@ const AdminMenuComponent = () => {
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
-                    <button className="text-gray-600 hover:text-gray-900">
+                    <button
+                      onClick={() => {setSelectedId(item.id); setShowViewPopup(true);}}
+                      className="text-gray-600 hover:text-gray-900"
+                    >
                       <Eye className="w-4 h-4" />
                     </button>
                   </td>
@@ -339,6 +358,13 @@ const AdminMenuComponent = () => {
           <ProductEditPopup
             productId={selectedItemId}
             onClose={() => setSelectedItemId(null)}
+          />
+        )}
+
+        {showViewPopup && selectedId !== null && (
+          <ViewMenuPopup
+            menuId={selectedId as string | number}
+            onClose={() => setShowViewPopup(false)}
           />
         )}
 

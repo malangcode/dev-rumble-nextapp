@@ -17,6 +17,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import AdminOrdersComponent from "@/adminComponents/orders/orderComponent";
 import AdminMenuComponent from "@/adminComponents/menu/MenuComponent";
+import Dashboard from "@/adminComponents/dashboard/DashboardComponent";
+import Reports from "@/adminComponents/reports/ReportsComponent";
+import TableManagement from "@/adminComponents/Table/TableComponent";
 
 // Media Query Hook
 function useMediaQuery(query: string): boolean {
@@ -92,55 +95,19 @@ export default function AdminPage() {
   const renderContent = () => {
     switch (activePage) {
       case "dashboard":
-        return (
-          <div>
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">
-              Dashboard Overview
-            </h1>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Total Orders",
-                  value: "1,542",
-                  icon: <ClipboardList className="h-6 w-6 text-blue-600" />,
-                },
-                {
-                  title: "Total Sales",
-                  value: "Rs. 2,48,000",
-                  icon: <Banknote className="h-6 w-6 text-green-600" />,
-                },
-                {
-                  title: "Active Tables",
-                  value: "18",
-                  icon: <Table2 className="h-6 w-6 text-purple-600" />,
-                },
-              ].map((card, index) => (
-                <div
-                  key={index}
-                  className="bg-white/70 backdrop-blur-sm p-5 rounded-xl shadow-lg border border-gray-200 hover:shadow-xl transition duration-300"
-                >
-                  <div className="flex items-center gap-4 mb-3">
-                    <div className="p-2 bg-gray-100 rounded-full">
-                      {card.icon}
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      {card.title}
-                    </h3>
-                  </div>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {card.value}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
+        return <Dashboard />;
 
       case "orders":
         return <AdminOrdersComponent />;
       
       case "menu":
         return <AdminMenuComponent />;
+
+      case "tables":
+        return <TableManagement />;
+
+      case "reports":
+        return <Reports/>;
       default:
         return (
           <div className="text-gray-700 text-xl font-semibold">

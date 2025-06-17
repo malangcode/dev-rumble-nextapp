@@ -20,6 +20,7 @@ import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import { useNotification } from "@/context/messageContext";
 import SingleOrderView from "./SingleOrderView";
 import { RefreshCcw } from "lucide-react";
+import { useDebounce } from "use-debounce";
 
 type OrderItem = {
   id: number;
@@ -48,64 +49,89 @@ const AdminOrdersComponent = () => {
   const { showNotification } = useNotification();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
 
-  const fetchOrders = async () => {
+  const fetchOrders = async (showloading = true) => {
     try {
-      setLoading(true);
-      let url = "/api/admin/orders/?";
+      if (showloading) setLoading(true);
+      let url = `/api/admin/orders/?page=${currentPage}&`;
       // Only include status if it's not "all"
       if (statusFilter && statusFilter !== "all") {
         url += `status=${statusFilter}&`;
+      }
+      if (searchTerm.trim() !== "") {
+        url += `search=${searchTerm}&`;
       }
       if (startDate && endDate)
         url += `start_date=${startDate}&end_date=${endDate}`;
 
       const response = await axiosWithCsrf.get(url);
       setOrders(response.data.results); // if response has `.results`
+      setTotalPages(Math.ceil(response.data.count / 100));
     } catch (err) {
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        "response" in err &&
+        typeof (err as any).response === "object" &&
+        (err as any).response !== null &&
+        (
+          (err as any).response.status === 404 ||
+          (err as any).response.data?.detail === "Invalid page."
+        )
+      ) {
+        setCurrentPage(1);
+        return;
+      }
       console.error("Error fetching orders:", err);
-      showNotification("error", "Failed to fetch orders");
+      showNotification("error", "Oops! Something went Worng.");
     } finally {
-      setLoading(false);
+      if (showloading) setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchOrders(false); // disable loading UI while searching
+  }, [debouncedSearch, statusFilter, startDate, endDate, currentPage]);
 
   // Simulate API call
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      fetchOrders();
+      fetchOrders(true);
     }, 500); // debounce to avoid spamming API
 
     return () => clearTimeout(delayDebounce);
-  }, [statusFilter, startDate, endDate]);
+  }, []);
 
-  // Filter orders based on status and date
-  useEffect(() => {
-    let filtered = orders;
+  // // Filter orders based on status and date
+  // useEffect(() => {
+  //   let filtered = orders;
 
-    if (statusFilter && statusFilter !== "all") {
-      filtered = filtered.filter((order) => order.status === statusFilter);
-    }
+  //   if (statusFilter && statusFilter !== "all") {
+  //     filtered = filtered.filter((order) => order.status === statusFilter);
+  //   }
 
-    if (startDate && endDate) {
-      filtered = filtered.filter((order) => {
-        const orderDate = new Date(order.ordered_at)
-          .toISOString()
-          .split("T")[0];
-        return orderDate >= startDate && orderDate <= endDate;
-      });
-    }
+  //   if (startDate && endDate) {
+  //     filtered = filtered.filter((order) => {
+  //       const orderDate = new Date(order.ordered_at)
+  //         .toISOString()
+  //         .split("T")[0];
+  //       return orderDate >= startDate && orderDate <= endDate;
+  //     });
+  //   }
 
-    if (searchTerm.trim() !== "") {
-      filtered = filtered.filter(
-        (order) =>
-          order.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.id.toString().includes(searchTerm)
-      );
-    }
+  //   if (searchTerm.trim() !== "") {
+  //     filtered = filtered.filter(
+  //       (order) =>
+  //         order.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //         order.id.toString().includes(searchTerm)
+  //     );
+  //   }
 
-    setFilteredOrders(filtered);
-  }, [orders, statusFilter, startDate, endDate, searchTerm]);
+  //   setFilteredOrders(filtered);
+  // }, [orders, statusFilter, startDate, endDate, searchTerm]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -297,7 +323,7 @@ const AdminOrdersComponent = () => {
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center mb-3 justify-right">
         <button
-          onClick={fetchOrders}
+          onClick={() => fetchOrders(true)}
           className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
           title="Refresh Order"
         >
@@ -432,7 +458,10 @@ const AdminOrdersComponent = () => {
                   <span className="text-lg font-bold text-gray-900">
                     Rs {parseFloat(order.total_price.toString()).toFixed(2)}
                   </span>
-                  <button className="p-1 hover:bg-gray-100 rounded" onClick={() => setSelectedOrderId(order.id)}>
+                  <button
+                    className="p-1 hover:bg-gray-100 rounded"
+                    onClick={() => setSelectedOrderId(order.id)}
+                  >
                     <Eye className="w-4 h-4 text-gray-400" />
                   </button>
                 </div>
@@ -552,7 +581,7 @@ const AdminOrdersComponent = () => {
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
           <h3 className="text-lg font-semibold text-gray-900">
-            All Orders ({filteredOrders.length})
+            All Orders ({orders.length})
           </h3>
         </div>
 
@@ -587,7 +616,7 @@ const AdminOrdersComponent = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredOrders.map((order) => (
+              {orders.map((order) => (
                 <tr
                   key={order.id}
                   className="hover:bg-gray-50 transition-colors"
@@ -656,7 +685,7 @@ const AdminOrdersComponent = () => {
           </table>
         </div>
 
-        {filteredOrders.length === 0 && (
+        {orders.length === 0 && (
           <div className="text-center py-12">
             <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-500">
@@ -664,6 +693,35 @@ const AdminOrdersComponent = () => {
             </p>
           </div>
         )}
+
+        <div className="flex justify-center p-6 border-t border-gray-200 mt-6 gap-2">
+          <button
+            onClick={() => setCurrentPage(1)}
+            disabled={currentPage === 1}
+            className="px-4 bg-gray-200 text-sm rounded-lg disabled:opacity-50"
+          >
+          First
+          </button>
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-4 py-1 bg-blue-700 text-sm text-white rounded-lg disabled:opacity-50"
+          >
+            Previous
+          </button>
+          <span className="text-sm px-2">
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-4 bg-blue-700 text-sm text-white rounded-lg disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
       </div>
     </div>
   );
