@@ -27,7 +27,6 @@ type Order = {
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
   const [statusFilter, setStatusFilter] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -42,9 +41,8 @@ export default function AdminOrdersPage() {
 
       const response = await axiosWithCsrf.get(url);
       setOrders(response.data.results);
-    } catch (err) {
+    } catch{
       showNotification('error', 'Failed to fetch orders');
-      setError(err as Error);
     } finally {
       setLoading(false);
     }
@@ -52,7 +50,7 @@ export default function AdminOrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  });
 
   const handleExportCSV = async () => {
     try {
@@ -61,7 +59,7 @@ export default function AdminOrdersPage() {
       if (startDate && endDate) url += `&start_date=${startDate}&end_date=${endDate}`;
 
       window.open(url, '_blank');
-    } catch (err) {
+    } catch {
       showNotification('error', 'Failed to export CSV');
     }
   };

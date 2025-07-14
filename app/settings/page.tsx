@@ -115,7 +115,7 @@ export default function SettingsPage() {
             <p className="text-sm text-gray-600 mb-2">
               Deleting your account will remove all order history and cannot be undone.
             </p>
-            <Button type="button" variant="destructive">
+            <Button type="button">
               Delete Account
             </Button>
           </div>

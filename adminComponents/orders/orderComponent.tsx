@@ -320,7 +320,7 @@ const AdminOrdersComponent = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-2 md:p-2 lg:p-4 xl:p-6 bg-gray-50 min-h-screen">
       <div className="flex items-center mb-3 justify-right">
         <button
           onClick={() => fetchOrders(true)}

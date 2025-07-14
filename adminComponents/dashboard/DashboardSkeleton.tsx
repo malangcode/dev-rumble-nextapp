@@ -76,7 +76,7 @@ const DashboardSkeleton = () => {
         </div>
 
         {/* Top Stats Cards Skeleton */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
           {[...Array(6)].map((_, index) => (
             <SkeletonStatsCard key={index} />
           ))}

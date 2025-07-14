@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 👇 Refresh access token
   const refreshAccessToken = async () => {
     try {
-      await axios.post("http://localhost:8000/token/refresh/", {}, {
+      await axios.post("https://rahis.pythonanywhere.com/token/refresh/", {}, {
         withCredentials: true,
       });
 

@@ -52,7 +52,7 @@ export default function CartPage() {
     };
 
     fetchCart();
-  }, []);
+  });
 
   const updateQuantity = async (id: number, newQty: number) => {
     if (newQty < 1) return; // prevent invalid qty

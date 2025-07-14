@@ -189,7 +189,7 @@ export default function Menu() {
         <div className="w-full md:w-1/4">
           <label className="block text-gray-600 text-sm mb-1 ml-1">
             Max Price:{" "}
-            <span className="font-semibold text-blue-600">₹{maxPrice}</span>
+            <span className="font-semibold text-blue-600">Rs {maxPrice}</span>
           </label>
           <input
             type="range"

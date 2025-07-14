@@ -7,7 +7,6 @@ import {
   ClipboardList,
   Users,
   Settings,
-  Receipt,
   Banknote,
   Table2,
   BarChart2,
@@ -90,7 +89,7 @@ export default function AdminPage() {
       window.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [touchStartX, isMobile]);
+  }, [touchStartX, isMobile, handleTouchEnd]);
 
   const renderContent = () => {
     switch (activePage) {
@@ -232,7 +231,7 @@ export default function AdminPage() {
       {/* Main Content */}
       <main
         className={cn(
-          "flex-1 p-6 transition-all duration-300 overflow-y-auto",
+          "flex-1 p-1 md:p-2 lg:p-4 xl:p-6 transition-all duration-300 overflow-y-auto",
           sidebarOpen && !isMobile ? "ml-0" : "ml-0"
         )}
       >

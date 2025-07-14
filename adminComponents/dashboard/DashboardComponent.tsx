@@ -28,6 +28,7 @@ import {
   Star,
   AlertTriangle,
 } from "lucide-react";
+import { RefreshCcw } from "lucide-react";
 import DashboardSkeleton from "./DashboardSkeleton";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 
@@ -79,20 +80,22 @@ const Dashboard = () => {
 
   const [dashboard, setDashboard] = useState<DashboardData | null>(null);
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = async (showloading = true) => {
     try {
-      setLoading(true);
+      if(showloading) setLoading(true);
       const response = await axiosWithCsrf.get("/api/dashboard/");
       setDashboard(response.data);
     } catch (error) {
       console.error("Dashboard fetch failed:", error);
     } finally {
-      setLoading(false);
+      if(showloading) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchDashboard();
+    const debouncedelay = setTimeout(() => {
+       fetchDashboard(true);
+    }, 500);
   }, []);
 
   // // Dummy data for charts
@@ -315,8 +318,18 @@ const Dashboard = () => {
   // } = dashboard;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-3 md:p-2 lg:p-4 xl:p-6 bg-gray-50 min-h-screen">
       <div className="mx-auto">
+        <div className="flex items-center mb-3 justify-right">
+        <button
+          onClick={() => fetchDashboard(true)}
+          className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+          title="Refresh Order"
+        >
+          <RefreshCcw className="w-4 h-4" />
+          Refresh
+        </button>
+        </div>
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">

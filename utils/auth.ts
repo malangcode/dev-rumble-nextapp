@@ -15,7 +15,7 @@ export interface UserAuthStatus {
 
 export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {
   try {
-    const res = await axios.get('http://localhost:8000/auth/status/', {
+    const res = await axios.get('https://rahis.pythonanywhere.com/auth/status/', {
       withCredentials: true,
     });
     return res.data as UserAuthStatus;
@@ -23,12 +23,12 @@ export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {
     if (error.response && error.response.status === 401) {
       // 👇 Try refresh
       try {
-        await axios.post('http://localhost:8000/token/refresh/', {}, {
+        await axios.post('https://rahis.pythonanywhere.com/token/refresh/', {}, {
           withCredentials: true,
         });
 
         // 👇 Retry original request after successful refresh
-        const retryRes = await axios.get('http://localhost:8000/auth/status/', {
+        const retryRes = await axios.get('https://rahis.pythonanywhere.com/auth/status/', {
           withCredentials: true,
         });
 
@@ -47,7 +47,7 @@ export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {
 // Logout user
 export const logout = async () => {
   try {
-    await axios.post('http://localhost:8000/auth/logout/', {}, {
+    await axios.post('https://rahis.pythonanywhere.com/auth/logout/', {}, {
       withCredentials: true,
     });
     window.location.href = '/login';

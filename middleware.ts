@@ -23,7 +23,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // ✅ Check auth status from Django
-  const res = await fetch('http://localhost:8000/auth/status/', {
+  const res = await fetch('https://rahis.pythonanywhere.com/auth/status/', {
     headers: {
       Cookie: request.headers.get('cookie') || '',
     },
