@@ -9,8 +9,7 @@ import React, {
 } from "react";
 import { getAuthStatus, UserAuthStatus } from "@/utils/auth";
 import axios from "axios";
-import { useRouter } from "next/router";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AuthContextType {
   user: UserAuthStatus | null;
@@ -29,7 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [isManuallyLoggedOut, setIsManuallyLoggedOut] = useState(false);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
-  const router = useRouter();
+  const router = useRouter(); // from next/navigation (app router)
   const pathname = usePathname();
 
   const PUBLIC_PATHS = ["/", "/login", "/signup", "/change-password"];
@@ -68,7 +67,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
 
-    console.log(`⏳ Scheduling token refresh in ${Math.round(refreshDelay / 1000)}s`);
+    console.log(
+      `⏳ Scheduling token refresh in ${Math.round(refreshDelay / 1000)}s`
+    );
 
     if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
 
@@ -98,11 +99,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, [isManuallyLoggedOut]);
 
-  // 🔁 Redirect if not authenticated and trying to access private route
   useEffect(() => {
     if (!loading && !user && !PUBLIC_PATHS.includes(pathname)) {
       console.log("🔐 Not authenticated, redirecting to /login");
-      router.push("/login");
+      router.push("/login"); // This is fine with app router
     }
   }, [loading, user, pathname]);
 
