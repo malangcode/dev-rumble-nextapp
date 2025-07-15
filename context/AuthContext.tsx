@@ -7,7 +7,7 @@ import React, {
   useState,
   useRef,
 } from "react";
-import { getAuthStatus, logout, UserAuthStatus } from "@/utils/auth";
+import { getAuthStatus, UserAuthStatus } from "@/utils/auth";
 import axios from "axios";
 
 interface AuthContextType {
@@ -82,6 +82,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
     };
   }, []);
+
+  const logout = async () => {
+  try {
+    await axios.post("https://rahis.pythonanywhere.com/auth/logout/", {}, {
+      withCredentials: true,
+    });
+
+    // ✅ Clear user and stop refresh
+    setUser(null);
+
+    if (refreshTimerRef.current) {
+      clearTimeout(refreshTimerRef.current);
+      refreshTimerRef.current = null;
+    }
+
+    console.log("✅ Logged out successfully");
+  } catch (err) {
+    console.error("Logout failed", err);
+  }
+};
+
 
   return (
     <AuthContext.Provider value={{ user, loading, logout }}>
