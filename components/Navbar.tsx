@@ -19,7 +19,6 @@ import {
   HiOutlineCog,
   HiOutlineLogin,
   HiOutlineUserAdd,
-  HiOutlineCreditCard,
   HiOutlineMenu,
   HiOutlineHome,
   HiOutlineLogout,
@@ -39,7 +38,7 @@ export default function Navbar() {
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const [user, setUser] = useState<UserAuthStatus | null>(null);
-  const { user, logout, loading } = useAuth();
+  const { user, logout } = useAuth();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
