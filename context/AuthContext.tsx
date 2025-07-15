@@ -10,6 +10,7 @@ import React, {
 import { getAuthStatus, UserAuthStatus } from "@/utils/auth";
 import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 
 interface AuthContextType {
   user: UserAuthStatus | null;
@@ -36,10 +37,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 🔁 Refresh access token
   const refreshAccessToken = async () => {
     try {
-      await axios.post(
-        "https://rahis.pythonanywhere.com/token/refresh/",
-        {},
-        { withCredentials: true }
+      await axiosWithCsrf.post(
+        "/token/refresh/",
       );
 
       console.log("🔄 Access token refreshed");
@@ -109,10 +108,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 🚪 Logout function
   const logout = async () => {
     try {
-      await axios.post(
-        "https://rahis.pythonanywhere.com/auth/logout/",
+      await axiosWithCsrf.post(
+        "/auth/logout/",
         {},
-        { withCredentials: true }
       );
 
       setUser(null);

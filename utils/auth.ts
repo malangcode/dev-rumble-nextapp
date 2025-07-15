@@ -1,6 +1,7 @@
 // utils/auth.ts
 // utils/auth.ts
-import axios from 'axios';
+import { axiosWithCsrf } from '@/lib/axiosWithCsrf';
+// import axios from 'axios';
 
 export interface UserAuthStatus {
   authenticated: boolean;
@@ -15,21 +16,18 @@ export interface UserAuthStatus {
 
 export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {
   try {
-    const res = await axios.get('https://rahis.pythonanywhere.com/auth/status/', {
-      withCredentials: true,
+    const res = await axiosWithCsrf.get('/auth/status/', {
     });
     return res.data as UserAuthStatus;
   } catch (error: any) {
     if (error.response && error.response.status === 401) {
       // 👇 Try refresh
       try {
-        await axios.post('https://rahis.pythonanywhere.com/token/refresh/', {}, {
-          withCredentials: true,
+        await axiosWithCsrf.post('/token/refresh/', {}, {
         });
 
         // 👇 Retry original request after successful refresh
-        const retryRes = await axios.get('https://rahis.pythonanywhere.com/auth/status/', {
-          withCredentials: true,
+        const retryRes = await axiosWithCsrf.get('/auth/status/', {
         });
 
         return retryRes.data as UserAuthStatus;
@@ -47,8 +45,7 @@ export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {
 // Logout user
 export const logout = async () => {
   try {
-    await axios.post('https://rahis.pythonanywhere.com/auth/logout/', {}, {
-      withCredentials: true,
+    await axiosWithCsrf.post('/auth/logout/', {}, {
     });
   } catch (err) {
     console.error("Logout failed", err);
