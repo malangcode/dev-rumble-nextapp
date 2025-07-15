@@ -24,6 +24,7 @@ import {
   HiOutlineLogout,
   HiOutlineShieldCheck, // Optional for admin panel icon
 } from "react-icons/hi";
+import { getAuthStatus, UserAuthStatus } from "@/utils/auth";
 
 const navLinks = [
   { name: "Home", href: "/", icon: HiHome },
@@ -37,26 +38,25 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const [user, setUser] = useState<UserAuthStatus | null>(null);
+  const [localUser, setLocalUser] = useState<UserAuthStatus | null>(null);
   const { user, logout } = useAuth();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     const authData = await getAuthStatus();
-  //     setUser(authData);
-  //   };
-  //   fetchUser();
-  // }, []);
+  useEffect(() => {
+    const fetchUser = async () => {
+      const authData = await getAuthStatus();
+      setLocalUser(authData);
+    };
+    fetchUser();
+  }, []);
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-
+ 
   const handleLogout = async () => {
     logout();
     setIsSidebarOpen(false);
-    // setUser(null);
-    router.push("/login");
+    setUser(null);
   };
 
   return (
@@ -288,3 +288,7 @@ export default function Navbar() {
     </>
   );
 }
+function setUser(arg0: null) {
+  throw new Error("Function not implemented.");
+}
+
