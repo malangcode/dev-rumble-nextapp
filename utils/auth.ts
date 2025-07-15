@@ -50,7 +50,6 @@ export const logout = async () => {
     await axios.post('https://rahis.pythonanywhere.com/auth/logout/', {}, {
       withCredentials: true,
     });
-    window.location.href = '/login';
   } catch (err) {
     console.error("Logout failed", err);
   }
