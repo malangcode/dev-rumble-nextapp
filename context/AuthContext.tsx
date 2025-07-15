@@ -25,20 +25,23 @@ const AuthContext = createContext<AuthContextType>({
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<UserAuthStatus | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isManuallyLoggedOut, setIsManuallyLoggedOut] = useState(false);
   const refreshTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 👇 Refresh access token
+  // 🔁 Refresh access token
   const refreshAccessToken = async () => {
     try {
-      await axios.post("https://rahis.pythonanywhere.com/token/refresh/", {}, {
-        withCredentials: true,
-      });
+      await axios.post(
+        "https://rahis.pythonanywhere.com/token/refresh/",
+        {},
+        { withCredentials: true }
+      );
 
       console.log("🔄 Access token refreshed");
 
-      // Fetch updated auth status after refresh
       const data = await getAuthStatus();
       setUser(data);
+      setIsManuallyLoggedOut(false); // Allow re-auth again
 
       if (data?.exp) {
         startRefreshTimer(data.exp);
@@ -49,17 +52,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // 👇 Start timer to auto-refresh before token expires
+  // 🕒 Start refresh timer before expiry
   const startRefreshTimer = (exp: number) => {
-    const now = Math.floor(Date.now() / 1000); // current time in seconds
-    const refreshDelay = (exp - now - 60) * 1000; // 1 min before expiry
+    const now = Math.floor(Date.now() / 1000);
+    const refreshDelay = (exp - now - 60) * 1000;
 
     if (refreshDelay <= 0) {
-      refreshAccessToken(); // Immediate refresh if already expired
+      refreshAccessToken();
       return;
     }
 
-    console.log(`⏳ Scheduling token refresh in ${Math.round(refreshDelay / 1000)} seconds`);
+    console.log(`⏳ Scheduling token refresh in ${Math.round(refreshDelay / 1000)}s`);
 
     if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
 
@@ -68,7 +71,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }, refreshDelay);
   };
 
+  // 🔒 Check authentication once
   useEffect(() => {
+    if (isManuallyLoggedOut) {
+      setLoading(false);
+      return;
+    }
+
     getAuthStatus().then((data) => {
       setUser(data);
       setLoading(false);
@@ -81,28 +90,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => {
       if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
     };
-  }, []);
+  }, [isManuallyLoggedOut]);
 
+  // 🚪 Logout function
   const logout = async () => {
-  try {
-    await axios.post("https://rahis.pythonanywhere.com/auth/logout/", {}, {
-      withCredentials: true,
-    });
+    try {
+      await axios.post(
+        "https://rahis.pythonanywhere.com/auth/logout/",
+        {},
+        { withCredentials: true }
+      );
 
-    // ✅ Clear user and stop refresh
-    setUser(null);
+      setUser(null);
+      setIsManuallyLoggedOut(true); // Prevent re-auth
+      if (refreshTimerRef.current) {
+        clearTimeout(refreshTimerRef.current);
+        refreshTimerRef.current = null;
+      }
 
-    if (refreshTimerRef.current) {
-      clearTimeout(refreshTimerRef.current);
-      refreshTimerRef.current = null;
+      console.log("✅ Logged out successfully");
+    } catch (err) {
+      console.error("Logout failed", err);
     }
-
-    console.log("✅ Logged out successfully");
-  } catch (err) {
-    console.error("Logout failed", err);
-  }
-};
-
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, logout }}>
