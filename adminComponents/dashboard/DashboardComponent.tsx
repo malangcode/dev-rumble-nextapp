@@ -318,12 +318,12 @@ const Dashboard = () => {
   // } = dashboard;
 
   return (
-    <div className="p-3 md:p-2 lg:p-4 xl:p-6 bg-gray-50 min-h-screen">
+    <div className="p-3 md:p-2 lg:p-4 xl:p-6 bg-[var(--bg-component)] min-h-screen">
       <div className="mx-auto">
         <div className="flex items-center mb-3 justify-right">
         <button
           onClick={() => fetchDashboard(true)}
-          className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+          className="flex items-center gap-1 text-sm px-3 py-1 bg-[var(--gray-200)] hover:bg-[var(--gray-300)] rounded text-[var(--text-secondary)] "
           title="Refresh Order"
         >
           <RefreshCcw className="w-4 h-4" />
@@ -332,10 +332,10 @@ const Dashboard = () => {
         </div>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-2">
             Canteen Management Dashboard
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[var(--text-secondary)] ">
             Real-time insights and analytics for your canteen operations
           </p>
         </div>
@@ -345,17 +345,17 @@ const Dashboard = () => {
           {topStatsCards.map((card, index) => (
             <div
               key={index}
-              className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 hover:scale-102"
+              className="bg-[var(--bg-card)] backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[var(--gray-200))] hover:shadow-md transition-all duration-300 hover:scale-102"
             >
               <div
                 className={`w-12 h-12 ${card.bgColor} rounded-xl flex items-center justify-center mb-4`}
               >
                 {card.icon}
               </div>
-              <h3 className="text-sm font-medium text-gray-600 mb-1">
+              <h3 className="text-sm font-medium text-[var(--text-secondary)] mb-1">
                 {card.title}
               </h3>
-              <p className="text-2xl font-bold text-gray-900 mb-1">
+              <p className="text-2xl font-bold text-[var(--text-primary)] mb-1">
                 {card.value}
               </p>
               <p className={`text-sm ${card.changeColor} font-medium`}>
@@ -366,16 +366,16 @@ const Dashboard = () => {
         </div>
 
         {/* Quick Metrics Bar */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6 mb-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {quickMetrics.map((metric, index) => (
               <div key={index} className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg bg-gray-50 ${metric.color}`}>
+                <div className={`p-2 rounded-lg bg-[var(--bg-component)] ${metric.color}`}>
                   {metric.icon}
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">{metric.label}</p>
-                  <p className="text-lg font-semibold text-gray-900">
+                  <p className="text-sm text-[var(--text-secondary)] ">{metric.label}</p>
+                  <p className="text-lg font-semibold text-[var(--text-primary)] ">
                     {metric.value}
                   </p>
                 </div>
@@ -387,8 +387,8 @@ const Dashboard = () => {
         {/* Charts Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Weekly Sales & Orders */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Weekly Sales & Orders
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -410,8 +410,8 @@ const Dashboard = () => {
           </div>
 
           {/* Popular Menu Items */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Popular Menu Items
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -440,8 +440,8 @@ const Dashboard = () => {
         {/* Hourly Orders & Monthly Revenue */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           {/* Hourly Orders Pattern */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Hourly Orders Pattern
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -469,8 +469,8 @@ const Dashboard = () => {
           </div>
 
           {/* Monthly Revenue vs Target */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Monthly Revenue vs Target
             </h3>
             <ResponsiveContainer width="100%" height={300}>
@@ -509,8 +509,8 @@ const Dashboard = () => {
         {/* Recent Activity & Performance Metrics */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Recent Orders */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Recent Orders
             </h3>
             <div className="space-y-4">
@@ -547,16 +547,16 @@ const Dashboard = () => {
               {dashboard?.recentOrdersData?.map((order, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)]"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{order.item}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-[var(--text-primary)]">{order.item}</p>
+                    <p className="text-sm text-[var(--text-secondary)] ">
                       {order.id} • {order.time}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-[var(--text-primary)] ">
                       {order.amount}
                     </p>
                     <span
@@ -577,8 +577,8 @@ const Dashboard = () => {
           </div>
 
           {/* Staff Performance */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Staff Performance
             </h3>
             <div className="space-y-4">
@@ -606,19 +606,19 @@ const Dashboard = () => {
               {dashboard?.staffPerformanceData?.map((staff, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{staff.name}</p>
-                    <p className="text-sm text-gray-600">{staff.role}</p>
+                    <p className="font-medium text-[var(--text-primary)] ">{staff.name}</p>
+                    <p className="text-sm text-[var(--text-secondary)] ">{staff.role}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-gray-900">
+                    <p className="font-semibold text-[var(--text-primary)]">
                       {staff.orders} orders
                     </p>
                     <div className="flex items-center space-x-1">
                       <Star className="h-3 w-3 text-yellow-500 fill-current" />
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-[var(--text-secondary)] ">
                         {staff.rating}
                       </span>
                     </div>
@@ -629,8 +629,8 @@ const Dashboard = () => {
           </div>
 
           {/* Inventory Alerts */}
-          <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-semibold text-gray-900 mb-6">
+          <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
+            <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Inventory Alerts
             </h3>
             <div className="space-y-4">
@@ -669,11 +669,11 @@ const Dashboard = () => {
               {dashboard?.inventoryAlertsData?.map((item, index) => (
                 <div
                   key={index}
-                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{item.item}</p>
-                    <p className="text-sm text-gray-600">Stock: {item.stock}</p>
+                    <p className="font-medium text-[var(--text-primary)] ">{item.item}</p>
+                    <p className="text-sm text-[var(--text-secondary)] ">Stock: {item.stock}</p>
                   </div>
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${

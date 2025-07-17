@@ -52,66 +52,66 @@ const SingleOrderView = ({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-3xl h-[85vh] flex flex-col relative">
+      <div className="bg-[var(--bg-card)] rounded-xl shadow-xl w-full max-w-3xl h-[85vh] flex flex-col relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-red-600 z-10"
+          className="absolute top-4 right-4 text-[var(--text-secondary)] hover:text-red-600 z-10"
         >
           <X className="w-6 h-6" />
         </button>
 
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full">
-            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-            <p className="mt-2 text-gray-600">Loading order details...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-[var(--color-primary)] " />
+            <p className="mt-2 text-[var(--text-secondary)]">Loading order details...</p>
           </div>
         ) : order ? (
           <>
             {/* Scrollable Content */}
             <div className="px-6 py-6 overflow-y-auto flex-1 space-y-6">
-              <h2 className="text-2xl font-bold text-gray-800">
+              <h2 className="text-2xl font-bold text-[var(--text-primary)] ">
                 Order #{order.id}
               </h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-center gap-2">
-                  <Users className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-800">
+                  <Users className="w-5 h-5 text-[var(--text-secondary)] " />
+                  <span className="text-sm font-medium text-[var(--text-primary] ">
                     Customer:
                   </span>
-                  <span className="text-sm text-gray-600">{order.user}</span>
+                  <span className="text-sm text-[var(--text-secondary)] ">{order.user}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-800">
+                  <Calendar className="w-5 h-5 text-[var(--text-secondary)] " />
+                  <span className="text-sm font-medium text-[var(--text-primary] ">
                     Ordered At:
                   </span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[var(--text-secondary)] ">
                     {new Date(order.ordered_at).toLocaleString()}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-800">
+                  <DollarSign className="w-5 h-5 text-[var(--text-secondary)] " />
+                  <span className="text-sm font-medium text-[var(--text-primary] ">
                     Total:
                   </span>
-                  <span className="text-sm text-gray-600">
+                  <span className="text-sm text-[var(--text-secondary)] ">
                     Rs {parseFloat(order.total_price).toFixed(2)}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <List className="w-5 h-5 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-800">
+                  <List className="w-5 h-5 text-[var(--text-secondary)] " />
+                  <span className="text-sm font-medium text-[var(--text-primary] ">
                     Status:
                   </span>
-                  <span className="text-sm text-gray-600 capitalize">
+                  <span className="text-sm text-[var(--text-secondary)] capitalize">
                     {order.status}
                   </span>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                <h3 className="text-lg font-semibold text-[var(--text-primary] mb-2">
                   Items:
                 </h3>
                 <ul className="space-y-2">
@@ -120,10 +120,10 @@ const SingleOrderView = ({
                       key={item.id}
                       className="flex justify-between border-b pb-1"
                     >
-                      <span className="text-sm text-gray-700">
+                      <span className="text-sm text-[var(--text-primary)] ">
                         {item.quantity}x {item.product_name}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-[var(--text-secondary)] ">
                         Rs {item.price}
                       </span>
                     </li>
@@ -133,21 +133,21 @@ const SingleOrderView = ({
 
               {/* Payment Info Section (Toggle) */}
               {!showPayment && (
-                <div className="bg-gray-50 rounded-lg p-4 shadow-sm">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                <div className="bg-[var(--bg-component)] rounded-lg p-4 shadow-sm">
+                  <h3 className="text-lg font-semibold text-[var(--text-primary] mb-2">
                     Payment Details
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-gray-500">Paid Amount:</p>
-                      <p className="text-base font-medium text-gray-800">
+                      <p className="text-sm text-[var(--text-secondary] ">Paid Amount:</p>
+                      <p className="text-base font-medium text-[var(--text-primary] ">
                         Rs {parseFloat(order.total_price).toFixed(2)}
                       </p>
                     </div>
                     <div className="shadow p-2 pb-3 rounded-lg ">
-                      <p className="text-sm text-gray-500">Payment Status:</p>
+                      <p className="text-sm text-[var(--text-secondary] ">Payment Status:</p>
                       <select
-                        className="w-full mt-1 bg-white border border-gray-200 rounded px-3 py-2 text-sm"
+                        className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--gray-200)] rounded px-3 py-2 text-sm"
                         value={paymentStatus}
                         onChange={(e) => setPaymentStatus(e.target.value)}
                       >
@@ -157,12 +157,12 @@ const SingleOrderView = ({
                       </select>
                     </div>
                     <div className="sm:col-span-2">
-                      <p className="text-sm text-gray-500 shadow p-2 rounded-lg mb-1">
+                      <p className="text-sm text-[var(--text-secondary] shadow p-2 rounded-lg mb-1">
                         Remarks: {order.payment.remarks}{" "}
                       </p>
                     </div>
                     <div className="sm:col-span-2">
-                      <p className="text-sm text-gray-500 shadow p-2 rounded-lg mb-2">
+                      <p className="text-sm text-[var(--text-secondary] shadow p-2 rounded-lg mb-2">
                         Payment Screenshot is given below if any.
                       </p>
 
@@ -179,7 +179,7 @@ const SingleOrderView = ({
                             </button>
                           </div>
 
-                          <div className="max-w-full max-h-80 overflow-hidden shadow rounded bg-gray-50 p-2 flex justify-center items-center">
+                          <div className="max-w-full max-h-80 overflow-hidden shadow rounded bg-[var(--bg-component)] p-2 flex justify-center items-center">
                             <img
                               src={order.payment.screenshot}
                               alt="Payment Screenshot"
@@ -188,7 +188,7 @@ const SingleOrderView = ({
                           </div>
                         </>
                       ) : (
-                        <div className="border rounded p-2 bg-white text-gray-400 text-sm text-center">
+                        <div className="border rounded p-2 bg-[var(--bg-card)] text-[var(--text-secondary)] text-sm text-center">
                           (No screenshot uploaded)
                         </div>
                       )}
@@ -219,7 +219,7 @@ const SingleOrderView = ({
                           setUpdatingPayment(false);
                         }
                       }}
-                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded disabled:opacity-50"
+                      className="bg-[var(--color-primary)] hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded disabled:opacity-50"
                       disabled={updatingPayment}
                     >
                       {updatingPayment
@@ -232,7 +232,7 @@ const SingleOrderView = ({
             </div>
 
             {/* Fixed Footer Actions */}
-            <div className="bg-white border-t border-gray-200 p-4 flex justify-end gap-3 shrink-0">
+            <div className="bg-[var(--bg-card)] border-t border-[var(--gray-200)] p-4 flex justify-end gap-3 shrink-0">
               <button
                 onClick={async () => {
                   try {
@@ -289,7 +289,7 @@ const SingleOrderView = ({
               </button>
               <button
                 onClick={() => setShowPayment((prev) => !prev)}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                className="bg-[var(--color-primary)] hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
               >
                 <FileText className="w-4 h-4" />
                 {!showPayment ? "Hide Payment" : "Payment Status"}

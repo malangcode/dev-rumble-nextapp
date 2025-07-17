@@ -8,6 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { IoWalletOutline } from "react-icons/io5";
+import Image from "next/image";
+import ThemeToggle from "./ThemeToggle";
 
 import {
   HiHome,
@@ -24,6 +26,7 @@ import {
   HiOutlineLogout,
   HiOutlineShieldCheck, // Optional for admin panel icon
 } from "react-icons/hi";
+import Logo from "./LogoSwitcher";
 
 const navLinks = [
   { name: "Home", href: "/", icon: HiHome },
@@ -61,14 +64,10 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-          <Link
-            href="/"
-            className="text-2xl font-bold text-blue-600 tracking-tight"
-          >
-            SmartCanteen
-          </Link>
+      <nav className=" shadow-md sticky top-0 z-50" style={{backgroundColor: "var(--bg-card)"}}>
+        <div className="max-w-7xl mx-auto px-4 py-1 sm:py-2 flex justify-between items-center">
+        {/* <Image src="/images/texas-logo.png" height={500} width={500} className="w-[75px] md:w-[110px]" alt={"logo"}></Image> */}
+           <Logo />
 
           <div className="hidden md:flex items-center space-x-16">
             {navLinks.map((link) => {
@@ -79,14 +78,14 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="flex flex-col items-center text-xs font-medium text-gray-600 hover:text-blue-600 transition-all duration-200"
+                  className="flex flex-col items-center text-xs font-medium text-[var(--text-secondary)] hover:text-blue-600 transition-all duration-200"
                 >
                   <div
                     className={cn(
                       "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                       isActive
-                        ? "bg-blue-600 text-white shadow"
-                        : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600"
+                        ? "bg-[var(--color-primary)] text-white shadow"
+                        : "bg-[var(--bg-icon)] text-[var(--text-secondary)] hover:bg-blue-100 hover:text-blue-600"
                     )}
                   >
                     <Icon className="text-lg" />
@@ -97,6 +96,10 @@ export default function Navbar() {
             })}
           </div>
 
+
+          <ThemeToggle />
+
+  
           {user ? (
             <img
               src={user.photo ? BASE_URL + user.photo : "/images/profile2.jpg"}
@@ -122,8 +125,8 @@ export default function Navbar() {
           isSidebarOpen ? "translate-x-0" : "translate-x-full"
         )}
       >
-        <div className="flex justify-between items-center px-4 py-3 border-b">
-          <h2 className="text-lg font-semibold text-blue-700">SmartCanteen</h2>
+        <div className="flex justify-between items-center px-4  py-1 sm:py-2 shadow-md">
+          <Image src="/images/texas-logo.png" height={500} width={500} className="w-[75px] md:w-[110px]" alt={"logo"}></Image>
           <button
             onClick={toggleSidebar}
             className="text-gray-600 hover:text-red-500"

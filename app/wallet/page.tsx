@@ -74,12 +74,12 @@ export default function WalletPage() {
       <div className="py-3 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto">
         <div className="max-w-6.5xl mx-auto">
           <div className="animate-pulse">
-            <div className="h-8 bg-gray-300 rounded w-1/4 mb-4"></div>
-            <div className="h-4 bg-gray-300 rounded w-1/2 mb-8"></div>
-            <div className="bg-white rounded-xl shadow-md p-6 mb-8">
-              <div className="h-20 bg-gray-300 rounded"></div>
+            <div className="h-8 bg-[var(--gray-300)] rounded w-1/4 mb-4"></div>
+            <div className="h-4 bg-[var(--gray-300)] rounded w-1/2 mb-8"></div>
+            <div className="bg-[var(--bg-card)] rounded-xl shadow-md p-6 mb-8">
+              <div className="h-20 bg-[var(--gray-300)] rounded"></div>
             </div>
-          </div>
+          </div>  
         </div>
       </div>
     );
@@ -109,34 +109,34 @@ export default function WalletPage() {
       <div className="max-w-6.5xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-700">
+          <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)]] ">
             My Wallet
           </h1>
-          <p className="text-gray-600">
+          <p className="text-[var(--text-secondary)] ">
             Manage your canteen balance and transactions
           </p>
           {walletData && (
-            <p className="text-sm text-gray-500 mt-1">
+            <p className="text-sm text-[var(--text-secondary)] mt-1">
               Welcome, {walletData.username}
             </p>
           )}
         </div>
 
         {/* Balance Card */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-8">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between">
             <div className="flex items-center mb-4 md:mb-0">
-              <div className="bg-blue-100 p-3 rounded-full mr-4">
-                <BanknotesIcon className="h-8 w-8 text-blue-600" />
+              <div className="bg-[var(--blue-100)] p-3 rounded-full mr-4">
+                <BanknotesIcon className="h-8 w-8 text-[var(--color-primary)] " />
               </div>
               <div>
-                <p className="text-gray-500 text-sm">Available Balance</p>
-                <h2 className="text-3xl font-bold text-gray-800">
+                <p className="text-[var(--text-secondary)] text-sm">Available Balance</p>
+                <h2 className="text-3xl font-bold text-[var(--text-primary)] ">
                   Rs {walletData ? walletData.balance.toFixed(2) : "0.00"}
                 </h2>
               </div>
             </div>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center">
+            <button className="bg-[var(--color-primary)] hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center justify-center">
               <ArrowDownTrayIcon className="h-5 w-5 mr-2" />
               Deposit Money
             </button>
@@ -144,14 +144,14 @@ export default function WalletPage() {
         </div>
 
         {/* Transaction History */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-md overflow-hidden">
+          <div className="p-6 border-b border-[var(--gray-200)] ">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] ">
               Transaction History
             </h3>
           </div>
 
-          <div className="divide-y divide-gray-200">
+          <div className="divide-y divide-[var(--gray-200)] ">
             {walletData?.transactions.map((transaction) => {
               const isCredit = transaction.type === "credit";
               const icon = isCredit ? (
@@ -163,18 +163,18 @@ export default function WalletPage() {
               return (
                 <div
                   key={transaction.id}
-                  className="p-4 md:p-6 hover:bg-gray-50 transition-colors"
+                  className="p-4 md:p-6 hover:bg-[var(--bg-component)] transition-colors"
                 >
                   <div className="flex items-center">
                     <div className="mr-4">{icon}</div>
                     <div className="flex-1">
-                      <h4 className="font-medium text-gray-800">
+                      <h4 className="font-medium text-[var(--text-primary)] ">
                         {transaction.title}
                       </h4>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-[var(--text-secondary)] ">
                         {transaction.desc}
                       </p>
-                      <div className="flex items-center text-sm text-gray-500 mt-1">
+                      <div className="flex items-center text-sm text-[var(--text-secondary)] mt-1">
                         <ClockIcon className="h-3 w-3 mr-1" />
                         <span>{transaction.created_at}</span>
                       </div>
@@ -194,7 +194,7 @@ export default function WalletPage() {
           </div>
 
           {/* View All Button */}
-          <div className="p-4 border-t border-gray-200 text-center">
+          <div className="p-4 border-t border-[var(--gray-200)] text-center">
             {walletData?.pagination &&
               walletData.pagination.total_pages &&
               walletData.pagination.total_pages > 1 && (
@@ -204,13 +204,13 @@ export default function WalletPage() {
                     onClick={() => setPage(page - 1)}
                     className={`px-3 py-1 rounded-md text-sm font-medium ${
                       walletData.pagination.has_previous
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        ? "bg-[var(--color-primary)] text-white hover:bg-blue-700"
+                        : "bg-[var(--gray-200)] text-[var(--text-secondary)] cursor-not-allowed"
                     }`}
                   >
                     Previous
                   </button>
-                  <span className="text-sm text-gray-700">
+                  <span className="text-sm text-[var(--text-secondary)] ">
                     Page {walletData.pagination.current_page} of{" "}
                     {walletData.pagination.total_pages}
                   </span>
@@ -219,8 +219,8 @@ export default function WalletPage() {
                     onClick={() => setPage(page + 1)}
                     className={`px-3 py-1 rounded-md text-sm font-medium ${
                       walletData && walletData.pagination.has_next
-                        ? "bg-blue-600 text-white hover:bg-blue-700"
-                        : "bg-gray-200 text-gray-500 cursor-not-allowed"
+                        ? "bg-[var(--color-primary)] text-white hover:bg-blue-700"
+                        : "bg-[var(--gray-200)] text-[var(--text-secondary)] cursor-not-allowed"
                     }`}
                   >
                     Next
@@ -231,37 +231,37 @@ export default function WalletPage() {
         </div>
 
         {/* Statements Section */}
-        <div className="mt-8 bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6 border-b border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-800">
+        <div className="mt-8 bg-[var(--bg-card)] rounded-xl shadow-md overflow-hidden">
+          <div className="p-6 border-b border-[var(--gray-200)]">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)] ">
               Monthly Statements
             </h3>
           </div>
           <div className="p-6">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 p-3 bg-gray-50 rounded-lg">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 p-3 bg-[var(--bg-component)] rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-800">
+                <h4 className="font-medium text-[var(--text-primary)] ">
                   June 2023 Statement
                 </h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[var(--text-secondary)] ">
                   Generated on June 1, 2023
                 </p>
               </div>
-              <button className="mt-2 md:mt-0 text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+              <button className="mt-2 md:mt-0 text-[var(--color-primary)] hover:text-blue-800 font-medium text-sm flex items-center">
                 <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
                 Download PDF
               </button>
             </div>
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-gray-50 rounded-lg">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between p-3 bg-[var(--bg-component)] rounded-lg">
               <div>
-                <h4 className="font-medium text-gray-800">
+                <h4 className="font-medium text-[var(--text-primary)] ">
                   May 2023 Statement
                 </h4>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[var(--text-secondary)] ">
                   Generated on May 1, 2023
                 </p>
               </div>
-              <button className="mt-2 md:mt-0 text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center">
+              <button className="mt-2 md:mt-0 text-[var(--color-primary)] hover:text-blue-800 font-medium text-sm flex items-center">
                 <ArrowDownTrayIcon className="h-4 w-4 mr-1" />
                 Download PDF
               </button>

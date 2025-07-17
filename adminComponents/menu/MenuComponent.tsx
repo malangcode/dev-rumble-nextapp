@@ -91,81 +91,81 @@ const AdminMenuComponent = () => {
 
   if (loading) {
     return (
-      <div className="bg-gray-50 py-2 px-6 overflow-hidden animate-pulse">
-        <div className="py-4 border-gray-200 mb-2 bg-gray-50">
+      <div className="bg-[var(--bg-component)] py-2 px-6 overflow-hidden animate-pulse">
+        <div className="py-4 border-[var(--gray-200)] mb-2 bg-[var(--bg-component)] ">
           {/* Refresh Button Skeleton */}
           <div className="flex items-center mb-2 justify-right">
-            <div className="w-24 h-8 bg-gray-200 rounded animate-pulse"></div>
+            <div className="w-24 h-8 bg-[var(--gray-200)] rounded animate-pulse"></div>
           </div>
 
           {/* Header Skeleton */}
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-gray-200 rounded-lg animate-pulse w-10 h-10" />
+              <div className="p-3 bg-[var(--gray-200)] rounded-lg animate-pulse w-10 h-10" />
               <div>
-                <div className="h-6 bg-gray-200 rounded w-48 mb-2 animate-pulse"></div>
-                <div className="h-4 bg-gray-200 rounded w-64 animate-pulse"></div>
+                <div className="h-6 bg-[var(--gray-200)] rounded w-48 mb-2 animate-pulse"></div>
+                <div className="h-4 bg-[var(--gray-200)] rounded w-64 animate-pulse"></div>
               </div>
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <div className="h-8 bg-gray-200 rounded w-30 mb-2 animate-pulse"></div>
+                <div className="h-8 bg-[var(--gray-200)] rounded w-30 mb-2 animate-pulse"></div>
               </div>
             </div>
           </div>
-          <div className="bg-white flex gap-4 rounded-xl shadow-sm border border-gray-200 p-6  animate-pulse h-20">
-            <div className="h-8 w-80 bg-gray-100 shadow-sm rounded-lg animate-pulse"></div>
-            <div className="h-8 w-30 bg-gray-100 shadow-sm rounded-lg animate-pulse"></div>
+          <div className="bg-[var(--bg-card)] flex gap-4 rounded-xl shadow-sm border border-[var(--gray-200)] p-6  animate-pulse h-20">
+            <div className="h-8 w-80 bg-[var(--bg-icon)] shadow-sm rounded-lg animate-pulse"></div>
+            <div className="h-8 w-30 bg-[var(--bg-icon)] shadow-sm rounded-lg animate-pulse"></div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+              <thead className="bg-[var(--bg-component)] border-b border-[var(--gray-200)] ">
                 <tr>
                   {Array(8)
                     .fill(0)
                     .map((_, idx) => (
                       <th
                         key={idx}
-                        className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase"
+                        className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase"
                       >
                         &nbsp;
                       </th>
                     ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-[var(--bg-card)] divide-y divide-[var(--gray-200)] ">
                 {Array(8)
                   .fill(0)
                   .map((_, i) => (
-                    <tr key={i} className="hover:bg-gray-50">
+                    <tr key={i} className="hover:bg-[var(--bg-component)] ">
                       <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-200 rounded w-8"></div>
+                        <div className="h-4 bg-[--gray-200] rounded w-8"></div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="w-14 h-14 bg-gray-200 rounded" />
+                        <div className="w-14 h-14 bg-[--gray-200] rounded" />
                       </td>
                       <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-4 bg-[--gray-200] rounded w-24"></div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-200 rounded w-20"></div>
+                        <div className="h-4 bg-[--gray-200] rounded w-20"></div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                        <div className="h-4 bg-[--gray-200] rounded w-24"></div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-200 rounded w-16"></div>
+                        <div className="h-4 bg-[--gray-200] rounded w-16"></div>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-200 rounded w-32"></div>
+                        <div className="h-4 bg-[--gray-200] rounded w-32"></div>
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex gap-2">
-                          <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
-                          <div className="w-6 h-6 bg-gray-200 rounded-full"></div>
+                          <div className="w-6 h-6 bg-[--gray-200] rounded-full"></div>
+                          <div className="w-6 h-6 bg-[--gray-200] rounded-full"></div>
                         </div>
                       </td>
                     </tr>
@@ -179,11 +179,11 @@ const AdminMenuComponent = () => {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-[var(--bg-component)] min-h-screen">
       <div className="flex items-center mb-3 gap-4">
         <button
           onClick={() => fetchMenuItems(true)}
-          className="flex items-center gap-1 text-sm px-3 py-2 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+          className="flex items-center gap-1 text-sm px-3 py-2 bg-[var(--gray-200)] hover:bg-[--gray-300] rounded text-[var(--text-secondary)]"
         >
           <RefreshCcw className="w-4 h-4" />
           Refresh
@@ -192,19 +192,19 @@ const AdminMenuComponent = () => {
 
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <ClipboardList className="w-6 h-6 text-blue-600" />
+          <div className="p-2 bg-[var(--blue-100)] rounded-lg">
+            <ClipboardList className="w-6 h-6 text-[var(--color-primary)] " />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-[var(--text-primary)] ">
               Menu Management
             </h1>
-            <p className="text-gray-600">Manage and track all menu items</p>
+            <p className="text-[var(--text-secondary)] ">Manage and track all menu items</p>
           </div>
         </div>
         <button
           onClick={() => setShowCreatePopup(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-2"
+          className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-blue-700 flex items-center gap-2"
         >
           <Plus className="w-4 h-4" /> Add New Item
         </button>
@@ -218,16 +218,16 @@ const AdminMenuComponent = () => {
       </div>
 
       {/* search and filter bar  */}
-      <div className="flex items-center gap-4 mb-4 bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+      <div className="flex items-center gap-4 mb-4 bg-[var(--bg-card)] p-4 rounded-lg shadow-sm border border-[var(--gray-200)] ">
         <div className="relative w-full md:w-80">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search menu items by name..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 transition"
+            className="w-full pl-10 pr-4 py-2 border border-[var(--gray-300)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none focus:border-[var(--color-primary)] transition"
           />
-          <div className="absolute left-3 top-2.5 text-gray-400">
+          <div className="absolute left-3 top-2.5 text-[var(--text-secondary)] ">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -247,7 +247,7 @@ const AdminMenuComponent = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 shadow py-2 border border-gray-300 rounded-lg"
+          className="px-3 shadow py-2 border border-[var(--gray-300)] rounded-lg"
         >
           <option value="all">All</option>
           <option value="active">Active</option>
@@ -255,47 +255,47 @@ const AdminMenuComponent = () => {
         </select>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="text-lg font-semibold text-gray-900">
+      <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[var(--gray-200)] bg-[var(--bg-component)] ">
+          <h3 className="text-lg font-semibold text-[var(--text-primary)] ">
             All Menu Items ({menuItems.length})
           </h3>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-[var(--bg-component)] border-b border-[var(--gray-200)] ">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   ID
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Image
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Name
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Price
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Category
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Created At
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[var(--bg-card)] divide-y divide-[var(--gray-200)] ">
               {menuItems.map((item) => (
-                <tr key={item.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                <tr key={item.id} className="hover:bg-[var(--bg-component)] ">
+                  <td className="px-6 py-4 text-sm text-[var(--text-primary)] ">
                     #{item.id}
                   </td>
                   <td className="px-6 py-4">
@@ -306,18 +306,18 @@ const AdminMenuComponent = () => {
                         className="w-14 h-14 object-cover rounded"
                       />
                     ) : (
-                      <div className="w-14 h-14 bg-gray-100 border rounded flex items-center justify-center text-gray-400 text-sm">
+                      <div className="w-14 h-14 bg-[var(--bg-icon)] border rounded flex items-center justify-center text-gray-400 text-sm">
                         N/A
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-[var(--text-primary)] ">
                     {item.name}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-[var(--text-primary)] ">
                     Rs {item.price}
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-900">
+                  <td className="px-6 py-4 text-sm text-[var(--text-primary)] ">
                     {item.category_name || "N/A"}
                   </td>
                   <td className="px-6 py-4 text-sm">
@@ -331,19 +331,19 @@ const AdminMenuComponent = () => {
                       {item.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-sm text-gray-500">
+                  <td className="px-6 py-4 text-sm text-[var(--text-secondary)] ">
                     {formatDate(item.created_at)}
                   </td>
                   <td className="px-6 py-4 text-sm font-medium">
                     <button
-                      className="text-blue-600 hover:text-blue-900 mr-3"
+                      className="text-[var(--color-primary)] hover:text-blue-900 mr-3"
                       onClick={() => setSelectedItemId(item.id)}
                     >
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => {setSelectedId(item.id); setShowViewPopup(true);}}
-                      className="text-gray-600 hover:text-gray-900"
+                      className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -370,20 +370,20 @@ const AdminMenuComponent = () => {
 
         {menuItems.length === 0 && (
           <div className="text-center py-12">
-            <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No menu items found.</p>
+            <ClipboardList className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4" />
+            <p className="text-[var(--text-secondary)] ">No menu items found.</p>
           </div>
         )}
 
-        <div className="flex mt-6 border-t border-gray-200 p-4">
+        <div className="flex mt-6 border-t border-[var(--gray-200)] p-4">
           {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
             <button
               key={p}
               onClick={() => setPage(p)}
               className={`mx-1 px-3 py-1 rounded border text-sm ${
                 page === p
-                  ? "bg-blue-600 text-white border-blue-600"
-                  : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                  ? "bg-[var(--color-primary)] text-white border-[var(--color-primary))]"
+                  : "bg-[var(--bg-card)] text-[var(--text-secondary)] border-[var(--gray-300)] hover:bg-[var(--bg-icon)]"
               }`}
             >
               {p}

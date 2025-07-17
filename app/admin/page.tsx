@@ -12,6 +12,7 @@ import {
   BarChart2,
   LogOut,
 } from "lucide-react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import AdminOrdersComponent from "@/adminComponents/orders/orderComponent";
@@ -19,6 +20,9 @@ import AdminMenuComponent from "@/adminComponents/menu/MenuComponent";
 import Dashboard from "@/adminComponents/dashboard/DashboardComponent";
 import Reports from "@/adminComponents/reports/ReportsComponent";
 import TableManagement from "@/adminComponents/Table/TableComponent";
+import UserRoleManagement from "@/adminComponents/users/Users";
+import AdminPaymentsComponent from "@/adminComponents/payments/PaymentPage";
+import ThemeToggle from "@/components/ThemeToggle";
 
 // Media Query Hook
 function useMediaQuery(query: string): boolean {
@@ -98,7 +102,7 @@ export default function AdminPage() {
 
       case "orders":
         return <AdminOrdersComponent />;
-      
+
       case "menu":
         return <AdminMenuComponent />;
 
@@ -106,10 +110,17 @@ export default function AdminPage() {
         return <TableManagement />;
 
       case "reports":
-        return <Reports/>;
+        return <Reports />;
+
+      case "users":
+        return <UserRoleManagement />;
+
+      case "payments":
+        return <AdminPaymentsComponent />;
+
       default:
         return (
-          <div className="text-gray-700 text-xl font-semibold">
+          <div className="text-[var(--text-primary)] text-xl font-semibold">
             {activePage.charAt(0).toUpperCase() + activePage.slice(1)} Page
           </div>
         );
@@ -117,18 +128,18 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden relative bg-gray-100">
+    <div className="flex h-screen overflow-hidden relative bg-[var(--bg-icon)] ">
       {/* Toggle Button with Active Icon */}
       <motion.button
         onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="fixed top-1/2 -translate-y-1/2 left-0 z-40 bg-white shadow-lg rounded-r-full p-3 hover:shadow-xl transition-shadow"
+        className="fixed top-1/2 -translate-y-1/2 left-0 z-40 bg-[var(--bg-card)] shadow-lg rounded-r-full p-3 hover:shadow-xl transition-shadow"
         animate={{
           x: sidebarOpen && !isMobile ? 256 : 0,
         }}
         transition={{ type: "spring", stiffness: 200, damping: 15 }}
       >
         <motion.div
-          className="p-2 bg-blue-600 rounded-full text-white"
+          className="p-2 bg-[var(--color-primary)] rounded-full text-white"
           animate={{
             rotate: sidebarOpen ? 180 : 0,
             scale: [1, 1.1, 1],
@@ -167,14 +178,24 @@ export default function AdminPage() {
             exit={{ x: -300 }}
             transition={{ duration: 0.3 }}
             className={cn(
-              "w-64 h-full bg-white shadow-lg p-5 flex flex-col justify-between z-30",
+              "w-64 h-full bg-[var(--bg-card)] shadow-lg p-5 flex flex-col justify-between z-30",
               isMobile ? "fixed" : "relative"
             )}
           >
             <div>
-              <h2 className="text-2xl font-extrabold text-blue-700 flex items-center gap-2 mb-8">
-                🍽️ Admin Panel
-              </h2>
+              <span className="flex items-center mb-5 pb-2 border-b-[2px] border-[var(--gray-200)] ">
+                {/* theme toggle overlay    */}
+                <div className="absolute left-[165px] top-[15px] z-50">
+                  <ThemeToggle />
+                </div>
+                <Image
+                  src="/images/texas-logo.png"
+                  height={500}
+                  width={500}
+                  className="w-[200px] md:w-[300px]"
+                  alt={"logo"}
+                ></Image>
+              </span>
               <nav className="space-y-2">
                 {navItems.map((item) => (
                   <button
@@ -182,8 +203,8 @@ export default function AdminPage() {
                     className={cn(
                       "flex items-center w-full gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 relative",
                       activePage === item.key
-                        ? "text-blue-700 font-semibold bg-blue-50"
-                        : "text-gray-700 hover:bg-gray-50"
+                        ? "text-[var(--color-primary)] font-semibold bg-[var(--blue-50)] "
+                        : "text-[var(--text-primary)] hover:bg-[var(--bg-component)]"
                     )}
                     onClick={() => {
                       setActivePage(item.key);
@@ -196,8 +217,8 @@ export default function AdminPage() {
                       className={cn(
                         "p-2 rounded-full transition-all duration-200",
                         activePage === item.key
-                          ? "bg-blue-600 text-white shadow-md"
-                          : "bg-gray-100 text-gray-600"
+                          ? "bg-[var(--color-primary)] text-white shadow-md"
+                          : "bg-[var(--bg-icon)] text-[var(--text-secondary)] "
                       )}
                     >
                       {item.icon}
@@ -206,7 +227,7 @@ export default function AdminPage() {
                     {activePage === item.key && (
                       <motion.div
                         layoutId="activeIndicator"
-                        className="absolute right-2 w-2 h-2 bg-blue-600 rounded-full"
+                        className="absolute right-2 w-2 h-2 bg-[var(--color-primary)] rounded-full"
                         transition={{
                           type: "spring",
                           stiffness: 300,

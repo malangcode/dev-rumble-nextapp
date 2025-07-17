@@ -122,10 +122,10 @@ export default function Menu() {
 
   return (
     <>
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 pb-6 bg-white rounded-xl shadow-md border border-gray-200 p-4">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 pb-6 bg-[var(--bg-card)] rounded-xl shadow-md border border-[var(--border-color)] p-4">
         {/* 🔍 Search Bar */}
         <div className="relative w-full md:w-1/3">
-          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">
+          <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-[var(--text-secondary)]">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -144,7 +144,7 @@ export default function Menu() {
             type="text"
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search delicious dishes..."
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            className="w-full pl-10 pr-4 py-2 text-[var(--text-secondary)] border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
           />
         </div>
 
@@ -158,16 +158,16 @@ export default function Menu() {
                   e.target.value ? parseInt(e.target.value) : null
                 )
               }
-              className="appearance-none w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              className="appearance-none w-full bg-[var(--bg-card)] px-4 py-2  border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none"
             >
-              <option value="">All Categories</option>
+              <option  value="">All Categories</option>
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+                <option className="text-[var(--text-secondary)]" key={cat.id} value={cat.id}>
                   {cat.name}
                 </option>
               ))}
             </select>
-            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
+            <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-[var(--text-secondary)]">
               <svg
                 className="w-5 h-5"
                 fill="none"
@@ -187,9 +187,9 @@ export default function Menu() {
 
         {/* 💰 Price Filter */}
         <div className="w-full md:w-1/4">
-          <label className="block text-gray-600 text-sm mb-1 ml-1">
+          <label className="block text-[var(--text-secondary] text-sm mb-1 ml-1">
             Max Price:{" "}
-            <span className="font-semibold text-blue-600">Rs {maxPrice}</span>
+            <span className="font-semibold text-[var(--color-primary)]">Rs {maxPrice}</span>
           </label>
           <input
             type="range"
@@ -197,7 +197,7 @@ export default function Menu() {
             max={1000}
             value={maxPrice}
             onChange={(e) => setMaxPrice(parseInt(e.target.value))}
-            className="w-full accent-blue-500 cursor-pointer"
+            className="w-full accent-[var(--color-primary)] cursor-pointer"
           />
         </div>
       </div>

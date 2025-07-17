@@ -77,15 +77,15 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="bg-gray-100">
+    <div style={{backgroundColor: "var(--bg-component)"}}>
       {/* Cover */}
-      <div className="relative h-60 sm:h-72 bg-white shadow-md">
+      <div className="relative h-60 sm:h-72 shadow-md">
         <Image
           src="/images/texas-cover.webp"
           alt="Cover"
           layout="fill"
           objectFit="cover"
-          className="rounded-b-xl"
+        
         />
         <div className="absolute bottom-[-80px] left-4 sm:left-10 flex flex-col items-center w-[100px]">
           <div className="w-[100px] h-[100px] rounded-full overflow-hidden border-4 border-white">
@@ -101,20 +101,20 @@ export default function ProfilePage() {
               className="object-cover"
             />
           </div>
-          <p className="text-center text-sm text-gray-600 mt-1 w-full truncate">
+          <p className="text-center text-sm mt-1 w-full truncate" style={{color: "var(--text-primary)"}}>
             @{profile?.username || "anonymous"}
           </p>
         </div>
       </div>
 
       {/* Profile Header */}
-      <div className="bg-white pt-24 pb-6 px-4 sm:px-10 shadow">
+      <div className=" pt-24 pb-6 px-4 sm:px-10 shadow" style={{backgroundColor: "var(--bg-card)"}}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-blue-800">
+            <h1 className="text-2xl font-bold" style={{color: "var(--color-primary)"}}>
               {profile?.full_name || "No Name"}
             </h1>
-            <p className="text-gray-600 text-sm">
+            <p className=" text-sm" style={{color: "var(--text-secondary)"}}>
               {profile?.faculty || "No Faculty Info"}
             </p>
           </div>
@@ -127,15 +127,15 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="mt-6 border-b border-gray-200 flex gap-6 overflow-x-auto text-sm sm:text-base">
+        <div className="mt-6 border-b border-[var(--border-color)] flex gap-6 overflow-x-auto text-sm sm:text-base">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
               className={`pb-2 ${
                 activeTab === tab
-                  ? "border-blue-600 text-blue-700 font-medium border-b-2"
-                  : "text-gray-500 hover:text-blue-500"
+                  ? "border-[var(--color-primary)] text-[var(--color-primary)] font-medium border-b-2"
+                  : "text-[var(--text-secondary)] hover:text-blue-500"
               }`}
             >
               {tab}
@@ -147,7 +147,7 @@ export default function ProfilePage() {
       {/* Content */}
       <div className="p-4 sm:p-8 max-w-4xl mx-auto">
         {activeTab === "Orders" && (
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className=" shadow rounded-lg p-6" style={{backgroundColor: "var(--bg-card)"}}>
             <h2 className="text-xl font-bold mb-4">Current Orders</h2>
             <ul className="space-y-4">
               {orders.length === 0 ? (
@@ -177,7 +177,7 @@ export default function ProfilePage() {
         )}
 
         {activeTab === "History" && (
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className=" shadow rounded-lg p-6" style={{backgroundColor: "var(--bg-card)"}}>
             <h2 className="text-xl font-bold mb-4">Order History</h2>
             {history.length === 0 ? (
               <p className="text-gray-500 text-center">No order history yet.</p>
@@ -256,7 +256,7 @@ export default function ProfilePage() {
         )}
 
         {activeTab === "Cancelled" && (
-          <div className="bg-white shadow rounded-lg p-6">
+          <div className="shadow rounded-lg p-6" style={{backgroundColor: "var(--bg-card)"}}>
             <h2 className="text-xl font-bold mb-4">Cancelled Orders</h2>
             {cancelledOrders.length === 0 ? (
               <p className="text-gray-500">You have no cancelled orders.</p>
@@ -337,7 +337,7 @@ export default function ProfilePage() {
 
         {activeTab === "Profile" && (
           <>
-            <div className="bg-white shadow rounded-lg p-6 space-y-2">
+            <div className="shadow rounded-lg p-6 space-y-2" style={{backgroundColor: "var(--bg-card)"}}>
               <h2 className="text-xl font-bold mb-4">Profile Info</h2>
               <p>
                 <strong>Name:</strong> {profile?.full_name || "N/A"}

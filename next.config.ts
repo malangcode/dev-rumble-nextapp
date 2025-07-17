@@ -6,7 +6,10 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
+        // protocol: 'http', //Must remove this in production
         hostname: 'rahis.pythonanywhere.com',
+        // hostname: 'localhost',
+        // port: '8000',  //Must remove this in production
         pathname: '/media/**',
       },
     ],

@@ -8,8 +8,8 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonVariants = {
-  default: 'bg-blue-600 text-white hover:bg-blue-700',
-  outline: 'border border-blue-600 text-blue-600 hover:bg-blue-50',
+  default: 'bg-[var(--color-primary)] text-white hover:bg-blue-700',
+  outline: 'border border-[var(--color-primary)] text-[var(--color-primary)]',
   ghost: 'text-blue-600 hover:bg-blue-100',
 };
 

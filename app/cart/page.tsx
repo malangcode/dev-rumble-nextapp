@@ -52,7 +52,7 @@ export default function CartPage() {
     };
 
     fetchCart();
-  });
+  }, []);
 
   const updateQuantity = async (id: number, newQty: number) => {
     if (newQty < 1) return; // prevent invalid qty
@@ -133,11 +133,11 @@ export default function CartPage() {
   }
 
   return (
-    <div className="py-3 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto">
+    <div className="py-3 px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8 shadow-md rounded-md max-w-6.5xl mx-auto bg-[var(--bg-secondary)] ">
       {/* Header */}
         <div className="mb-2">
-          <h1 className="text-2xl md:text-3xl font-bold text-blue-700">My Cart</h1>
-          <p className="text-gray-600">Manage your cart increase, decrease or delete the quantity as your choice.</p>
+          <h1 className="text-2xl md:text-3xl font-bold text-[var(--color-primary)] ">My Cart</h1>
+          <p className="text-[var(--text-secondary)]">Manage your cart increase, decrease or delete the quantity as your choice.</p>
         </div>
 
       <BackButton />
@@ -148,13 +148,13 @@ export default function CartPage() {
       </div>
 
       {cartItems.length === 0 ? (
-        <p className="text-gray-600 text-center text-lg">Your cart is empty.</p>
+        <p className="text-[var(--text-secondary)] text-center text-lg">Your cart is empty.</p>
       ) : (
         <div className="space-y-6">
           {cartItems.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg shadow-md bg-white"
+              className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 rounded-lg shadow-md bg-[var(--bg-card)] "
             >
               <img
                 src={item.imageSrc}
@@ -166,12 +166,12 @@ export default function CartPage() {
                 <h2 className="font-semibold text-lg sm:text-xl">
                   {item.name}
                 </h2>
-                <p className="text-gray-600">Rs {item.price.toFixed(2)}</p>
+                <p className="text-[var(--text-secondary)] ">Rs {item.price.toFixed(2)}</p>
 
                 <div className="flex items-center mt-2 space-x-3">
                   <button
                     onClick={() => decreaseQty(item.id)}
-                    className="p-2 rounded bg-gray-200 hover:bg-gray-300 transition"
+                    className="p-2 rounded bg-[var(--bg-icon)] hover:bg-gray-300 transition"
                     aria-label="Decrease quantity"
                   >
                     <FaMinus />
@@ -179,7 +179,7 @@ export default function CartPage() {
                   <span className="text-md font-medium">{item.quantity}</span>
                   <button
                     onClick={() => increaseQty(item.id)}
-                    className="p-2 rounded bg-gray-200 hover:bg-gray-300 transition"
+                    className="p-2 rounded bg-[var(--bg-icon)] hover:bg-gray-300 transition"
                     aria-label="Increase quantity"
                   >
                     <FaPlus />
@@ -204,13 +204,13 @@ export default function CartPage() {
 
           {/* Checkout Section */}
           <div className="text-right mt-8 border-t pt-4">
-            <p className="text-xl sm:text-2xl font-bold text-gray-800">
+            <p className="text-xl sm:text-2xl font-bold text-[var(--text-primary)]] ">
               Total: Rs {totalPrice.toFixed(2)}
             </p>
             <button
               disabled={cartItems.length === 0}
               onClick={gotoCheckout}
-              className="mt-3 bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="mt-3 bg-[var(--color-primary)] text-white px-6 py-3 rounded hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Proceed to Checkout
             </button>

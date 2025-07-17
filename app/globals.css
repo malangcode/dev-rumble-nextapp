@@ -7,3 +7,67 @@ html, body {
   padding: 0;
   /* overflow: hidden;  */
 }
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* global.css or index.css */
+:root[data-theme='light'] {
+  --color-primary: #002b57;
+  --color-secondary: #d63384;
+
+  --bg-card: #fff;
+
+  --bg-main: #ffffff;
+
+  --bg-secondary: #ffffff; 
+
+  --bg-component: #f9fafb;
+
+  --bg-icon: #f3f4f6; /*bg color for icons */
+
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+
+  --border-color: #e5e7eb;
+
+  --gray-300: #d1d5db; 
+
+  --gray-200: #e5e7eb; 
+
+  --blue-50: #eff6ff;
+
+  --blue-100: #dbeafe
+}
+
+:root[data-theme='dark'] {
+  --color-primary: #5dade2;
+  --color-secondary: #ff85b3;
+
+  --bg-card: #252525;
+
+
+  --bg-main: #121212;
+
+  --bg-secondary: #191919; 
+
+  --bg-component: #1f1f1f;
+
+  --bg-icon: #111827; /*bg color for icons */
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+
+  --border-color: #2c2c2c;
+
+  --gray-300: #1f2937; 
+
+  --gray-200: #1f2937; 
+
+  --blue-50: #1e3a8a;
+
+  --blue-100: #1e40af;
+}

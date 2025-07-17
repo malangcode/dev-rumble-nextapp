@@ -20,12 +20,12 @@ export default function HomePage() {
   if (loading) return <HomePageSkeleton />;
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-blue-50 to-white px-4 py-12 flex flex-col items-center justify-center text-center">
+    <section className="min-h-screen bg-[var(--bg-component)] px-4 py-12 flex flex-col items-center justify-center text-center">
       <div className="max-w-4xl">
-        <h1 className="text-4xl sm:text-5xl font-bold text-blue-800 mb-4">
+        <h1 className="text-4xl sm:text-5xl font-bold text-[var(--color-primary)] mb-4">
           Welcome to SmartCanteen 🍽️
         </h1>
-        <p className="text-lg sm:text-xl text-gray-700 mb-6">
+        <p className="text-lg sm:text-xl text-[var(--text-secondary)] mb-6">
           A modern solution for college canteens to manage orders, inventory,
           and payments effortlessly.
         </p>
@@ -90,13 +90,13 @@ export default function HomePage() {
         ].map((feature, idx) => (
           <div
             key={idx}
-            className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
+            className="bg-[var(--bg-card)]  p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300"
           >
             <div className="text-4xl mb-3">{feature.icon}</div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-2">
+            <h3 className="text-xl font-semibold text-[var(--color-primary)] mb-2">
               {feature.title}
             </h3>
-            <p className="text-gray-600">{feature.desc}</p>
+            <p className="text-[var(--text-secondary)]">{feature.desc}</p>
           </div>
         ))}
       </div>

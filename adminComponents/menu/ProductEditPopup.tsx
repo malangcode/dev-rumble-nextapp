@@ -138,10 +138,10 @@ export default function ProductEditPopup({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 bg-opacity-30 flex items-center justify-center">
-      <div className="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 relative overflow-x-auto h-150">
+      <div className="bg-[var(--bg-card)] w-full max-w-lg rounded-lg shadow-lg p-6 relative overflow-x-auto h-150">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          className="absolute top-3 right-3 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
         >
           <X className="w-5 h-5" />
         </button>
@@ -234,9 +234,9 @@ export default function ProductEditPopup({
                 className="w-32 h-32 object-cover mt-2 rounded"
               />
             ) : (
-              <p className="text-sm text-gray-500">No image uploaded</p>
+              <p className="text-sm text-[var(--text-secondary)] ">No image uploaded</p>
             )}
-            <div className="mt-2 p-3 bg-gray-50 w-fit rounded-lg shadow-md">
+            <div className="mt-2 p-3 bg-[var(--bg-component)] w-fit rounded-lg shadow-md">
               <input
                 type="file"
                 name="image"
@@ -250,7 +250,7 @@ export default function ProductEditPopup({
                 className="w-24 h-24 flex items-center justify-center border-2 shadow-sm border-dashed rounded-md cursor-pointer hover:bg-gray-100 transition"
               >
                 {/* Camera icon SVG (you can use Heroicons, Lucide, or any SVG) */}
-                 <Camera className="w-6 h-6 text-gray-600" />
+                 <Camera className="w-6 h-6 text-[var(--text-secondary)] " />
               </label>
             </div>
           </div>
@@ -258,7 +258,7 @@ export default function ProductEditPopup({
           <button
             type="submit"
             disabled={loading}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            className="flex items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded hover:bg-blue-700"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             <Save className="w-4 h-4" />

@@ -60,22 +60,22 @@ export default function NotificationsPage() {
 
   return (
     <div className="py-6">
-      <h1 className="text-2xl font-semibold mb-6 text-blue-700">Notifications</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-[var(--color-primary)] ">Notifications</h1>
       <div className="space-y-4">
         {data.map((notif) => (
           <div
             key={notif.id}
             className={`flex items-start gap-4 p-4 rounded-lg shadow border transition-all ${
-              notif.unread ? 'bg-blue-50 border-blue-100' : 'bg-white border-gray-200'
+              notif.unread ? 'bg-[var(--blue-50)] border-[var(--blue-100)] ' : 'bg-[var(--bg-card)] border-[var(--gray-200)] '
             }`}
           >
             <div className="mt-1">{notif.icon}</div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <h2 className="font-medium text-gray-800">{notif.title}</h2>
-                {notif.unread && <BsDot className="text-blue-600 text-3xl" />}
+                <h2 className="font-medium text-[var(--text-primary)] ">{notif.title}</h2>
+                {notif.unread && <BsDot className="text-[var(--color-primary)] text-3xl" />}
               </div>
-              <p className="text-gray-600 text-sm">{notif.message}</p>
+              <p className="text-[var(--text-secondary)] text-sm">{notif.message}</p>
               <p className="text-gray-400 text-xs mt-1">{notif.time}</p>
             </div>
           </div>

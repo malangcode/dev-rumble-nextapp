@@ -1,15 +1,16 @@
 import React from 'react';
 
 const DashboardSkeleton = () => {
+  
   // Skeleton animation component
   const SkeletonBox = ({ className = "", rounded = "rounded-lg" }) => (
-    <div className={`bg-gray-200 animate-pulse ${rounded} ${className}`}></div>
+    <div className={`bg-[var(--gray-200)] animate-pulse ${rounded} ${className}`}></div>
   );
 
   // Skeleton card for stats
   const SkeletonStatsCard = () => (
-    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-gray-200">
-      <div className="w-12 h-12 bg-gray-200 rounded-xl animate-pulse mb-4"></div>
+    <div className="bg-[var(--bg-card)] backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[var(--gray-200)] ">
+      <div className="w-12 h-12 bg-[var(--gray-200)] rounded-xl animate-pulse mb-4"></div>
       <SkeletonBox className="h-4 w-20 mb-2" />
       <SkeletonBox className="h-8 w-16 mb-1" />
       <SkeletonBox className="h-3 w-12" />
@@ -19,7 +20,7 @@ const DashboardSkeleton = () => {
   // Skeleton for quick metrics
   const SkeletonQuickMetric = () => (
     <div className="flex items-center space-x-3">
-      <div className="p-2 rounded-lg bg-gray-200 animate-pulse w-8 h-8"></div>
+      <div className="p-2 rounded-lg bg-[var(--gray-200)] animate-pulse w-8 h-8"></div>
       <div>
         <SkeletonBox className="h-3 w-20 mb-1" />
         <SkeletonBox className="h-5 w-8" />
@@ -29,17 +30,17 @@ const DashboardSkeleton = () => {
 
   // Skeleton for chart containers
   const SkeletonChart = ({ height = "h-72" }) => (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
       <SkeletonBox className="h-6 w-40 mb-6" />
-      <div className={`${height} bg-gray-100 rounded-lg animate-pulse flex items-center justify-center`}>
-        <div className="text-gray-400 text-sm">Loading chart...</div>
+      <div className={`${height} bg-[var(--bg-icon)] rounded-lg animate-pulse flex items-center justify-center`}>
+        <div className="text-[var(--text-secondary)] text-sm">Loading chart...</div>
       </div>
     </div>
   );
 
   // Skeleton for list items (recent orders, staff, inventory)
   const SkeletonListItem = () => (
-    <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50">
+    <div className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] ">
       <div className="flex-1">
         <SkeletonBox className="h-4 w-24 mb-1" />
         <SkeletonBox className="h-3 w-20" />
@@ -56,7 +57,7 @@ const DashboardSkeleton = () => {
   }
 
   const SkeletonListContainer = ({ title }: SkeletonListContainerProps) => (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6">
       <SkeletonBox className="h-6 w-32 mb-6" />
       <div className="space-y-4">
         {[...Array(4)].map((_, index) => (
@@ -67,8 +68,12 @@ const DashboardSkeleton = () => {
   );
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6 bg-[var(--bg-component)] min-h-screen">
       <div className="mx-auto">
+        {/* Refresh Button Skeleton */}
+        <div className="flex items-center mb-3 justify-right">
+          <div className="w-24 h-8 bg-[var(--gray-200)] rounded animate-pulse"></div>
+        </div>
         {/* Header Skeleton */}
         <div className="mb-8">
           <SkeletonBox className="h-8 w-80 mb-2" />
@@ -83,7 +88,7 @@ const DashboardSkeleton = () => {
         </div>
 
         {/* Quick Metrics Bar Skeleton */}
-        <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-gray-200 p-6 mb-8">
+        <div className="bg-[var(--bg-card)] backdrop-blur-sm rounded-2xl shadow-sm border border-[var(--gray-200)] p-6 mb-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {[...Array(4)].map((_, index) => (
               <SkeletonQuickMetric key={index} />

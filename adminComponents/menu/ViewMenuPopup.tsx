@@ -40,11 +40,11 @@ export default function ViewMenuPopup({ menuId, onClose }: ViewMenuPopupProps) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white w-full max-w-md rounded-lg shadow-lg p-6 relative overflow-x-auto h-fit">
+      <div className="bg-[var(--bg-card)] w-full max-w-md rounded-lg shadow-lg p-6 relative overflow-x-auto h-fit">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          className="absolute top-3 right-3 text-[var(--text-secondary)] hover:tex-[var(--text-primary)]] "
         >
           <X className="w-5 h-5" />
         </button>
@@ -53,27 +53,27 @@ export default function ViewMenuPopup({ menuId, onClose }: ViewMenuPopupProps) {
         <h2 className="text-xl font-semibold mb-4">Menu Item #{menu.id}</h2>
 
         <div className="space-y-3">
-          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-gray-200">
-            <p className="text-base font-medium text-gray-600">Name:</p>
+          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-[var(--gray-200)] ">
+            <p className="text-base font-medium text-[var(--text-secondary)] ">Name:</p>
             <p className="text-base font-semibold">{menu.name}</p>
           </div>
 
-          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-gray-200">
-            <p className="text-base font-medium text-gray-600">Description:</p>
+          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-[var(--gray-200)]">
+            <p className="text-base font-medium text-[var(--text-secondary)]">Description:</p>
             <p className="text-base">{menu.desc}</p>
           </div>
 
-          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-gray-200">
-            <p className="text-base font-medium text-gray-600">Price (Rs):</p>
+          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-[var(--gray-200)]">
+            <p className="text-base font-medium text-[var(--text-secondary)]">Price (Rs):</p>
             <p className="text-base font-semibold">Rs {menu.price}</p>
           </div>
 
-          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-gray-200">
-            <p className="text-base font-medium text-gray-600">Category:</p>
+          <div className="flex gap-2 align-item-center p-2 shadow rounded border border-[var(--gray-200)]">
+            <p className="text-base font-medium text-[var(--text-secondary)]">Category:</p>
             <p className="text-base">{menu.category_name}</p>
           </div>
 
-          <div className="flex-col gap-4 shadow rounded-lg p-4 border border-gray-200">
+          <div className="flex-col gap-4 shadow rounded-lg p-4 border border-[var(--gray-200)]">
             <div className="flex gap-4 text-sm pt-1 pb-3 pr-3 mb-2">
               <span
                 className={`px-2 py-1 rounded ${
@@ -88,7 +88,7 @@ export default function ViewMenuPopup({ menuId, onClose }: ViewMenuPopupProps) {
                 className={`px-2 py-1 rounded ${
                   menu.is_featured
                     ? "bg-yellow-100 text-yellow-800"
-                    : "bg-gray-200 text-gray-600"
+                    : "bg-[var(--gray-200)] text-[var(--text-secondary)] "
                 }`}
               >
                 {menu.is_featured ? "Featured" : "Not Featured"}
@@ -96,8 +96,8 @@ export default function ViewMenuPopup({ menuId, onClose }: ViewMenuPopupProps) {
             </div>
 
             {/* Image */}
-            <div className="flex-col w-fit p-2 border border-gray-200 rounded-md">
-              <p className="text-sm text-center font-medium text-gray-600 mb-2">Product photo</p>
+            <div className="flex-col w-fit p-2 border border-[var(--gray-200)] rounded-md">
+              <p className="text-sm text-center font-medium text-[var(--text-secondary)] mb-2">Product photo</p>
               {menu.image ? (
                 <img
                   src={menu.image}
@@ -105,7 +105,7 @@ export default function ViewMenuPopup({ menuId, onClose }: ViewMenuPopupProps) {
                   className="w-32 h-32 object-cover rounded shadow-sm"
                 />
               ) : (
-                <div className="w-24 h-24 flex items-center justify-center border-2 border-dashed rounded-md text-gray-400">
+                <div className="w-24 h-24 flex items-center justify-center border-2 border-dashed rounded-md text-[var(--text-secondary)] ">
                   <Camera className="w-6 h-6" />
                 </div>
               )}

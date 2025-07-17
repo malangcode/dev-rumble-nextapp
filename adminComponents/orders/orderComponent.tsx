@@ -213,23 +213,23 @@ const AdminOrdersComponent = () => {
   ).length;
 
   const SkeletonCard = () => (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 animate-pulse">
+    <div className="bg-[var(--card-bg)] rounded-xl shadow-sm border border-[var(--gray-200)] p-4 animate-pulse">
       <div className="flex items-center justify-between mb-3">
-        <div className="h-4 w-20 bg-gray-200 rounded" />
-        <div className="h-5 w-16 bg-gray-200 rounded-full" />
+        <div className="h-4 w-20 bg-[var(--gray-200)] rounded" />
+        <div className="h-5 w-16 bg-[var(--gray-200)] rounded-full" />
       </div>
       <div className="space-y-2">
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-200 rounded-full" />
-          <div className="h-4 w-24 bg-gray-200 rounded" />
+          <div className="w-4 h-4 bg-[var(--gray-200)] rounded-full" />
+          <div className="h-4 w-24 bg-[var(--gray-200)] rounded" />
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-gray-200 rounded-full" />
-          <div className="h-4 w-20 bg-gray-200 rounded" />
+          <div className="w-4 h-4 bg-[var(--gray-200)] rounded-full" />
+          <div className="h-4 w-20 bg-[var(--gray-200)] rounded" />
         </div>
         <div className="flex items-center justify-between mt-2">
-          <div className="h-6 w-24 bg-gray-200 rounded" />
-          <div className="w-6 h-6 bg-gray-200 rounded" />
+          <div className="h-6 w-24 bg-[var(--gray-200)] rounded" />
+          <div className="w-6 h-6 bg-[var(--gray-200)] rounded" />
         </div>
       </div>
     </div>
@@ -239,7 +239,7 @@ const AdminOrdersComponent = () => {
     <tr className="animate-pulse">
       {Array.from({ length: 8 }).map((_, i) => (
         <td key={i} className="px-6 py-4">
-          <div className="h-4 bg-gray-200 rounded w-full"></div>
+          <div className="h-4 bgbg-[var(--gray-200)] rounded w-full"></div>
         </td>
       ))}
     </tr>
@@ -247,25 +247,25 @@ const AdminOrdersComponent = () => {
 
   if (loading) {
     return (
-      <div className="p-6 bg-gray-50 min-h-screen space-y-6">
+      <div className="p-6 bg-[var(--bg-component)] min-h-screen space-y-6">
         {/* Refresh Button Skeleton */}
         <div className="flex items-center mb-3 justify-right">
-          <div className="w-24 h-8 bg-gray-200 rounded animate-pulse"></div>
+          <div className="w-24 h-8 bg-[var(--gray-200)] rounded animate-pulse"></div>
         </div>
 
         {/* Header Skeleton */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="p-3 bg-gray-200 rounded-lg animate-pulse w-10 h-10" />
+            <div className="p-3 bg-[var(--gray-200)] rounded-lg animate-pulse w-10 h-10" />
             <div>
-              <div className="h-6 bg-gray-200 rounded w-48 mb-2 animate-pulse"></div>
-              <div className="h-4 bg-gray-200 rounded w-64 animate-pulse"></div>
+              <div className="h-6 bg-[var(--gray-200)] rounded w-48 mb-2 animate-pulse"></div>
+              <div className="h-4 bg-[var(--gray-200)] rounded w-64 animate-pulse"></div>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <div className="h-4 bg-gray-200 rounded w-24 mb-2 animate-pulse"></div>
-              <div className="h-6 bg-gray-300 rounded w-16 animate-pulse"></div>
+              <div className="h-4 bg-[var(--gray-200)] rounded w-24 mb-2 animate-pulse"></div>
+              <div className="h-6 bg-[var(--gray-300)] rounded w-16 animate-pulse"></div>
             </div>
           </div>
         </div>
@@ -273,14 +273,14 @@ const AdminOrdersComponent = () => {
           {Array.from({ length: 4 }).map((_, idx) => (
             <div
               key={idx}
-              className="h-24 bg-white border border-gray-200 rounded-xl p-4 animate-pulse"
+              className="h-24 bg-[var(--bg-card)] border border-[var(--gray-200)] rounded-xl p-4 animate-pulse"
             ></div>
           ))}
         </div>
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            <div className="h-6 w-40 bg-gray-200 rounded animate-pulse" />
+            <div className="h-6 w-40 bg-[var(--gray-200)] rounded animate-pulse" />
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {Array.from({ length: 5 }).map((_, idx) => (
@@ -289,21 +289,21 @@ const AdminOrdersComponent = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 animate-pulse h-20"></div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6 animate-pulse h-20">
-          <div className="h-8 w-80 bg-gray-100 shadow-sm rounded-lg animate-pulse"></div>
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6 mb-6 animate-pulse h-20"></div>
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6 mb-6 animate-pulse h-20">
+          <div className="h-8 w-80 bg-[var(--bg-icon)] shadow-sm rounded-lg animate-pulse"></div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-            <div className="h-5 w-40 bg-gray-200 rounded animate-pulse" />
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] overflow-hidden">
+          <div className="px-6 py-4 border-b border-[var(--gray-200)] bg-[var(--bg-component)] ">
+            <div className="h-5 w-40 bg-[var(--gray-200)] rounded animate-pulse" />
           </div>
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg[var(--bg-component)] border-b border-[var(--gray-200)] ">
               <tr>
                 {Array.from({ length: 8 }).map((_, idx) => (
                   <th key={idx} className="px-6 py-4">
-                    <div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
+                    <div className="h-3 w-20 bg-[var(--gray-200)] rounded animate-pulse" />
                   </th>
                 ))}
               </tr>
@@ -320,11 +320,11 @@ const AdminOrdersComponent = () => {
   }
 
   return (
-    <div className="p-2 md:p-2 lg:p-4 xl:p-6 bg-gray-50 min-h-screen">
+    <div className="p-2 md:p-2 lg:p-4 xl:p-6 bg-[var(--bg-component)] min-h-screen">
       <div className="flex items-center mb-3 justify-right">
         <button
           onClick={() => fetchOrders(true)}
-          className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
+          className="flex items-center gap-1 text-sm px-3 py-1 bg-[var(--gray-200)] hover:bg-[var(--gray-300)] rounded text-[var(--text-primary)] "
           title="Refresh Order"
         >
           <RefreshCcw className="w-4 h-4" />
@@ -334,33 +334,33 @@ const AdminOrdersComponent = () => {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <ClipboardList className="w-6 h-6 text-blue-600" />
+          <div className="p-2 bg-[var(--blue-100)] rounded-lg">
+            <ClipboardList className="w-6 h-6 text-[var(--color-primary)] " />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-3xl font-bold text-[var(--text-primary)] ">
               Order Management
             </h1>
-            <p className="text-gray-600">
+            <p className="text-[var(--text-secondary)] ">
               Manage and track all restaurant orders
             </p>
           </div>
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-sm text-gray-500">Total Orders</p>
-            <p className="text-2xl font-bold text-gray-900">{orders.length}</p>
+            <p className="text-sm text-[var(--text-secondary)] ">Total Orders</p>
+            <p className="text-2xl font-bold text-[var(--text-primary)] ">{orders.length}</p>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-sm font-medium text-[var(--text-secondary)] ">Total Revenue</p>
+              <p className="text-2xl font-bold text-[var(--text-primary)] ">
                 Rs {totalRevenue.toFixed(2)}
               </p>
             </div>
@@ -370,10 +370,10 @@ const AdminOrdersComponent = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-[var(--text-secondary)] ">
                 Pending Orders
               </p>
               <p className="text-2xl font-bold text-yellow-600">
@@ -386,26 +386,26 @@ const AdminOrdersComponent = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-[var(--text-secondary)] ">
                 Active Customers
               </p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-[var(--color-primary)] ">
                 {orders.length}
               </p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-lg">
-              <Users className="w-6 h-6 text-blue-600" />
+            <div className="p-3 bg-[var(--blue-100)] rounded-lg">
+              <Users className="w-6 h-6 text-[var(--color-primary)] " />
             </div>
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">
+              <p className="text-sm font-medium text-[var(--text-secondary)] ">
                 Completion Rate
               </p>
               <p className="text-2xl font-bold text-green-600">85%</p>
@@ -419,17 +419,17 @@ const AdminOrdersComponent = () => {
 
       {/* Recent Orders Section */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        <h2 className="text-xl font-semibold text-[var(--text-primary)] mb-4">
           Recent Orders
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
           {recentOrders.map((order) => (
             <div
               key={order.id}
-              className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 hover:shadow-md transition-shadow"
+              className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-4 hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-900">
+                <span className="text-sm font-medium text-[var(--text-secondary)] ">
                   #{order.id}
                 </span>
                 <div
@@ -445,24 +445,24 @@ const AdminOrdersComponent = () => {
               </div>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">{order.user}</span>
+                  <Users className="w-4 h-4 text-[var(--text-secondary)] " />
+                  <span className="text-sm text-[var(--text-secondary)] ">{order.user}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-gray-400" />
-                  <span className="text-sm text-gray-600">
+                  <Calendar className="w-4 h-4 text-[var(--text-secondary)] " />
+                  <span className="text-sm text-[var(--text-secondary)]">
                     {order.table_number || "N/A"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-gray-900">
+                  <span className="text-lg font-bold text-[var(--text-primary)]">
                     Rs {parseFloat(order.total_price.toString()).toFixed(2)}
                   </span>
                   <button
-                    className="p-1 hover:bg-gray-100 rounded"
+                    className="p-1 hover:bg-[var(--bg-icon)] rounded"
                     onClick={() => setSelectedOrderId(order.id)}
                   >
-                    <Eye className="w-4 h-4 text-gray-400" />
+                    <Eye className="w-4 h-4 text-[var(--text-secondary)] " />
                   </button>
                 </div>
               </div>
@@ -479,15 +479,15 @@ const AdminOrdersComponent = () => {
       )}
 
       {/* Filters and Export */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+      <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6 mb-6">
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-400" />
-            <span className="text-sm font-medium text-gray-700">Filters:</span>
+            <Filter className="w-5 h-5 text-[var(--text-secondary)] " />
+            <span className="text-sm font-medium text-[var(--text-primary)] ">Filters:</span>
           </div>
 
           <select
-            className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-4 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--bg-card)] text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -501,7 +501,7 @@ const AdminOrdersComponent = () => {
 
           <input
             type="date"
-            className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-4 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--bg-card)] text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             placeholder="Start Date"
@@ -509,7 +509,7 @@ const AdminOrdersComponent = () => {
 
           <input
             type="date"
-            className="px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="px-4 py-2 border border-[var(--gray-300)] rounded-lg bg-[var(--bg-card)] text-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:border-[var(--color-primary)]"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             placeholder="End Date"
@@ -517,7 +517,7 @@ const AdminOrdersComponent = () => {
 
           <button
             onClick={handleExportCSV}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+            className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
           >
             <Download className="w-4 h-4" />
             Export CSV
@@ -550,16 +550,16 @@ const AdminOrdersComponent = () => {
         </div>
       </div>
 
-      <div className="mb-6 flex items-center justify-between shadow-sm bg-white rounded-lg p-4 border border-gray-200">
+      <div className="mb-6 flex items-center justify-between shadow-sm bg-[var(--bg-card)] rounded-lg p-4 border border-[var(--gray-200)]">
         <div className="relative w-full md:w-80">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Search by username or order ID"
-            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none focus:border-blue-500 transition"
+            className="w-full pl-10 pr-4 py-2 border border-[var(--gray-300)] rounded-lg shadow-sm focus:ring-2 focus:ring-[var(--color-primary)] focus:outline-none focus:border-[var(--color-primary)] transition"
           />
-          <div className="absolute left-3 top-2.5 text-gray-400">
+          <div className="absolute left-3 top-2.5 text-[var(--text-secondary)] ">
             <svg
               className="w-5 h-5"
               fill="none"
@@ -578,62 +578,62 @@ const AdminOrdersComponent = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <h3 className="text-lg font-semibold text-gray-900">
+      <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] overflow-hidden">
+        <div className="px-6 py-4 border-b border-[var(--gray-200)] bg-[var(--bg-component)] ">
+          <h3 className="text-lg font-semibold text-[var(--text-primary)] ">
             All Orders ({orders.length})
           </h3>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-[var(--bg-component)] border-b border-[var(--gray-200)] ">
               <tr>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Order ID
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Customer
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Table
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Total
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Ordered At
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Items
                 </th>
-                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-[var(--bg-component)] divide-y divide-[var(--gray-200)] ">
               {orders.map((order) => (
                 <tr
                   key={order.id}
-                  className="hover:bg-gray-50 transition-colors"
+                  className="hover:bg-[var(--bg-component)] transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="text-sm font-medium text-gray-900">
+                    <span className="text-sm font-medium text-[var(--text-primary)] ">
                       #{order.id}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                        <span className="text-sm font-medium text-blue-600">
+                      <div className="w-8 h-8 bg-[var(--blue-100)] rounded-full flex items-center justify-center mr-3">
+                        <span className="text-sm font-medium text-[var(--color-primary)] ">
                           {order.user.charAt(0)}
                         </span>
                       </div>
-                      <span className="text-sm text-gray-900">
+                      <span className="text-sm text-[var(--text-primary)] ">
                         {order.user}
                       </span>
                     </div>
@@ -648,24 +648,24 @@ const AdminOrdersComponent = () => {
                       {order.status}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-primary)] ">
                     {order.table_number || "N/A"}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-[var(--text-primary)] ">
                     Rs {parseFloat(order.total_price.toString()).toFixed(2)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-secondary)] ">
                     {formatDate(order.ordered_at)}
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
                       {order.items.slice(0, 2).map((item) => (
-                        <div key={item.id} className="text-xs text-gray-600">
+                        <div key={item.id} className="text-xs text-[var(--text-secondary)] ">
                           {item.quantity}x {item.product_name} @ Rs {item.price}
                         </div>
                       ))}
                       {order.items.length > 2 && (
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-[var(--text-secondary)] ">
                           +{order.items.length - 2} more items
                         </div>
                       )}
@@ -674,7 +674,7 @@ const AdminOrdersComponent = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => setSelectedOrderId(order.id)}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
+                      className="text-[var(--color-primary)] hover:text-blue-900 mr-3"
                     >
                       <Eye className="w-4 h-4" />
                     </button>
@@ -687,25 +687,25 @@ const AdminOrdersComponent = () => {
 
         {orders.length === 0 && (
           <div className="text-center py-12">
-            <ClipboardList className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+            <ClipboardList className="w-12 h-12 text-[var(--color-secondary)] mx-auto mb-4" />
             <p className="text-gray-500">
               No orders found matching your criteria.
             </p>
           </div>
         )}
 
-        <div className="flex justify-center p-6 border-t border-gray-200 mt-6 gap-2">
+        <div className="flex justify-center p-6 border-t border-[var(--gray-200)] mt-6 gap-2">
           <button
             onClick={() => setCurrentPage(1)}
             disabled={currentPage === 1}
-            className="px-4 bg-gray-200 text-sm rounded-lg disabled:opacity-50"
+            className="px-4 bg-[var(--gray-200)] text-sm rounded-lg disabled:opacity-50"
           >
           First
           </button>
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            className="px-4 py-1 bg-blue-700 text-sm text-white rounded-lg disabled:opacity-50"
+            className="px-4 py-1 bg-[var(--color-primary)] text-sm text-white rounded-lg disabled:opacity-50"
           >
             Previous
           </button>
@@ -717,7 +717,7 @@ const AdminOrdersComponent = () => {
               setCurrentPage((prev) => Math.min(prev + 1, totalPages))
             }
             disabled={currentPage === totalPages}
-            className="px-4 bg-blue-700 text-sm text-white rounded-lg disabled:opacity-50"
+            className="px-4 bg-[var(--color-primary)] text-sm text-white rounded-lg disabled:opacity-50"
           >
             Next
           </button>
