@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
 import {
   Home,
   ShoppingCart,
@@ -23,6 +23,10 @@ import TableManagement from "@/adminComponents/Table/TableComponent";
 import UserRoleManagement from "@/adminComponents/users/Users";
 import AdminPaymentsComponent from "@/adminComponents/payments/PaymentPage";
 import ThemeToggle from "@/components/ThemeToggle";
+import SettingsPage from "../settings/page";
+import { useRole } from "@/context/RoleProvider";
+import ForbiddenPage from "@/components/ForbiddenPage";
+import AdminLandingPage from "@/adminComponents/landing/AdminLandingPage";
 
 // Media Query Hook
 function useMediaQuery(query: string): boolean {
@@ -47,23 +51,67 @@ function cn(...classes: (string | undefined | boolean)[]): string {
   return classes.filter(Boolean).join(" ");
 }
 
-const navItems = [
-  { label: "Dashboard", icon: <Home size={18} />, key: "dashboard" },
-  { label: "Orders", icon: <ClipboardList size={18} />, key: "orders" },
-  { label: "Menu", icon: <ShoppingCart size={18} />, key: "menu" },
-  { label: "Tables", icon: <Table2 size={18} />, key: "tables" },
-  { label: "Payments", icon: <Banknote size={18} />, key: "payments" },
-  { label: "Reports", icon: <BarChart2 size={18} />, key: "reports" },
-  { label: "Users", icon: <Users size={18} />, key: "users" },
-  { label: "Settings", icon: <Settings size={18} />, key: "settings" },
-];
+type NavItem = {
+  label: string;
+  icon: JSX.Element;
+  key: string;
+};
 
 export default function AdminPage() {
-  const [activePage, setActivePage] = useState("dashboard");
+  const [activePage, setActivePage] = useState("admin");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [touchStartX, setTouchStartX] = useState(0);
 
   const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const { hasPermission, hasRole, loading, user } = useRole();
+
+  const navItems = [
+    hasPermission("view_dashboard") && {
+      label: "Dashboard",
+      icon: <Home size={18} />,
+      key: "dashboard",
+    },
+    (hasPermission("manage_orders") || hasPermission("view_orders")) && {
+      label: "Orders",
+      icon: <ClipboardList size={18} />,
+      key: "orders",
+    },
+    (hasPermission("manage_products") || hasPermission("view_products")) && {
+      label: "Menu",
+      icon: <ShoppingCart size={18} />,
+      key: "menu",
+    },
+    (hasPermission("manage_tables") || hasPermission("view_tables")) && {
+      label: "Tables",
+      icon: <Table2 size={18} />,
+      key: "tables",
+    },
+    (hasPermission("manage_payments") || hasPermission("view_payments")) && {
+      label: "Payments",
+      icon: <Banknote size={18} />,
+      key: "payments",
+    },
+    (hasPermission("manage_reports") || hasPermission("view_reports")) && {
+      label: "Reports",
+      icon: <BarChart2 size={18} />,
+      key: "reports",
+    },
+    (hasPermission("manage_users") || hasPermission("view_users")) && {
+      label: "Users",
+      icon: <Users size={18} />,
+      key: "users",
+    },
+    (hasPermission("manage_settings") || hasPermission("view_settings")) && {
+      label: "Settings",
+      icon: <Settings size={18} />,
+      key: "settings",
+    },
+  ].filter(Boolean) as NavItem[];
+
+  //  permission base case rendering
+  const canViewDashboard = () =>
+    hasPermission("view_dashboard");
 
   // Get the active nav item
   const activeNavItem = navItems.find((item) => item.key === activePage);
@@ -97,26 +145,59 @@ export default function AdminPage() {
 
   const renderContent = () => {
     switch (activePage) {
+      case "admin":
+        return <AdminLandingPage />;
+
+      case "dashboard":
+        return canViewDashboard() ? <Dashboard /> : <ForbiddenPage />;
+
       case "dashboard":
         return <Dashboard />;
 
       case "orders":
-        return <AdminOrdersComponent />;
+        return (
+          (hasPermission("manage_orders") || hasPermission("view_orders")) && (
+            <AdminOrdersComponent />
+          )
+        );
 
       case "menu":
-        return <AdminMenuComponent />;
+        return (
+          (hasPermission("manage_products") ||
+            hasPermission("view_products")) && <AdminMenuComponent />
+        );
 
       case "tables":
-        return <TableManagement />;
+        return (
+          (hasPermission("manage_tables") || hasPermission("view_tables")) && (
+            <TableManagement />
+          )
+        );
 
       case "reports":
-        return <Reports />;
+        return (
+          (hasPermission("manage_reports") ||
+            hasPermission("view_reports")) && <Reports />
+        );
 
       case "users":
-        return <UserRoleManagement />;
+        return (
+          (hasPermission("manage_users") || hasPermission("view_users")) && (
+            <UserRoleManagement />
+          )
+        );
 
       case "payments":
-        return <AdminPaymentsComponent />;
+        return (
+          (hasPermission("manage_payments") ||
+            hasPermission("view_payments")) && <AdminPaymentsComponent />
+        );
+
+      case "settings":
+        return (
+          (hasPermission("manage_settings") ||
+            hasPermission("view_settings")) && <SettingsPage />
+        );
 
       default:
         return (
@@ -129,6 +210,7 @@ export default function AdminPage() {
 
   return (
     <div className="flex h-screen overflow-hidden relative bg-[var(--bg-icon)] ">
+     
       {/* Toggle Button with Active Icon */}
       <motion.button
         onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -178,7 +260,7 @@ export default function AdminPage() {
             exit={{ x: -300 }}
             transition={{ duration: 0.3 }}
             className={cn(
-              "w-64 h-full bg-[var(--bg-card)] shadow-lg p-5 flex flex-col justify-between z-30",
+              "w-64 h-full bg-[var(--bg-card)] overflow-y-auto custom-scrollbar shadow-lg p-5 flex flex-col justify-between z-30",
               isMobile ? "fixed" : "relative"
             )}
           >
@@ -241,7 +323,7 @@ export default function AdminPage() {
             </div>
             <Button
               variant="outline"
-              className="w-full flex items-center justify-center gap-2 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors"
+              className="w-full flex items-center mt-4 mb-2 justify-center gap-2 hover:bg-red-50 hover:border-red-200 hover:text-red-600 transition-colors"
             >
               <LogOut size={16} /> Logout
             </Button>

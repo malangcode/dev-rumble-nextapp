@@ -34,6 +34,12 @@ import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 
 const Dashboard = () => {
   const [loading, setLoading] = useState(true);
+  type StaffPerformanceEntry = {
+    name: string | null;
+    order_count: number;
+    role: string;
+  };
+
   type DashboardData = {
     salesData: Array<any>;
     menuItemsData: Array<any>;
@@ -48,12 +54,13 @@ const Dashboard = () => {
       amount: string;
     }>;
 
-    staffPerformanceData: Array<{
-      name: string;
-      role: string;
-      orders: number;
-      rating: number;
-    }>;
+    staff_profiles: {
+      confirmed: StaffPerformanceEntry[];
+      prepared: StaffPerformanceEntry[];
+      delivered: StaffPerformanceEntry[];
+      cancelled: StaffPerformanceEntry[];
+      refunded: StaffPerformanceEntry[];
+    };
 
     inventoryAlertsData: Array<{
       item: string;
@@ -82,19 +89,19 @@ const Dashboard = () => {
 
   const fetchDashboard = async (showloading = true) => {
     try {
-      if(showloading) setLoading(true);
+      if (showloading) setLoading(true);
       const response = await axiosWithCsrf.get("/api/dashboard/");
       setDashboard(response.data);
     } catch (error) {
       console.error("Dashboard fetch failed:", error);
     } finally {
-      if(showloading) setLoading(false);
+      if (showloading) setLoading(false);
     }
   };
 
   useEffect(() => {
     const debouncedelay = setTimeout(() => {
-       fetchDashboard(true);
+      fetchDashboard(true);
     }, 500);
   }, []);
 
@@ -321,14 +328,14 @@ const Dashboard = () => {
     <div className="p-3 md:p-2 lg:p-4 xl:p-6 bg-[var(--bg-component)] min-h-screen">
       <div className="mx-auto">
         <div className="flex items-center mb-3 justify-right">
-        <button
-          onClick={() => fetchDashboard(true)}
-          className="flex items-center gap-1 text-sm px-3 py-1 bg-[var(--gray-200)] hover:bg-[var(--gray-300)] rounded text-[var(--text-secondary)] "
-          title="Refresh Order"
-        >
-          <RefreshCcw className="w-4 h-4" />
-          Refresh
-        </button>
+          <button
+            onClick={() => fetchDashboard(true)}
+            className="flex items-center gap-1 text-sm px-3 py-1 bg-[var(--gray-200)] hover:bg-[var(--gray-300)] rounded text-[var(--text-secondary)] "
+            title="Refresh Order"
+          >
+            <RefreshCcw className="w-4 h-4" />
+            Refresh
+          </button>
         </div>
         {/* Header */}
         <div className="mb-8">
@@ -370,11 +377,15 @@ const Dashboard = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {quickMetrics.map((metric, index) => (
               <div key={index} className="flex items-center space-x-3">
-                <div className={`p-2 rounded-lg bg-[var(--bg-component)] ${metric.color}`}>
+                <div
+                  className={`p-2 rounded-lg bg-[var(--bg-component)] ${metric.color}`}
+                >
                   {metric.icon}
                 </div>
                 <div>
-                  <p className="text-sm text-[var(--text-secondary)] ">{metric.label}</p>
+                  <p className="text-sm text-[var(--text-secondary)] ">
+                    {metric.label}
+                  </p>
                   <p className="text-lg font-semibold text-[var(--text-primary)] ">
                     {metric.value}
                   </p>
@@ -550,7 +561,9 @@ const Dashboard = () => {
                   className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)]"
                 >
                   <div>
-                    <p className="font-medium text-[var(--text-primary)]">{order.item}</p>
+                    <p className="font-medium text-[var(--text-primary)]">
+                      {order.item}
+                    </p>
                     <p className="text-sm text-[var(--text-secondary)] ">
                       {order.id} • {order.time}
                     </p>
@@ -581,7 +594,7 @@ const Dashboard = () => {
             <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-6">
               Staff Performance
             </h3>
-            <div className="space-y-4">
+            <div className="space-y-4 overflow-y-auto custom-scrollbar max-h-[450px]">
               {/* {[
                 { name: "Ravi Kumar", role: "Chef", orders: 45, rating: 4.8 },
                 {
@@ -603,28 +616,121 @@ const Dashboard = () => {
                   rating: 4.7,
                 },
               ].map((staff, index) => ( */}
-              {dashboard?.staffPerformanceData?.map((staff, index) => (
+              <div className="space-y-4 bg-blue-50 p-3 rounded-lg">
+                <h1 className="font-medium mb-2 text-[var(--text-primary)]">Top Confirmer</h1>
+                {dashboard?.staff_profiles?.confirmed?.filter((staff:any)=> staff.order_count > 0).map((staff, index) => (
                 <div
                   key={index}
                   className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
                 >
                   <div>
-                    <p className="font-medium text-[var(--text-primary)] ">{staff.name}</p>
-                    <p className="text-sm text-[var(--text-secondary)] ">{staff.role}</p>
+                    <p className="font-medium text-[14px] text-[var(--text-primary)] ">
+                      {staff.name}
+                    </p>
+                    <p className="text-[12px] text-[var(--text-secondary)] ">
+                      {staff.role}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-[var(--text-primary)]">
-                      {staff.orders} orders
+                    <p className="font-semibold text-[13px] text-[var(--text-primary)]">
+                      {staff.order_count} orders
                     </p>
-                    <div className="flex items-center space-x-1">
-                      <Star className="h-3 w-3 text-yellow-500 fill-current" />
-                      <span className="text-sm text-[var(--text-secondary)] ">
-                        {staff.rating}
-                      </span>
-                    </div>
                   </div>
                 </div>
               ))}
+              </div>
+              <div className="space-y-4 bg-blue-50 p-3 rounded-lg">
+                <h1 className="font-medium mb-2 text-[var(--text-primary)]">Top Chef</h1>
+                {dashboard?.staff_profiles?.prepared?.filter((staff:any)=> staff.order_count > 0).map((staff, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
+                >
+                  <div>
+                    <p className="font-medium text-[14px] text-[var(--text-primary)] ">
+                      {staff.name}
+                    </p>
+                    <p className="text-[12px] text-[var(--text-secondary)] ">
+                      {staff.role}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-[13px] text-[var(--text-primary)]">
+                      {staff.order_count} orders
+                    </p>
+                  </div>
+                </div>
+              ))}
+              </div>
+              <div className="space-y-4 bg-blue-50 p-3 rounded-lg">
+                <h1 className="font-medium mb-2 text-[var(--text-primary)]">Top refunder</h1>
+                {dashboard?.staff_profiles?.refunded?.filter((staff:any)=> staff.order_count > 0).map((staff, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
+                >
+                  <div>
+                    <p className="font-medium text-[14px] text-[var(--text-primary)] ">
+                      {staff.name}
+                    </p>
+                    <p className="text-[12px] text-[var(--text-secondary)] ">
+                      {staff.role}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-[13px] text-[var(--text-primary)]">
+                      {staff.order_count} orders
+                    </p>
+                  </div>
+                </div>
+              ))}
+              </div>
+              <div className="space-y-4 bg-blue-50 p-3 rounded-lg">
+                <h1 className="font-medium mb-2 text-[var(--text-primary)]">Top Server</h1>
+                {dashboard?.staff_profiles?.delivered?.filter((staff:any)=> staff.order_count > 0).map((staff, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
+                >
+                  <div>
+                    <p className="font-medium text-[14px] text-[var(--text-primary)] ">
+                      {staff.name}
+                    </p>
+                    <p className="text-[12px] text-[var(--text-secondary)] ">
+                      {staff.role}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-[13px] text-[var(--text-primary)]">
+                      {staff.order_count} orders
+                    </p>
+                  </div>
+                </div>
+              ))}
+              </div>
+              <div className="space-y-4 bg-blue-50 p-3 rounded-lg">
+                <h1 className="font-medium mb-2 text-[var(--text-primary)]">Top Canceller</h1>
+                {dashboard?.staff_profiles?.cancelled?.filter((staff:any)=> staff.order_count > 0).map((staff, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
+                >
+                  <div>
+                    <p className="font-medium text-[14px] text-[var(--text-primary)] ">
+                      {staff.name}
+                    </p>
+                    <p className="text-[12px] text-[var(--text-secondary)] ">
+                      {staff.role}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold text-[13px] text-[var(--text-primary)]">
+                      {staff.order_count} orders
+                    </p>
+                  </div>
+                </div>
+              ))}
+              </div>
             </div>
           </div>
 
@@ -672,8 +778,12 @@ const Dashboard = () => {
                   className="flex items-center justify-between p-3 rounded-lg bg-[var(--bg-component)] "
                 >
                   <div>
-                    <p className="font-medium text-[var(--text-primary)] ">{item.item}</p>
-                    <p className="text-sm text-[var(--text-secondary)] ">Stock: {item.stock}</p>
+                    <p className="font-medium text-[var(--text-primary)] ">
+                      {item.item}
+                    </p>
+                    <p className="text-sm text-[var(--text-secondary)] ">
+                      Stock: {item.stock}
+                    </p>
                   </div>
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${

@@ -71,3 +71,25 @@ body {
 
   --blue-100: #1e40af;
 }
+
+
+
+/* For modern browsers */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px; /* thin scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: var(--bg-icon); /* Tailwind's gray-100 */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--gray-200); /* Tailwind's gray-200 */
+  border-radius: 4px;
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-200) var(--bg-icon);
+}

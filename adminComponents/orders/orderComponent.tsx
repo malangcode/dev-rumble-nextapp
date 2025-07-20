@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ClipboardList,
   Loader2,
@@ -77,10 +77,8 @@ const AdminOrdersComponent = () => {
         "response" in err &&
         typeof (err as any).response === "object" &&
         (err as any).response !== null &&
-        (
-          (err as any).response.status === 404 ||
-          (err as any).response.data?.detail === "Invalid page."
-        )
+        ((err as any).response.status === 404 ||
+          (err as any).response.data?.detail === "Invalid page.")
       ) {
         setCurrentPage(1);
         return;
@@ -92,47 +90,18 @@ const AdminOrdersComponent = () => {
     }
   };
 
-  useEffect(() => {
-    fetchOrders(false); // disable loading UI while searching
-  }, [debouncedSearch, statusFilter, startDate, endDate, currentPage]);
+  const firstRun = useRef(true);
 
-  // Simulate API call
   useEffect(() => {
     const delayDebounce = setTimeout(() => {
-      fetchOrders(true);
-    }, 500); // debounce to avoid spamming API
+      fetchOrders(firstRun.current);
+      firstRun.current = false;
+    }, 500);
 
     return () => clearTimeout(delayDebounce);
-  }, []);
+  }, [debouncedSearch, statusFilter, startDate, endDate, currentPage]);
 
-  // // Filter orders based on status and date
-  // useEffect(() => {
-  //   let filtered = orders;
-
-  //   if (statusFilter && statusFilter !== "all") {
-  //     filtered = filtered.filter((order) => order.status === statusFilter);
-  //   }
-
-  //   if (startDate && endDate) {
-  //     filtered = filtered.filter((order) => {
-  //       const orderDate = new Date(order.ordered_at)
-  //         .toISOString()
-  //         .split("T")[0];
-  //       return orderDate >= startDate && orderDate <= endDate;
-  //     });
-  //   }
-
-  //   if (searchTerm.trim() !== "") {
-  //     filtered = filtered.filter(
-  //       (order) =>
-  //         order.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //         order.id.toString().includes(searchTerm)
-  //     );
-  //   }
-
-  //   setFilteredOrders(filtered);
-  // }, [orders, statusFilter, startDate, endDate, searchTerm]);
-
+  
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "pending":
@@ -348,8 +317,12 @@ const AdminOrdersComponent = () => {
         </div>
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-sm text-[var(--text-secondary)] ">Total Orders</p>
-            <p className="text-2xl font-bold text-[var(--text-primary)] ">{orders.length}</p>
+            <p className="text-sm text-[var(--text-secondary)] ">
+              Total Orders
+            </p>
+            <p className="text-2xl font-bold text-[var(--text-primary)] ">
+              {orders.length}
+            </p>
           </div>
         </div>
       </div>
@@ -359,7 +332,9 @@ const AdminOrdersComponent = () => {
         <div className="bg-[var(--bg-card)] rounded-xl shadow-sm border border-[var(--gray-200)] p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[var(--text-secondary)] ">Total Revenue</p>
+              <p className="text-sm font-medium text-[var(--text-secondary)] ">
+                Total Revenue
+              </p>
               <p className="text-2xl font-bold text-[var(--text-primary)] ">
                 Rs {totalRevenue.toFixed(2)}
               </p>
@@ -446,7 +421,9 @@ const AdminOrdersComponent = () => {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-[var(--text-secondary)] " />
-                  <span className="text-sm text-[var(--text-secondary)] ">{order.user}</span>
+                  <span className="text-sm text-[var(--text-secondary)] ">
+                    {order.user}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-[var(--text-secondary)] " />
@@ -483,7 +460,9 @@ const AdminOrdersComponent = () => {
         <div className="flex flex-wrap gap-4 items-center">
           <div className="flex items-center gap-2">
             <Filter className="w-5 h-5 text-[var(--text-secondary)] " />
-            <span className="text-sm font-medium text-[var(--text-primary)] ">Filters:</span>
+            <span className="text-sm font-medium text-[var(--text-primary)] ">
+              Filters:
+            </span>
           </div>
 
           <select
@@ -497,6 +476,7 @@ const AdminOrdersComponent = () => {
             <option value="preparing">Preparing</option>
             <option value="delivered">Delivered</option>
             <option value="cancelled">Cancelled</option>
+            <option value="refunded">Refunded</option>
           </select>
 
           <input
@@ -660,7 +640,10 @@ const AdminOrdersComponent = () => {
                   <td className="px-6 py-4">
                     <div className="space-y-1">
                       {order.items.slice(0, 2).map((item) => (
-                        <div key={item.id} className="text-xs text-[var(--text-secondary)] ">
+                        <div
+                          key={item.id}
+                          className="text-xs text-[var(--text-secondary)] "
+                        >
                           {item.quantity}x {item.product_name} @ Rs {item.price}
                         </div>
                       ))}
@@ -700,7 +683,7 @@ const AdminOrdersComponent = () => {
             disabled={currentPage === 1}
             className="px-4 bg-[var(--gray-200)] text-sm rounded-lg disabled:opacity-50"
           >
-          First
+            First
           </button>
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

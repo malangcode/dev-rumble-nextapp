@@ -66,8 +66,7 @@ export default function Navbar() {
     <>
       <nav className=" shadow-md sticky top-0 z-50" style={{backgroundColor: "var(--bg-card)"}}>
         <div className="max-w-7xl mx-auto px-4 py-1 sm:py-2 flex justify-between items-center">
-        {/* <Image src="/images/texas-logo.png" height={500} width={500} className="w-[75px] md:w-[110px]" alt={"logo"}></Image> */}
-           <Logo />
+        <Logo />
 
           <div className="hidden md:flex items-center space-x-16">
             {navLinks.map((link) => {
@@ -126,7 +125,7 @@ export default function Navbar() {
         )}
       >
         <div className="flex justify-between items-center px-4  py-1 sm:py-2 shadow-md">
-          <Image src="/images/texas-logo.png" height={500} width={500} className="w-[75px] md:w-[110px]" alt={"logo"}></Image>
+          <Logo/>
           <button
             onClick={toggleSidebar}
             className="text-gray-600 hover:text-red-500"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Users,
   UserCheck,
@@ -15,20 +15,27 @@ import {
   Download,
   Search,
   RefreshCcw,
-  Calendar,
   TrendingUp,
-  Activity,
   Mail,
   Phone,
-  MapPin,
   Clock,
   CheckCircle,
   XCircle,
   AlertCircle,
 } from "lucide-react";
 import UsersSkeleton from "./UsersSkeleton";
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
+import { useDebounce } from "use-debounce";
+import AddRoleModal from "./AddRoleModal";
+import EditRoleModal from "./EditRoleModal";
+import DeleteRoleModal from "./DeleteRoleModal";
+import AssignRoleModal from "./AssignRoleModal";
+import UserDetailModal from "./UserDetailModal";
+import ForbiddenActionModal from "@/components/ForbiddenActionModal";
+import { toast } from "react-toastify";
 
 type User = {
+  phone_number: number;
   id: number;
   username: string;
   email: string;
@@ -63,6 +70,29 @@ const UserRoleManagement = () => {
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [debouncedSearch] = useDebounce(searchTerm, 500);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+
+  // Add modal state handlers in component state
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedRoleId, setSelectedRoleId] = useState<number | null>(null);
+  const [selectedRoleName, setSelectedRoleName] = useState<string>("");
+
+  const [isViewUserModalOpen, setIsViewUserModalOpen] = useState(false);
+
+  const [isForbiddenModelOpen, setIsForbiddenModelOpen] = useState(false);
+
+  const handleRoleUpdated = () => {
+    fetchData(true);
+    toast.success("Role updated successfully!");
+  };
+
+  const handleRoleDeleted = () => {
+    fetchData(true);
+    toast.success("Role deleted successfully!");
+  };
 
   // Dummy data
   const dummyUsers: User[] = [
@@ -77,7 +107,7 @@ const UserRoleManagement = () => {
       phone: "+1234567890",
       location: "New York, NY",
       orders_count: 25,
-      total_spent: 1250.50,
+      total_spent: 1250.5,
     },
     {
       id: 2,
@@ -116,7 +146,7 @@ const UserRoleManagement = () => {
       phone: "+1234567893",
       location: "Houston, TX",
       orders_count: 8,
-      total_spent: 320.00,
+      total_spent: 320.0,
     },
     {
       id: 5,
@@ -129,7 +159,7 @@ const UserRoleManagement = () => {
       phone: "+1234567894",
       location: "Phoenix, AZ",
       orders_count: 35,
-      total_spent: 1875.30,
+      total_spent: 1875.3,
     },
     {
       id: 6,
@@ -142,7 +172,7 @@ const UserRoleManagement = () => {
       phone: "+1234567895",
       location: "Denver, CO",
       orders_count: 5,
-      total_spent: 125.50,
+      total_spent: 125.5,
     },
   ];
 
@@ -181,19 +211,56 @@ const UserRoleManagement = () => {
     },
   ];
 
-  useEffect(() => {
-    // Simulate API call
-    const fetchData = async () => {
-      setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setUsers(dummyUsers);
-      setRoles(dummyRoles);
-      setTotalPages(Math.ceil(dummyUsers.length / 10));
-      setLoading(false);
-    };
+  const fetchData = async (showloading = true) => {
+    try {
+      if (showloading) setLoading(true);
 
-    fetchData();
-  }, []);
+      const [userRes, roleRes, statRes] = await Promise.all([
+        axiosWithCsrf.get("/api/users/", {
+          params: {
+            page: currentPage,
+            limit: 4, // customize as needed
+            status: statusFilter,
+            role: roleFilter,
+            search: searchTerm,
+          },
+        }),
+        axiosWithCsrf.get("/api/roles/"),
+        axiosWithCsrf.get("/api/user-stats/"),
+      ]);
+
+      setUsers(userRes.data.results);
+      setTotalPages(userRes.data.total_pages);
+      setCurrentPage(userRes.data.current_page);
+      setRoles(roleRes.data);
+
+      // Optional: if you want to use real stats
+      const stats = statRes.data;
+      setActiveUsers(stats.active_users);
+      setInactiveUsers(stats.inactive_users);
+      setPendingUsers(stats.pending_users);
+      setTotalRevenue(stats.total_revenue);
+    } catch (error) {
+      console.error("Failed to fetch users and roles:", error);
+    } finally {
+      if (showloading) setLoading(false);
+    }
+  };
+
+  const handleRoleCreated = () => {
+    fetchData(true); // This already fetches users and roles
+    toast.success(`Role added successfully!`);
+  };
+  const firstRun = useRef(true);
+
+  useEffect(() => {
+    const delayDebounce = setTimeout(() => {
+      fetchData(firstRun.current);
+      firstRun.current = false;
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [debouncedSearch, currentPage, statusFilter, roleFilter]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -261,24 +328,21 @@ const UserRoleManagement = () => {
     });
   };
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === "all" || user.status === statusFilter;
-    const matchesRole = roleFilter === "all" || user.role === roleFilter;
-    return matchesSearch && matchesStatus && matchesRole;
-  });
+  // const filteredUsers = users.filter(user => {
+  //   const matchesSearch = user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //                        user.email.toLowerCase().includes(searchTerm.toLowerCase());
+  //   const matchesStatus = statusFilter === "all" || user.status === statusFilter;
+  //   const matchesRole = roleFilter === "all" || user.role === roleFilter;
+  //   return matchesSearch && matchesStatus && matchesRole;
+  // });
 
-  const activeUsers = users.filter(user => user.status === "active").length;
-  const inactiveUsers = users.filter(user => user.status === "inactive").length;
-  const pendingUsers = users.filter(user => user.status === "pending").length;
-  const totalRevenue = users.reduce((sum, user) => sum + (user.total_spent || 0), 0);
-
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [inactiveUsers, setInactiveUsers] = useState(0);
+  const [pendingUsers, setPendingUsers] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
 
   if (loading) {
-    return (
-      <UsersSkeleton/>
-    );
+    return <UsersSkeleton />;
   }
 
   return (
@@ -286,7 +350,7 @@ const UserRoleManagement = () => {
       {/* Refresh Button */}
       <div className="flex items-center mb-3 justify-start">
         <button
-          onClick={() => window.location.reload()}
+          onClick={() => fetchData(true)}
           className="flex items-center gap-1 text-sm px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-gray-700"
           title="Refresh Data"
         >
@@ -302,8 +366,12 @@ const UserRoleManagement = () => {
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">User & Role Management</h1>
-            <p className="text-gray-600">Manage users, roles, and permissions</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              User & Role Management
+            </h1>
+            <p className="text-gray-600">
+              Manage users, roles, and permissions
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -331,7 +399,9 @@ const UserRoleManagement = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Inactive Users</p>
+              <p className="text-sm font-medium text-gray-600">
+                Inactive Users
+              </p>
               <p className="text-2xl font-bold text-red-600">{inactiveUsers}</p>
             </div>
             <div className="p-3 bg-red-100 rounded-lg">
@@ -344,7 +414,9 @@ const UserRoleManagement = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Pending Users</p>
-              <p className="text-2xl font-bold text-yellow-600">{pendingUsers}</p>
+              <p className="text-2xl font-bold text-yellow-600">
+                {pendingUsers}
+              </p>
             </div>
             <div className="p-3 bg-yellow-100 rounded-lg">
               <AlertCircle className="w-6 h-6 text-yellow-600" />
@@ -356,7 +428,9 @@ const UserRoleManagement = () => {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total Revenue</p>
-              <p className="text-2xl font-bold text-blue-600">Rs {totalRevenue.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-blue-600">
+                Rs {Number(totalRevenue).toFixed(2)}
+              </p>
             </div>
             <div className="p-3 bg-blue-100 rounded-lg">
               <TrendingUp className="w-6 h-6 text-blue-600" />
@@ -400,7 +474,9 @@ const UserRoleManagement = () => {
             <div className="flex flex-wrap gap-4 items-center">
               <div className="flex items-center gap-2">
                 <Filter className="w-5 h-5 text-gray-400" />
-                <span className="text-sm font-medium text-gray-700">Filters:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Filters:
+                </span>
               </div>
 
               <select
@@ -411,7 +487,6 @@ const UserRoleManagement = () => {
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="pending">Pending</option>
               </select>
 
               <select
@@ -422,8 +497,12 @@ const UserRoleManagement = () => {
                 <option value="all">All Roles</option>
                 <option value="admin">Admin</option>
                 <option value="manager">Manager</option>
-                <option value="staff">Staff</option>
+                <option value="server">Server</option>
+                <option value="cashier">Cashier</option>
+                <option value="intern">Intern</option>
+                <option value="trainer">Trainer</option>
                 <option value="customer">Customer</option>
+                <option value="intern_manager">Intern Manager</option>
               </select>
 
               <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium">
@@ -458,7 +537,7 @@ const UserRoleManagement = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
               <h3 className="text-lg font-semibold text-gray-900">
-                All Users ({filteredUsers.length})
+                All Users ({users.length})
               </h3>
             </div>
 
@@ -493,8 +572,11 @@ const UserRoleManagement = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                  {users.map((user) => (
+                    <tr
+                      key={user.id}
+                      className="hover:bg-gray-50 transition-colors"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-3">
@@ -506,18 +588,28 @@ const UserRoleManagement = () => {
                             <div className="text-sm font-medium text-gray-900">
                               {user.username}
                             </div>
-                            <div className="text-sm text-gray-500">{user.email}</div>
+                            <div className="text-sm text-gray-500">
+                              {user.email}
+                            </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(user.role)}`}>
+                        <div
+                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${getRoleColor(
+                            user.role
+                          )}`}
+                        >
                           {getRoleIcon(user.role)}
                           {user.role}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(user.status)}`}>
+                        <div
+                          className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
+                            user.status
+                          )}`}
+                        >
                           {getStatusIcon(user.status)}
                           {user.status}
                         </div>
@@ -528,10 +620,10 @@ const UserRoleManagement = () => {
                             <Mail className="w-4 h-4" />
                             {user.email}
                           </div>
-                          {user.phone && (
+                          {user.phone_number && (
                             <div className="flex items-center gap-2 text-sm text-gray-600">
                               <Phone className="w-4 h-4" />
-                              {user.phone}
+                              {user.phone_number}
                             </div>
                           )}
                         </div>
@@ -540,20 +632,34 @@ const UserRoleManagement = () => {
                         {user.orders_count || 0}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        Rs {(user.total_spent || 0).toFixed(2)}
+                        Rs {Number(user.total_spent || 0).toFixed(2)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {formatDate(user.last_login)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center gap-2">
-                          <button className="text-blue-600 hover:text-blue-900">
+                          <button
+                            onClick={() => {
+                              setIsViewUserModalOpen(true);
+                              setSelectedUserId(user.id);
+                            }}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button className="text-green-600 hover:text-green-900">
+                          <button
+                            onClick={() => {
+                              setSelectedUserId(user.id); // 👈 set the selected user
+                              setIsAssignModalOpen(true); // 👈 open the modal
+                            }}
+                            className="text-green-600 hover:text-green-900"
+                          >
                             <Edit className="w-4 h-4" />
                           </button>
-                          <button className="text-red-600 hover:text-red-900">
+                          <button
+                           onClick={()=> setIsForbiddenModelOpen(true)}
+                           className="text-red-600 hover:text-red-900">
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
@@ -564,10 +670,12 @@ const UserRoleManagement = () => {
               </table>
             </div>
 
-            {filteredUsers.length === 0 && (
+            {users.length === 0 && (
               <div className="text-center py-12">
                 <Users className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <p className="text-gray-500">No users found matching your criteria.</p>
+                <p className="text-gray-500">
+                  No users found matching your criteria.
+                </p>
               </div>
             )}
           </div>
@@ -579,51 +687,93 @@ const UserRoleManagement = () => {
           {/* Role Actions */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">Role Management</h3>
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Role Management
+              </h3>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium"
+              >
                 <Plus className="w-4 h-4" />
                 Add Role
               </button>
             </div>
           </div>
 
+          <AddRoleModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onRoleCreated={handleRoleCreated}
+          />
+
           {/* Roles Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {roles.map((role) => (
-              <div key={role.id} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              <div
+                key={role.id}
+                className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
+              >
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${getRoleColor(role.name).replace('text-', 'bg-').replace('border-', '').replace('800', '100')}`}>
+                    <div
+                      className={`p-2 rounded-lg ${getRoleColor(role.name)
+                        .replace("text-", "bg-")
+                        .replace("border-", "")
+                        .replace("800", "100")}`}
+                    >
                       {getRoleIcon(role.name)}
                     </div>
                     <div>
-                      <h4 className="text-lg font-semibold text-gray-900 capitalize">{role.name}</h4>
-                      <p className="text-sm text-gray-500">{role.user_count} users</p>
+                      <h4 className="text-lg font-semibold text-gray-900 capitalize">
+                        {role.name}
+                      </h4>
+                      <p className="text-sm text-gray-500">
+                        {role.user_count} users
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <button className="text-blue-600 hover:text-blue-900">
+                    <button
+                      onClick={() => {
+                        setSelectedRoleId(role.id);
+                        setEditModalOpen(true);
+                      }}
+                      className="text-blue-600 hover:text-blue-900"
+                    >
                       <Edit className="w-4 h-4" />
                     </button>
-                    <button className="text-red-600 hover:text-red-900">
+
+                    <button
+                      onClick={() => {
+                        setSelectedRoleId(role.id);
+                        setSelectedRoleName(role.name);
+                        setDeleteModalOpen(true);
+                      }}
+                      className="text-red-600 hover:text-red-900"
+                    >
                       <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
-                
+
                 <p className="text-sm text-gray-600 mb-4">{role.description}</p>
-                
+
                 <div className="mb-4">
-                  <p className="text-sm font-medium text-gray-700 mb-2">Permissions:</p>
+                  <p className="text-sm font-medium text-gray-700 mb-2">
+                    Permissions:
+                  </p>
                   <div className="flex flex-wrap gap-1">
                     {role.permissions.map((permission) => (
-                      <span key={permission} className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">
-                        {permission.replace('_', ' ')}
+                      <span
+                        key={permission}
+                        className="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs"
+                      >
+                        {formatPermission(permission)}
                       </span>
                     ))}
                   </div>
                 </div>
-                
+
                 <div className="text-xs text-gray-500">
                   Created: {formatDate(role.created_at)}
                 </div>
@@ -632,6 +782,54 @@ const UserRoleManagement = () => {
           </div>
         </>
       )}
+
+      {/* edit and delete modals  */}
+      <EditRoleModal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        roleId={selectedRoleId!}
+        onRoleUpdated={handleRoleUpdated}
+      />
+      <DeleteRoleModal
+        isOpen={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        roleId={selectedRoleId!}
+        roleName={selectedRoleName}
+        onRoleDeleted={handleRoleDeleted}
+      />
+
+      <AssignRoleModal
+        isOpen={isAssignModalOpen}
+        userId={selectedUserId} // 👈 pass the selected user ID
+        onClose={() => {
+          setIsAssignModalOpen(false);
+          setSelectedUserId(null);
+        }}
+        onRoleAssigned={(details: any) => {
+          setIsAssignModalOpen(false);
+          setSelectedUserId(null);
+          fetchData(false); // optional: refresh data
+          toast.success(details);
+        }}
+        onStatusUpdate={(details: any) => {
+          setIsAssignModalOpen(false);
+          setSelectedUserId(null);
+          fetchData(false);
+          toast.success(details);
+        }}
+      />
+
+      <UserDetailModal
+        isOpen={isViewUserModalOpen}
+        onClose={() => setIsViewUserModalOpen(false)}
+        userId={selectedUserId}
+      />
+
+      <ForbiddenActionModal
+        isOpen={isForbiddenModelOpen}
+        onClose={() => setIsForbiddenModelOpen(false)}
+        message="Sorry! We intentionaly blocked this action because deleting the User will delete all the users records. So if you want to delete the User please simply set the user status to inactive!"
+      />
 
       {/* Pagination */}
       <div className="flex justify-center p-6 border-t border-gray-200 mt-6 gap-2">
@@ -649,11 +847,13 @@ const UserRoleManagement = () => {
         >
           Previous
         </button>
-                <span className="px-4 py-1 text-sm text-gray-700">
+        <span className="px-4 py-1 text-sm text-gray-700">
           Page {currentPage} of {totalPages}
         </span>
         <button
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
           disabled={currentPage === totalPages}
           className="px-4 py-1 bg-blue-700 text-sm text-white rounded-lg disabled:opacity-50"
         >
@@ -670,5 +870,12 @@ const UserRoleManagement = () => {
     </div>
   );
 };
+
+function formatPermission(perm: any) {
+  if (typeof perm === "string") {
+    return perm.replace("_", " ");
+  }
+  return String(perm);
+}
 
 export default UserRoleManagement;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ClipboardList, RefreshCcw, Eye, Plus, Edit2 } from "lucide-react";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import { useNotification } from "@/context/messageContext";
@@ -69,15 +69,16 @@ const AdminMenuComponent = () => {
     }
   };
 
-  useEffect(() => {
-    fetchMenuItems(false); // disable loading UI while searching
-  }, [debouncedSearch, statusFilter]);
+  const firstRun = useRef(true);
 
   useEffect(() => {
-    const delayedFetch = setTimeout(() => {
-      fetchMenuItems();
+    const delayDebounce = setTimeout(() => {
+      fetchMenuItems(firstRun.current);
+      firstRun.current = false;
     }, 500);
-  }, [page]);
+
+    return () => clearTimeout(delayDebounce);
+  }, [debouncedSearch, statusFilter, page]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -199,7 +200,9 @@ const AdminMenuComponent = () => {
             <h1 className="text-3xl font-bold text-[var(--text-primary)] ">
               Menu Management
             </h1>
-            <p className="text-[var(--text-secondary)] ">Manage and track all menu items</p>
+            <p className="text-[var(--text-secondary)] ">
+              Manage and track all menu items
+            </p>
           </div>
         </div>
         <button
@@ -342,7 +345,10 @@ const AdminMenuComponent = () => {
                       <Edit2 className="w-4 h-4" />
                     </button>
                     <button
-                      onClick={() => {setSelectedId(item.id); setShowViewPopup(true);}}
+                      onClick={() => {
+                        setSelectedId(item.id);
+                        setShowViewPopup(true);
+                      }}
                       className="text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
                     >
                       <Eye className="w-4 h-4" />
@@ -371,7 +377,9 @@ const AdminMenuComponent = () => {
         {menuItems.length === 0 && (
           <div className="text-center py-12">
             <ClipboardList className="w-12 h-12 text-[var(--text-secondary)] mx-auto mb-4" />
-            <p className="text-[var(--text-secondary)] ">No menu items found.</p>
+            <p className="text-[var(--text-secondary)] ">
+              No menu items found.
+            </p>
           </div>
         )}
 
