@@ -87,7 +87,7 @@ const TableManagement: React.FC = () => {
     // Poll every 5 seconds
     const interval = setInterval(() => {
       fetchUpdates(false);
-    }, 5000);
+    }, 15000);
 
     // Cleanup on unmount
     return () => clearInterval(interval);
