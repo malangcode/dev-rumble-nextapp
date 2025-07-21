@@ -86,7 +86,7 @@ const TableManagement: React.FC = () => {
 
     // Poll every 5 seconds
     const interval = setInterval(() => {
-      fetchUpdates();
+      fetchUpdates(false);
     }, 5000);
 
     // Cleanup on unmount
@@ -106,16 +106,16 @@ const TableManagement: React.FC = () => {
     }
   };
 
-  const fetchUpdates = async () => {
+  const fetchUpdates = async (loading=true) => {
     try {
-      setLoading(true);
+      if(loading) setLoading(true);
       const res = await axiosWithCsrf.get("/api/table-update-logs/");
       setUpdates(res.data);
     } catch (err) {
       console.error(err);
       setError("Failed to load updates");
     } finally {
-      setLoading(false);
+      if (loading) setLoading(false);
     }
   };
 
