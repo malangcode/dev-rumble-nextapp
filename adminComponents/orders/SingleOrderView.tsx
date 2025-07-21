@@ -15,7 +15,7 @@ import {
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import { useNotification } from "@/context/messageContext";
 import { useRole } from "@/context/RoleProvider";
-
+import PrepareDurationModal from "./PrepareDurationModal";
 
 const SingleOrderView = ({
   orderId,
@@ -29,7 +29,14 @@ const SingleOrderView = ({
   const [showPayment, setShowPayment] = useState(false);
   const [paymentStatus, setPaymentStatus] = useState("");
   const [updatingPayment, setUpdatingPayment] = useState(false);
+  const [confirmingOrder, setConfirmingOrder] = useState(false);
+  const [refundingOrder, setRefundingOrder] = useState(false);
+  const [cancellingOrder, setCancellingOrder] = useState(false);
+  const [confirmingDelivery, setConfirmingDelivery] = useState(false);
+
   const { showNotification } = useNotification();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { hasPermission } = useRole();
 
@@ -67,7 +74,9 @@ const SingleOrderView = ({
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full">
             <Loader2 className="h-8 w-8 animate-spin text-[var(--color-primary)] " />
-            <p className="mt-2 text-[var(--text-secondary)]">Loading order details...</p>
+            <p className="mt-2 text-[var(--text-secondary)]">
+              Loading order details...
+            </p>
           </div>
         ) : order ? (
           <>
@@ -83,7 +92,9 @@ const SingleOrderView = ({
                   <span className="text-sm font-medium text-[var(--text-primary] ">
                     Customer:
                   </span>
-                  <span className="text-sm text-[var(--text-secondary)] ">{order.user}</span>
+                  <span className="text-sm text-[var(--text-secondary)] ">
+                    {order.user}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="w-5 h-5 text-[var(--text-secondary)] " />
@@ -143,13 +154,17 @@ const SingleOrderView = ({
                   </h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-[var(--text-secondary] ">Paid Amount:</p>
+                      <p className="text-sm text-[var(--text-secondary] ">
+                        Paid Amount:
+                      </p>
                       <p className="text-base font-medium text-[var(--text-primary] ">
                         Rs {parseFloat(order.total_price).toFixed(2)}
                       </p>
                     </div>
                     <div className="shadow p-2 pb-3 rounded-lg ">
-                      <p className="text-sm text-[var(--text-secondary] ">Payment Status:</p>
+                      <p className="text-sm text-[var(--text-secondary] ">
+                        Payment Status:
+                      </p>
                       <select
                         className="w-full mt-1 bg-[var(--bg-card)] border border-[var(--gray-200)] rounded px-3 py-2 text-sm"
                         value={paymentStatus}
@@ -237,129 +252,197 @@ const SingleOrderView = ({
 
             {/* Fixed Footer Actions */}
             <div className="bg-[var(--bg-card)] border-t border-[var(--gray-200)] p-4 flex justify-end gap-3 shrink-0">
-              {hasPermission("manage_orders") && (<div className="flex gap-3 w-full flex-wrap justify-end">
-
-             <button
-                onClick={async () => {
-                  try {
-                    const response = await axiosWithCsrf.post(
-                      `/api/admin/orders/${orderId}/update-status/`,
-                      {
-                        status: "refunded",
+              {hasPermission("manage_orders") && (
+                <div className="flex gap-3 w-full flex-wrap justify-end">
+                  <button
+                    onClick={async () => {
+                      try {
+                        setRefundingOrder(true);
+                        const response = await axiosWithCsrf.post(
+                          `/api/admin/orders/${orderId}/update-status/`,
+                          {
+                            status: "refunded",
+                          }
+                        );
+                        showNotification("success", response.data.message);
+                        setOrder((prev: any) => ({
+                          ...prev,
+                          status: "refunded",
+                        }));
+                      } catch (err: any) {
+                        showNotification(
+                          "error",
+                          err.response?.data?.error || "Failed to refund order"
+                        );
+                      } finally {
+                        setRefundingOrder(false);
                       }
-                    );
-                    showNotification("success", response.data.message);
-                    setOrder((prev: any) => ({ ...prev, status: "refunded" }));
-                  } catch (err: any) {
-                    showNotification(
-                      "error",
-                      err.response?.data?.error || "Failed to refund order"
-                    );
-                  }
-                }}
-                className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
-                disabled={
-                  order?.status === "refunded" || order?.status === "delivered"
-                }
-              >
-                <CheckCircle className="w-4 h-4" />
-                {order?.status === "refunded"
-                  ? "Order Refunded"
-                  : "Refund Order"}
-              </button>
+                    }}
+                    className="bg-amber-900 hover:bg-amber-950 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                    disabled={
+                      order?.status === "refunded" ||
+                      order?.status === "delivered" ||
+                      order?.status === "preparing" ||
+                      refundingOrder ||
+                      paymentStatus !== "paid"
+                    }
+                  >
+                    <CheckCircle className="w-4 h-4" />
 
-              <button
-                onClick={async () => {
-                  try {
-                    const response = await axiosWithCsrf.post(
-                      `/api/admin/orders/${orderId}/update-status/`,
-                      {
-                        status: "preparing",
-                      }
-                    );
-                    showNotification("success", response.data.message);
-                    setOrder((prev: any) => ({ ...prev, status: "preparing" }));
-                  } catch (err: any) {
-                    showNotification(
-                      "error",
-                      err.response?.data?.error || "Failed to prepare order"
-                    );
-                  }
-                }}
-                className="bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
-                disabled={
-                  order?.status === "preparing" || order?.status === "delivered"
-                }
-              >
-                <CheckCircle className="w-4 h-4" />
-                {order?.status === "preparing"
-                  ? "Preparing Order"
-                  : "Prepare Order"}
-              </button>
+                    {refundingOrder
+                      ? "refunding..."
+                      : order?.status === "refunded"
+                      ? "Order Refunded"
+                      : "Refund Order"}
+                  </button>
 
-              <button
-                onClick={async () => {
-                  try {
-                    const response = await axiosWithCsrf.post(
-                      `/api/admin/orders/${orderId}/update-status/`,
-                      {
-                        status: "confirmed",
+                  <button
+                    onClick={async () => {
+                      try {
+                        setConfirmingDelivery(true);
+                        const response = await axiosWithCsrf.post(
+                          `/api/admin/orders/${orderId}/update-status/`,
+                          {
+                            status: "delivered",
+                          }
+                        );
+                        showNotification("success", response.data.message);
+                        setOrder((prev: any) => ({
+                          ...prev,
+                          status: "delivered",
+                        }));
+                      } catch (err: any) {
+                        showNotification(
+                          "error",
+                          err.response?.data?.error || "Failed to deliver order"
+                        );
+                      } finally {
+                        setConfirmingDelivery(false);
                       }
-                    );
-                    showNotification("success", response.data.message);
-                    setOrder((prev: any) => ({ ...prev, status: "confirmed" }));
-                  } catch (err: any) {
-                    showNotification(
-                      "error",
-                      err.response?.data?.error || "Failed to confirm order"
-                    );
-                  }
-                }}
-                className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
-                disabled={
-                  order?.status === "confirmed" || order?.status === "cancelled"
-                }
-              >
-                <CheckCircle className="w-4 h-4" />
-                {order?.status === "confirmed"
-                  ? "Order Confirmed"
-                  : "Confirm Order"}
-              </button>
+                    }}
+                    className="bg-blue-700 hover:bg-blue-800 text-gray-100 text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                    disabled={
+                      order?.status === "refunded" ||
+                      order?.status === "delivered" ||
+                      confirmingDelivery ||
+                      paymentStatus !== "paid"
+                    }
+                  >
+                    <CheckCircle className="w-4 h-4" />
 
-              <button
-                onClick={async () => {
-                  try {
-                    const response = await axiosWithCsrf.post(
-                      `/api/admin/orders/${orderId}/update-status/`,
-                      {
-                        status: "cancelled",
+                    {confirmingDelivery
+                      ? "delivering..."
+                      : order?.status === "delivered"
+                      ? "Order Delivered"
+                      : "Deliver Order"}
+                  </button>
+
+
+                  <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                    disabled={
+                      order?.status === "preparing" ||
+                      order?.status === "delivered" ||
+                      paymentStatus !== "paid"
+                    }
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    {order?.status === "preparing"
+                      ? "Preparing Order"
+                      : "Prepare Order"}
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      try {
+                        setConfirmingOrder(true);
+                        const response = await axiosWithCsrf.post(
+                          `/api/admin/orders/${orderId}/update-status/`,
+                          {
+                            status: "confirmed",
+                          }
+                        );
+                        showNotification("success", response.data.message);
+                        setOrder((prev: any) => ({
+                          ...prev,
+                          status: "confirmed",
+                        }));
+                      } catch (err: any) {
+                        showNotification(
+                          "error",
+                          err.response?.data?.error || "Failed to confirm order"
+                        );
                       }
-                    );
-                    alert(response.data.message);
-                    setOrder((prev: any) => ({ ...prev, status: "cancelled" }));
-                  } catch (err: any) {
-                    alert(
-                      err.response?.data?.error || "Failed to cancel order"
-                    );
-                  }
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
-                disabled={
-                  order?.status === "confirmed" || order?.status === "cancelled"
-                }
-              >
-                <XCircle className="w-4 h-4" />
-                {order?.status === "cancelled" ? "Order Cancelled" : "Cancel Order"}
-              </button>
-              <button
-                onClick={() => setShowPayment((prev) => !prev)}
-                className="bg-[var(--color-primary)] hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
-              >
-                <FileText className="w-4 h-4" />
-                {!showPayment ? "Hide Payment" : "Payment Status"}
-              </button>
-              </div>)}
-             
+                      finally{
+                        setConfirmingOrder(false);
+                      }
+                    }}
+                    className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                    disabled={
+                      order?.status === "confirmed" ||
+                      order?.status === "cancelled" ||
+                      order?.status === "refunded" ||
+                      order?.status === "preparing" ||
+                      order?.status === "delivered" ||
+                      confirmingOrder ||
+                      paymentStatus !== "paid"
+                    }
+                  >
+                    <CheckCircle className="w-4 h-4" />
+                    {confirmingOrder? "Confirming...": order?.status === "confirmed"
+                      ? "Order Confirmed"
+                      : "Confirm Order"}
+                  </button>
+
+                  <button
+                    onClick={async () => {
+                      try {
+                        setCancellingOrder(true);
+                        const response = await axiosWithCsrf.post(
+                          `/api/admin/orders/${orderId}/update-status/`,
+                          {
+                            status: "cancelled",
+                          }
+                        );
+                        alert(response.data.message);
+                        setOrder((prev: any) => ({
+                          ...prev,
+                          status: "cancelled",
+                        }));
+                      } catch (err: any) {
+                        alert(
+                          err.response?.data?.error || "Failed to cancel order"
+                        );
+                      } finally {
+                        setCancellingOrder(false);
+                      }
+                    }}
+                    className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                    disabled={
+                      order?.status === "cancelled" ||
+                      order?.status === "delivered" ||
+
+                      cancellingOrder
+                    }
+                  >
+                    <XCircle className="w-4 h-4" />
+                    {cancellingOrder
+                      ? "Cancelling..."
+                      : order?.status === "cancelled"
+                      ? "Order Cancelled"
+                      : "Cancel Order"}
+                  </button>
+
+                  <button
+                    onClick={() => setShowPayment((prev) => !prev)}
+                    className="bg-[var(--color-primary)] hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded flex items-center gap-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    {!showPayment ? "Hide Payment" : "Payment Status"}
+                  </button>
+                </div>
+              )}
             </div>
           </>
         ) : (
@@ -368,6 +451,16 @@ const SingleOrderView = ({
           </div>
         )}
       </div>
+      <PrepareDurationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        orderId={orderId}
+        onPrepared={() => {
+          setOrder((prev: any) => ({ ...prev, status: "preparing" }));
+        }}
+        showNotification={showNotification}
+      />
+      ;
     </div>
   );
 };

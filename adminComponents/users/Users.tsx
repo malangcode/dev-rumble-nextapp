@@ -89,10 +89,15 @@ const UserRoleManagement = () => {
     toast.success("Role updated successfully!");
   };
 
-  const handleRoleDeleted = () => {
+  const handleRoleDeleted = (detail:any) => {
     fetchData(true);
-    toast.success("Role deleted successfully!");
+    toast.success(detail);
   };
+
+  const [activeUsers, setActiveUsers] = useState(0);
+  const [inactiveUsers, setInactiveUsers] = useState(0);
+  const [staffUsers, setStaffUsers] = useState(0);
+  const [totalRevenue, setTotalRevenue] = useState(0);
 
   // Dummy data
   // const dummyUsers: User[] = [
@@ -238,7 +243,7 @@ const UserRoleManagement = () => {
       const stats = statRes.data;
       setActiveUsers(stats.active_users);
       setInactiveUsers(stats.inactive_users);
-      setPendingUsers(stats.pending_users);
+      setStaffUsers(stats.staff_users);
       setTotalRevenue(stats.total_revenue);
     } catch (error) {
       console.error("Failed to fetch users and roles:", error);
@@ -336,10 +341,7 @@ const UserRoleManagement = () => {
   //   return matchesSearch && matchesStatus && matchesRole;
   // });
 
-  const [activeUsers, setActiveUsers] = useState(0);
-  const [inactiveUsers, setInactiveUsers] = useState(0);
-  const [pendingUsers, setPendingUsers] = useState(0);
-  const [totalRevenue, setTotalRevenue] = useState(0);
+  
 
   if (loading) {
     return <UsersSkeleton />;
@@ -360,13 +362,13 @@ const UserRoleManagement = () => {
       </div>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-blue-100 rounded-lg">
             <Users className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">
               User & Role Management
             </h1>
             <p className="text-gray-600">
@@ -374,7 +376,7 @@ const UserRoleManagement = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-4">
           <div className="text-right">
             <p className="text-sm text-gray-500">Total Users</p>
             <p className="text-2xl font-bold text-gray-900">{users.length}</p>
@@ -413,9 +415,9 @@ const UserRoleManagement = () => {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Pending Users</p>
+              <p className="text-sm font-medium text-gray-600">Staff Users</p>
               <p className="text-2xl font-bold text-yellow-600">
-                {pendingUsers}
+                {staffUsers}
               </p>
             </div>
             <div className="p-3 bg-yellow-100 rounded-lg">
@@ -505,15 +507,15 @@ const UserRoleManagement = () => {
                 <option value="intern_manager">Intern Manager</option>
               </select>
 
-              <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium">
+              <button onClick={()=> window.open(`${process.env.NEXT_PUBLIC_API_URL}/api/users/?export=csv`, "_blank")} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm font-medium">
                 <Download className="w-4 h-4" />
                 Export CSV
               </button>
 
-              <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium">
+              {/* <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2 text-sm font-medium">
                 <Plus className="w-4 h-4" />
                 Add User
-              </button>
+              </button> */}
             </div>
           </div>
 

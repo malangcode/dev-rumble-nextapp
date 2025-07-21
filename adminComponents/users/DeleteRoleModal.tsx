@@ -10,7 +10,7 @@ interface DeleteRoleModalProps {
   onClose: () => void;
   roleId: number;
   roleName: string;
-  onRoleDeleted: () => void;
+  onRoleDeleted: (detail: any) => void;
 }
 
 const DeleteRoleModal: React.FC<DeleteRoleModalProps> = ({
@@ -22,8 +22,8 @@ const DeleteRoleModal: React.FC<DeleteRoleModalProps> = ({
 }) => {
   const handleDelete = async () => {
     try {
-      await axiosWithCsrf.delete(`/api/roles/${roleId}/`);
-      onRoleDeleted();
+      const res = await axiosWithCsrf.delete(`/api/roles/${roleId}/`);
+      onRoleDeleted(res.data.detail);
       onClose();
     } catch (err: any) {
        const errorMsg = err.response?.data?.detail || "Failed to delete role.";

@@ -301,7 +301,7 @@ const AdminOrdersComponent = () => {
         </button>
       </div>
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-[var(--blue-100)] rounded-lg">
             <ClipboardList className="w-6 h-6 text-[var(--color-primary)] " />
@@ -315,7 +315,7 @@ const AdminOrdersComponent = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="hidden sm:flex items-center gap-4">
           <div className="text-right">
             <p className="text-sm text-[var(--text-secondary)] ">
               Total Orders

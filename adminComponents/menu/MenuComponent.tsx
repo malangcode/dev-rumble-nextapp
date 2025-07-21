@@ -180,7 +180,7 @@ const AdminMenuComponent = () => {
   }
 
   return (
-    <div className="p-6 bg-[var(--bg-component)] min-h-screen">
+    <div className="p-2 sm:p-6 bg-[var(--bg-component)] min-h-screen">
       <div className="flex items-center mb-3 gap-4">
         <button
           onClick={() => fetchMenuItems(true)}
@@ -191,9 +191,9 @@ const AdminMenuComponent = () => {
         </button>
       </div>
 
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-[var(--blue-100)] rounded-lg">
+          <div className="hidden sm:block p-2 bg-[var(--blue-100)] rounded-lg">
             <ClipboardList className="w-6 h-6 text-[var(--color-primary)] " />
           </div>
           <div>
@@ -207,7 +207,7 @@ const AdminMenuComponent = () => {
         </div>
         <button
           onClick={() => setShowCreatePopup(true)}
-          className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-blue-700 flex items-center gap-2"
+          className="px-4 w-fit py-2 my-2 sm:my-0 bg-[var(--color-primary)] text-white rounded hover:bg-blue-700 flex items-center gap-2"
         >
           <Plus className="w-4 h-4" /> Add New Item
         </button>
