@@ -173,6 +173,8 @@ const SingleOrderView = ({
                         <option value="pending">Pending</option>
                         <option value="paid">Paid</option>
                         <option value="fake">Fake Payment</option>
+                        <option value="failed">Failed</option>
+                        <option value="refunded">Refund Payment</option>
                       </select>
                     </div>
                     <div className="sm:col-span-2">
@@ -239,10 +241,12 @@ const SingleOrderView = ({
                         }
                       }}
                       className="bg-[var(--color-primary)] hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded disabled:opacity-50"
-                      disabled={updatingPayment}
+                      disabled={updatingPayment || order.payment.status === paymentStatus}
                     >
                       {updatingPayment
-                        ? "Updating..."
+                        ? "Updating..." 
+                        : order.payment.status !== "pending"
+                        ? "Payment Status Updated"
                         : "Update Payment Status"}
                     </button>
                   </div>

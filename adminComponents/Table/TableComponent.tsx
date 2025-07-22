@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import {
   Calendar,
@@ -17,8 +17,10 @@ import {
   Calendar as CalendarIcon,
   Utensils,
   Eye,
+  RefreshCcw,
 } from "lucide-react";
-import TableSkeleton from "./TableSkeleton";
+import TableManagementSkeleton from "./TableSkeleton";
+// import { useDebounce } from "use-debounce";
 
 interface Table {
   id: string;
@@ -26,7 +28,7 @@ interface Table {
   seats: number;
   availableSeats: number;
   area: string;
-  areas:[];
+  areas: [];
   status: "occupied" | "reserved" | "available" | "cleaning";
   customers: string[] | null;
   timeOccupied?: string | null;
@@ -68,22 +70,73 @@ const TableManagement: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [updates, setUpdates] = useState<Updates[]>([]);
-  const [area, setSelectedArea] = useState("all");
-
-
+  const [selectedArea, setSelectedArea] = useState("");
+  // const [debouncedSearch] = useDebounce(searchTerm, 500);
 
   // const tables: Table[] = [/* ...same table data... */];
   // const reservations: Reservation[] = [/* ...same reservation data... */];
 
+  
+  const fetchTables = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      const res = await axiosWithCsrf.get("/api/tables/");
+      setTables(res.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load tables");
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  const fetchUpdates = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      const res = await axiosWithCsrf.get("/api/table-update-logs/");
+      setUpdates(res.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load updates");
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  const fetchReservations = async (showLoading = true) => {
+    try {
+      if (showLoading) setLoading(true);
+      const res = await axiosWithCsrf.get("/api/reservations/", {
+        params: {
+          date: selectedDate,
+          time: selectedTimeSlot,
+          // search: searchTerm,
+          // area: area,
+        },
+      });
+      setReservations(res.data);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to load reservations");
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  };
+
+  const firstRun = useRef(true);
   useEffect(() => {
-    fetchTables(false);
-    fetchReservations();
-  }, [selectedDate, selectedTimeSlot, searchTerm, area]);
+    if (firstRun.current) setLoading(true);
+    const delayDebounce = setTimeout(() => {
+      fetchTables(firstRun.current);
+      fetchReservations(firstRun.current);
+      fetchUpdates(firstRun.current);
+      firstRun.current = false;
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [selectedDate, selectedTimeSlot]);
 
   useEffect(() => {
-    // Initial fetch
-    fetchUpdates();
-
     // Poll every 5 seconds
     const interval = setInterval(() => {
       fetchUpdates(false);
@@ -93,51 +146,6 @@ const TableManagement: React.FC = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const fetchTables = async (loading=true) => {
-    try {
-      if (loading) setLoading(true);
-      const res = await axiosWithCsrf.get("/api/tables/");
-      setTables(res.data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load tables");
-    } finally {
-      if (loading) setLoading(false);
-    }
-  };
-
-  const fetchUpdates = async (loading=true) => {
-    try {
-      if(loading) setLoading(true);
-      const res = await axiosWithCsrf.get("/api/table-update-logs/");
-      setUpdates(res.data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load updates");
-    } finally {
-      if (loading) setLoading(false);
-    }
-  };
-
-  const fetchReservations = async () => {
-    try {
-      setLoading(true);
-      const res = await axiosWithCsrf.get("/api/reservations/", {
-        params: {
-          date: selectedDate,
-          time: selectedTimeSlot,
-          search: searchTerm,
-          area: area,
-        },
-      });
-      setReservations(res.data);
-    } catch (err) {
-      console.error(err);
-      setError("Failed to load reservations");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const timeSlots = [
     "-----",
@@ -167,15 +175,9 @@ const TableManagement: React.FC = () => {
     "20:30",
   ];
 
-  const areas = [
-    "All Areas",
-    "Main Hall",
-    "Window Side",
-    "Counter Side",
-    "Private Section",
-  ];
+  const areas = ["Main Hall", "Window Side", "Counter Side", "Private Section"];
 
-  const allAreas = tables.length > 0 ? tables[0].areas : [];
+  // const allAreas = tables.length > 0 ? tables[0].areas : [];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -225,14 +227,20 @@ const TableManagement: React.FC = () => {
     }
   };
 
-  const filteredTables = tables.filter(
-    (table) =>
+  const filteredTables = tables.filter((table) => {
+    const matchesSearch =
       table.customers?.some((name) =>
         name.toLowerCase().includes(searchTerm.toLowerCase())
       ) ||
       table.number.toString().includes(searchTerm) ||
-      (table.area || "").toLowerCase().includes(searchTerm.toLowerCase())
-  );
+      (table.area || "").toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesArea =
+      !selectedArea ||
+      (table.area || "").toLowerCase() === selectedArea.toLowerCase();
+
+    return matchesSearch && matchesArea;
+  });
 
   const filteredReservations = reservations.filter(
     (res) =>
@@ -243,9 +251,22 @@ const TableManagement: React.FC = () => {
       res.id.toString().toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  if (loading) {
+    return <TableManagementSkeleton />;
+  }
+
   return (
     <div>
       <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="flex items-center mb-3 gap-4">
+          <button
+            // onClick={() => fetchMenuItems(true)}
+            className="flex items-center gap-1 text-sm px-3 py-2 bg-[var(--gray-200)] hover:bg-[--gray-300] rounded text-[var(--text-secondary)]"
+          >
+            <RefreshCcw className="w-4 h-4" />
+            Refresh
+          </button>
+        </div>
         <div className="mx-auto">
           {/* Header */}
           <div className="flex justify-between items-center mb-8">
@@ -274,58 +295,49 @@ const TableManagement: React.FC = () => {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
-            {loading ? (
-              <TableSkeleton />
-            ) : (
-              <>
-                {[
-                  {
-                    label: "Total Tables",
-                    value: tables.length,
-                    color: "bg-blue-500",
-                  },
-                  {
-                    label: "Available",
-                    value: tables.filter((t) => t.status === "available")
-                      .length,
-                    color: "bg-green-500",
-                  },
-                  {
-                    label: "Occupied",
-                    value: tables.filter((t) => t.status === "occupied").length,
-                    color: "bg-red-500",
-                  },
-                  {
-                    label: "Reserved",
-                    value: tables.filter((t) => t.status === "reserved").length,
-                    color: "bg-yellow-500",
-                  },
-                  {
-                    label: "Cleaning",
-                    value: tables.filter((t) => t.status === "cleaning").length,
-                    color: "bg-blue-400",
-                  },
-                  {
-                    label: "Total Capacity",
-                    value: tables.reduce((sum, t) => sum + t.seats, 0),
-                    color: "bg-purple-500",
-                  },
-                ].map((stat, index) => (
-                  <div
-                    key={index}
-                    className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4"
-                  >
-                    <div
-                      className={`w-3 h-3 rounded-full ${stat.color} mb-2`}
-                    ></div>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {stat.value}
-                    </p>
-                    <p className="text-sm text-gray-600">{stat.label}</p>
-                  </div>
-                ))}
-              </>
-            )}
+            {[
+              {
+                label: "Total Tables",
+                value: tables.length,
+                color: "bg-blue-500",
+              },
+              {
+                label: "Available",
+                value: tables.filter((t) => t.status === "available").length,
+                color: "bg-green-500",
+              },
+              {
+                label: "Occupied",
+                value: tables.filter((t) => t.status === "occupied").length,
+                color: "bg-red-500",
+              },
+              {
+                label: "Reserved",
+                value: tables.filter((t) => t.status === "reserved").length,
+                color: "bg-yellow-500",
+              },
+              {
+                label: "Cleaning",
+                value: tables.filter((t) => t.status === "cleaning").length,
+                color: "bg-blue-400",
+              },
+              {
+                label: "Total Capacity",
+                value: tables.reduce((sum, t) => sum + t.seats, 0),
+                color: "bg-purple-500",
+              },
+            ].map((stat, index) => (
+              <div
+                key={index}
+                className="bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200 p-4"
+              >
+                <div
+                  className={`w-3 h-3 rounded-full ${stat.color} mb-2`}
+                ></div>
+                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+                <p className="text-sm text-gray-600">{stat.label}</p>
+              </div>
+            ))}
           </div>
 
           {/* Filters and Search */}
@@ -380,20 +392,26 @@ const TableManagement: React.FC = () => {
                 </>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  <MapPin className="h-4 w-4 inline mr-1" />
-                  Area Filter
-                </label>
-                <select value={area} onChange={(e) => setSelectedArea(e.target.value)} className="w-full p-2 border border-gray-300 rounded-lg">
-                  <option value="all">All Areas</option>
-                  {allAreas.map((area:string, index: number) => (
-                    <option key={index} value={area}>
-                      {area}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {selectedView !== "reservations" && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <MapPin className="h-4 w-4 inline mr-1" />
+                    Area Filter
+                  </label>
+                  <select
+                    value={selectedArea}
+                    onChange={(e) => setSelectedArea(e.target.value)}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  >
+                    <option value="">All Areas</option>
+                    {areas.map((area: string, index: number) => (
+                      <option key={index} value={area}>
+                        {area}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   <Search className="h-4 w-4 inline mr-1" />

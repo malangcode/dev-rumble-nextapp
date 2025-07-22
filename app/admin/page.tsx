@@ -11,6 +11,7 @@ import {
   Table2,
   BarChart2,
   LogOut,
+  Package,
 } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,6 +28,7 @@ import SettingsPage from "../settings/page";
 import { useRole } from "@/context/RoleProvider";
 import ForbiddenPage from "@/components/ForbiddenPage";
 import AdminLandingPage from "@/adminComponents/landing/AdminLandingPage";
+import InventoryDashboard from "@/adminComponents/inventory/InventoryDashboard";
 
 // Media Query Hook
 function useMediaQuery(query: string): boolean {
@@ -91,6 +93,11 @@ export default function AdminPage() {
       label: "Payments",
       icon: <Banknote size={18} />,
       key: "payments",
+    },
+    (hasPermission("manage_inventory") || hasPermission("view_inventory")) && {
+      label: "Inventory",
+      icon: <Package size={18} />,
+      key: "inventory",
     },
     (hasPermission("manage_reports") || hasPermission("view_reports")) && {
       label: "Reports",
@@ -193,6 +200,12 @@ export default function AdminPage() {
             hasPermission("view_payments")) && <AdminPaymentsComponent />
         );
 
+      case "inventory":
+        return (
+          (hasPermission("manage_inventory") ||
+            hasPermission("view_inventory")) && <InventoryDashboard />
+        );
+ 
       case "settings":
         return (
           (hasPermission("manage_settings") ||

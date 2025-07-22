@@ -69,7 +69,7 @@ const AdminOrdersComponent = () => {
 
       const response = await axiosWithCsrf.get(url);
       setOrders(response.data.results); // if response has `.results`
-      setTotalPages(Math.ceil(response.data.count / 100));
+      setTotalPages(Math.ceil(response.data.count / 5));
     } catch (err) {
       if (
         typeof err === "object" &&
@@ -570,7 +570,7 @@ const AdminOrdersComponent = () => {
             <thead className="bg-[var(--bg-component)] border-b border-[var(--gray-200)] ">
               <tr>
                 <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
-                  Order ID
+                  ID
                 </th>
                 <th className="px-6 py-4 text-left text-xs font-medium text-[var(--text-secondary)] uppercase tracking-wider">
                   Customer
