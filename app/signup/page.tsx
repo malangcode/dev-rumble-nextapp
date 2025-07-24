@@ -7,6 +7,8 @@ import { HiEye, HiEyeOff } from 'react-icons/hi';
 import { Button } from '@/components/ui/button';
 import { FcGoogle } from 'react-icons/fc';
 import { axiosWithCsrf } from '@/lib/axiosWithCsrf'; // ✅ use helper
+import { useGoogleLogin } from '@react-oauth/google';
+import { toast } from "react-toastify";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -17,6 +19,7 @@ export default function SignupPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [signingUp, setSigningUp] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +31,8 @@ export default function SignupPage() {
     }
 
     try {
+      setSigningUp(true);
+
       // Signup API call
       await axiosWithCsrf.post('/auth/', {
         username: username.trim(),
@@ -65,13 +70,33 @@ export default function SignupPage() {
       } else {
         setError('Signup failed. Please try again.');
       }
+    }finally{
+      setSigningUp(false);
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-    // TODO: Add Google OAuth here
-  };
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const res = await axiosWithCsrf.post(
+          "/auth/google/",
+          {
+            access_token: tokenResponse.access_token,
+          },
+          { withCredentials: true } // needed to receive cookies!
+        );
+
+        console.log("✅ Google login success:", res.data);
+        toast.success("Logged in successfully!")
+        window.location.href = "/";
+        // maybe trigger AuthProvider refetch or redirect here
+      } catch (err) {
+        console.error("❌ Google login failed:", err);
+        toast.error("Google login failed!")
+      }
+    },
+    onError: (err) => console.error("❌ Google login error:", err),
+  });
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
@@ -79,7 +104,7 @@ export default function SignupPage() {
         <h2 className="text-2xl font-bold text-center text-blue-700">Create an Account</h2>
 
         <Button
-          onClick={handleGoogleLogin}
+          onClick={()=>handleGoogleLogin()}
           className="w-full flex items-center justify-center gap-2 border border-gray-300 bg-white text-gray-800 hover:bg-gray-100"
           variant="outline"
         >
@@ -158,7 +183,7 @@ export default function SignupPage() {
           {error && <p className="text-red-600 text-sm">{error}</p>}
 
           <Button type="submit" className="w-full">
-            Sign Up
+            {signingUp ? "Signing up..." : "Sign Up"}
           </Button>
         </form>
 

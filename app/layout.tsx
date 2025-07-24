@@ -7,8 +7,9 @@ import ConditionalLayout from "@/components/ConditionalLayout";
 import { AuthProvider } from "@/context/AuthContext";
 // import ClientLayout from '@/components/loader/LoaderclitentLayout';
 import { RoleProvider } from "@/context/RoleProvider";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -26,14 +27,16 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gray-50 text-gray-900`}>
         {/* <ClientLayout> */}
-        <AuthProvider>
-          <RoleProvider>
-            <NotificationProvider>
-               <ToastContainer /> {/* toast alert  */}
-              <ConditionalLayout>{children}</ConditionalLayout>
-            </NotificationProvider>
-          </RoleProvider>
-        </AuthProvider>
+        <GoogleOAuthProvider clientId="814532111461-ftsc18otheakopmd1c2kilosqqfcqvdi.apps.googleusercontent.com">
+          <AuthProvider>
+            <RoleProvider>
+              <NotificationProvider>
+                <ToastContainer /> {/* toast alert  */}
+                <ConditionalLayout>{children}</ConditionalLayout>
+              </NotificationProvider>
+            </RoleProvider>
+          </AuthProvider>
+        </GoogleOAuthProvider>
         {/* </ClientLayout> */}
       </body>
     </html>
