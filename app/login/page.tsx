@@ -68,14 +68,15 @@ export default function LoginPage() {
 
   const handleGithubLogin = () => {
     const clientId = "Ov23liP5fwlwEjWUsogo"; // Replace with your real GitHub client ID
-    const redirectUri = "http://localhost:3000/github-callback"; // Must match GitHub App setting
+    // const redirectUri = "http://localhost:3000/github-callback"; // Must match GitHub App setting
+    const redirectUri = "https://cms-nextapp-sandy.vercel.app/github-callback"; // Must match GitHub App setting
 
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user user:email`;
 
     // ✅ Redirect the whole page (no popup)
     window.location.href = githubAuthUrl;
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
       <div className="w-full max-w-md space-y-6 bg-white p-6 rounded-lg shadow-md">
