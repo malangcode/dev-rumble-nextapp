@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
 import { Download, Mail, Calendar, Filter, FileText, Users, TrendingUp, DollarSign, Clock, Send, Eye, CheckCircle, AlertCircle } from 'lucide-react';
+import { axiosWithCsrf } from '@/lib/axiosWithCsrf';
+
 
 const Reports = () => {
   const [selectedPeriod, setSelectedPeriod] = useState('weekly');
   const [selectedReport, setSelectedReport] = useState('sales');
   const [showEmailModal, setShowEmailModal] = useState(false);
+  const [reportHistoryData, setReportHistoryData] = useState([]);
+
 
   // Dummy data for different report types
   const salesReportData = {
@@ -108,6 +112,32 @@ const Reports = () => {
     { id: 'staff', name: 'Staff Performance', icon: <Users className="h-4 w-4" /> },
     { id: 'expenses', name: 'Expense Report', icon: <TrendingUp className="h-4 w-4" /> }
   ];
+  const [reportData, setReportData] = useState({
+  salesReportData: {
+    daily: [],
+    weekly: [],
+    monthly: [],
+  },
+  expenseData: [],
+  inventoryData: [],
+  reportHistory: [],
+  roleBasedEmails: {},
+  keyMetrics: [],
+});
+
+  useEffect(() => {
+  const fetchReportData = async () => {
+    try {
+      const res = await axiosWithCsrf.get('/api/reports/dashboard-reports/'); // correct API path
+      setReportData(res.data);
+    } catch (err) {
+      console.error('Error fetching report data:', err);
+    }
+  };
+
+  fetchReportData();
+}, []);
+
 
   const handleDownloadReport = (reportId: string) => {
     // Simulate download

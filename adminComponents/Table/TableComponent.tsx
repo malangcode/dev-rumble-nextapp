@@ -20,6 +20,10 @@ import {
   RefreshCcw,
 } from "lucide-react";
 import TableManagementSkeleton from "./TableSkeleton";
+import ReservationCreateModal from "./ReservationCreateModal";
+import ReservationUpdateModal from "./ReservationUpdateModal";
+import ReservationDeleteModal from "./ReservationDeleteModal";
+import { toast } from "react-toastify";
 // import { useDebounce } from "use-debounce";
 
 interface Table {
@@ -71,12 +75,16 @@ const TableManagement: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [updates, setUpdates] = useState<Updates[]>([]);
   const [selectedArea, setSelectedArea] = useState("");
+  const [showCreate, setShowCreate] = useState(false);
+  const [showUpdate, setShowUpdate] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [selectedReservation, setSelectedReservation] = useState<any>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   // const [debouncedSearch] = useDebounce(searchTerm, 500);
 
   // const tables: Table[] = [/* ...same table data... */];
   // const reservations: Reservation[] = [/* ...same reservation data... */];
 
-  
   const fetchTables = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
@@ -145,7 +153,6 @@ const TableManagement: React.FC = () => {
     // Cleanup on unmount
     return () => clearInterval(interval);
   }, []);
-
 
   const timeSlots = [
     "-----",
@@ -259,7 +266,10 @@ const TableManagement: React.FC = () => {
     <div>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="flex items-center mb-3 gap-4">
-          <button
+          <button onClick={()=>{
+            fetchTables(true);
+            fetchReservations(true);
+          } }
             // onClick={() => fetchMenuItems(true)}
             className="flex items-center gap-1 text-sm px-3 py-2 bg-[var(--gray-200)] hover:bg-[--gray-300] rounded text-[var(--text-secondary)]"
           >
@@ -280,18 +290,58 @@ const TableManagement: React.FC = () => {
             </div>
             <div className="flex space-x-3">
               <button
-                onClick={() => setShowReservationModal(true)}
+                onClick={() => setShowCreate(true)}
                 className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
               >
                 <Plus className="h-4 w-4 mr-2" />
                 New Reservation
               </button>
-              <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+              {/* <button className="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
                 <MapPin className="h-4 w-4 mr-2" />
                 Floor Plan
-              </button>
+              </button> */}
             </div>
           </div>
+
+          <ReservationCreateModal
+            isOpen={showCreate}
+            onClose={() => setShowCreate(false)}
+            onCreated={(data) => {
+              setShowCreate(false);
+              fetchReservations(false);
+              toast.success("Reservation created successfully");
+              // Refresh your reservation list if needed
+            }}
+          />
+
+          {selectedReservation && (
+            <ReservationUpdateModal
+              isOpen={showUpdate}
+              onClose={() => setShowUpdate(false)}
+              reservation={selectedReservation}
+              onUpdated={(data) => {
+                setShowUpdate(false);
+                fetchReservations(false);
+                toast.success("Reservation updated successfully");
+                // Refresh list if needed
+              }}
+            />
+          )}
+
+          {deleteId !== null && (
+            <ReservationDeleteModal
+              isOpen={showDelete}
+              onClose={() => setShowDelete(false)}
+              reservationId={deleteId}
+              onDeleted={(id) => {
+                setShowDelete(false);
+                toast.success("Reservation deleted successfully");
+                setDeleteId(null);
+                fetchReservations(false);
+                // Refresh list if needed
+              }}
+            />
+          )}
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-8">
@@ -663,13 +713,25 @@ const TableManagement: React.FC = () => {
                         Created: {reservation.created_at}
                       </p>
                       <div className="flex space-x-2">
-                        <button className="p-1 text-blue-600 hover:bg-blue-50 rounded">
+                        <button
+                          onClick={() => {
+                            setSelectedReservation(reservation); // pass full data
+                            setShowUpdate(true);
+                          }}
+                          className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                        >
                           <Edit3 className="h-4 w-4" />
                         </button>
                         <button className="p-1 text-green-600 hover:bg-green-50 rounded">
                           <CheckCircle className="h-4 w-4" />
                         </button>
-                        <button className="p-1 text-red-600 hover:bg-red-50 rounded">
+                        <button
+                          onClick={() => {
+                            setDeleteId(reservation.id);
+                            setShowDelete(true);
+                          }}
+                          className="p-1 text-red-600 hover:bg-red-50 rounded"
+                        >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
@@ -720,7 +782,7 @@ const TableManagement: React.FC = () => {
                 },
               ] */}
 
-            <div className="space-y-3">
+            <div className="space-y-3 max-h-[500px] overflow-y-auto px-4 py-4 custom-scrollbar">
               {updates.map((update, index) => (
                 <div
                   key={index}
