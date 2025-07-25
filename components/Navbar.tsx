@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 // import { getAuthStatus, logout, UserAuthStatus } from '@/utils/auth';
 import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { IoWalletOutline } from "react-icons/io5";
-import Image from "next/image";
 import ThemeToggle from "./ThemeToggle";
 
 import {
@@ -38,7 +37,6 @@ const navLinks = [
 
 export default function Navbar() {
   const pathname = usePathname();
-  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const [user, setUser] = useState<UserAuthStatus | null>(null);
   const { user, logout } = useAuth();
@@ -58,8 +56,7 @@ export default function Navbar() {
   const handleLogout = async () => {
     await logout();
     setIsSidebarOpen(false);
-    // setUser(null);
-    router.push("/login")
+    window.location.href = "/login";
   };
 
   return (
