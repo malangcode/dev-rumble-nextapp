@@ -37,9 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 🔁 Refresh access token
   const refreshAccessToken = async () => {
     try {
-      await axiosWithCsrf.post(
-        "/token/refresh/",
-      );
+      await axiosWithCsrf.post("/token/refresh/");
 
       console.log("🔄 Access token refreshed");
 
@@ -108,10 +106,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // 🚪 Logout function
   const logout = async () => {
     try {
-      await axiosWithCsrf.post(
-        "/auth/logout/",
-        {},
-      );
+      await axiosWithCsrf.post("/auth/logout/", {});
+
+      // ❌ Manually delete the user_status cookie
+      document.cookie ="user_status=; path=/; max-age=0; SameSite=None; Secure";
 
       setUser(null);
       setIsManuallyLoggedOut(true); // Prevent re-auth

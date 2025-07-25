@@ -30,7 +30,7 @@ export default function LoginPage() {
 
       toast.success("Logged in successfully!");
       console.log("Login successful:", res.data);
-      window.location.href = "/"; // redirect on success
+      window.location.href = "/login/loading"; // redirect on success
     } catch (err: any) {
       console.error(err);
       if (err.response?.data?.non_field_errors) {
@@ -56,7 +56,7 @@ export default function LoginPage() {
 
         console.log("✅ Google login success:", res.data);
         toast.success("Logged in successfully!");
-        window.location.href = "/";
+        window.location.href = "/login/loading";
         // maybe trigger AuthProvider refetch or redirect here
       } catch (err) {
         console.error("❌ Google login failed:", err);
@@ -66,56 +66,16 @@ export default function LoginPage() {
     onError: (err) => console.error("❌ Google login error:", err),
   });
 
-  const handleGithubLogin = async () => {
-    const clientId = "Ov23liP5fwlwEjWUsogo"; // 🔐 Replace with your actual client ID
-    const redirectUri = "http://localhost:3000"; // ⚠️ Must match GitHub OAuth app redirect URI
+  const handleGithubLogin = () => {
+    const clientId = "Ov23liP5fwlwEjWUsogo"; // Replace with your real GitHub client ID
+    const redirectUri = "http://localhost:3000/github-callback"; // Must match GitHub App setting
 
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user user:email`;
 
-    // Open GitHub login popup
-    const popup = window.open(githubAuthUrl, "_blank", "width=600,height=600");
-
-    if (!popup) {
-      toast.error("Popup blocked! Please allow popups.");
-      return;
-    }
-
-    // Monitor popup for redirect (polling method)
-    const interval = setInterval(async () => {
-      try {
-        if (!popup.closed && popup.location.href.startsWith(redirectUri)) {
-          const url = new URL(popup.location.href);
-          const code = url.searchParams.get("code");
-          popup.close();
-          clearInterval(interval);
-
-          if (!code) {
-            toast.error("GitHub login failed: No code received");
-            return;
-          }
-
-          // Exchange code for access_token on your backend
-          const res = await axiosWithCsrf.post(
-            "/auth/github/",
-            { access_token: code }, // NOTE: Django-Allauth will internally use this
-            { withCredentials: true }
-          );
-
-          console.log("✅ GitHub login success:", res.data);
-          toast.success("Logged in via GitHub!");
-          window.location.href = "/";
-        }
-      } catch (err) {
-        // Ignore DOMException until popup redirects to our domain
-      }
-
-      if (popup.closed) {
-        clearInterval(interval);
-        console.warn("GitHub login popup closed.");
-      }
-    }, 500);
+    // ✅ Redirect the whole page (no popup)
+    window.location.href = githubAuthUrl;
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gray-50">
       <div className="w-full max-w-md space-y-6 bg-white p-6 rounded-lg shadow-md">
@@ -149,14 +109,14 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300"></div>
             </div>
             <div className="relative flex justify-center">
-              <span className="bg-white px-3 text-sm text-gray-500">
-                or
-              </span>
+              <span className="bg-white px-3 text-sm text-gray-500">or</span>
             </div>
           </div>
         </div>
 
-        <div className="text-center text-sm text-gray-500">login with email</div>
+        <div className="text-center text-sm text-gray-500">
+          login with email
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>

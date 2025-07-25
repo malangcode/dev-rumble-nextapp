@@ -7,6 +7,8 @@ const PUBLIC_ROUTES = [
   "/signup",
   "/forgot-pass",
   "/change-pass",
+  "/login/loading",
+  "/github-callback",
 ];
 
 export function middleware(request: NextRequest) {
@@ -39,7 +41,7 @@ export function middleware(request: NextRequest) {
     console.log("⛔ Not authenticated — redirecting to /login");
     return NextResponse.redirect(new URL("/login", request.url));
   }
-
+ 
   if (pathname.startsWith("/admin") && !userStatus.is_superuser) {
     console.log("⛔ Not a superuser — redirecting to /unauthorized");
     return NextResponse.redirect(new URL("/unauthorized", request.url));

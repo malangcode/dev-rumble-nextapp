@@ -17,9 +17,9 @@ export interface UserAuthStatus {
 export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {
   try {
     const res = await axiosWithCsrf.get("/auth/status/", {});
-    if (res.data.user_status_encoded) {
-      document.cookie = `user_status=${res.data.user_status_encoded}; path=/; Secure; SameSite=None`;
-    }
+    // if (res.data.user_status_encoded) {
+    //   document.cookie = `user_status=${res.data.user_status_encoded}; path=/; Secure; SameSite=None`;
+    // }
     return res.data as UserAuthStatus;
   } catch (error: any) {
     if (error.response && error.response.status === 401) {
