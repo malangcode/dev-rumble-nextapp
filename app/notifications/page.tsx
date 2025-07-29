@@ -96,6 +96,7 @@ export default function NotificationsPage() {
         }
       );
       refreshCounters();
+      fetchNotifications();
     } catch (err) {
       console.error("Error marking notifications as read:", err);
     } finally {
@@ -111,7 +112,6 @@ export default function NotificationsPage() {
     setMarking(true);
     const timer = setTimeout(() => {
       MarkAllAsRead();
-      fetchNotifications();
     }, 5000); // 2000ms = 2 seconds
 
     return () => clearTimeout(timer); // cleanup
