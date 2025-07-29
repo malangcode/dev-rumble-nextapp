@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { IoWalletOutline } from "react-icons/io5";
 import ThemeToggle from "./ThemeToggle";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 import {
   HiHome,
@@ -42,6 +43,7 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+  const { unreadNotifications, cartItemCount } = useGlobalContext();
 
   // useEffect(() => {
   //   const fetchUser = async () => {
@@ -61,14 +63,22 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className=" shadow-md sticky top-0 z-50" style={{backgroundColor: "var(--bg-card)"}}>
+      <nav
+        className=" shadow-md sticky top-0 z-50"
+        style={{ backgroundColor: "var(--bg-card)" }}
+      >
         <div className="max-w-7xl mx-auto px-4 py-1 sm:py-2 flex justify-between items-center">
-        <Logo />
+          <Logo />
 
           <div className="hidden md:flex items-center space-x-16">
             {navLinks.map((link) => {
               const Icon = link.icon;
               const isActive = pathname === link.href;
+
+              // / Show counters on specific links
+              const showNotificationBadge =
+                link.name === "Notifications" && unreadNotifications > 0;
+              const showCartBadge = link.name === "Cart" && cartItemCount > 0;
 
               return (
                 <Link
@@ -78,13 +88,20 @@ export default function Navbar() {
                 >
                   <div
                     className={cn(
-                      "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                      "w-10 relative h-10 flex items-center justify-center rounded-full transition-all duration-200",
                       isActive
                         ? "bg-[var(--color-primary)] text-white shadow"
                         : "bg-[var(--bg-icon)] text-[var(--text-secondary)] hover:bg-blue-100 hover:text-blue-600"
                     )}
                   >
                     <Icon className="text-lg" />
+                    {(showNotificationBadge || showCartBadge) && (
+                      <span className="absolute top-0 right-0 border border-white -mt-1 -mr-1 w-5 h-5 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        {showNotificationBadge
+                          ? unreadNotifications
+                          : cartItemCount}
+                      </span>
+                    )}
                   </div>
                   <span className="mt-[6px]">{link.name}</span>
                 </Link>
@@ -92,10 +109,8 @@ export default function Navbar() {
             })}
           </div>
 
-
           <ThemeToggle />
 
-  
           {user ? (
             <img
               src={user.photo ? BASE_URL + user.photo : "/images/profile2.jpg"}
@@ -122,7 +137,7 @@ export default function Navbar() {
         )}
       >
         <div className="flex justify-between items-center px-4  py-1 sm:py-2 shadow-md">
-          <Logo/>
+          <Logo />
           <button
             onClick={toggleSidebar}
             className="text-gray-600 hover:text-red-500"
@@ -138,7 +153,7 @@ export default function Navbar() {
               {[
                 { href: "/", label: "Home", icon: HiOutlineHome },
                 { href: "/menu", label: "Menu", icon: HiOutlineMenu },
-                { href: "/wallet", label: "Wallet", icon: IoWalletOutline  },
+                { href: "/wallet", label: "Wallet", icon: IoWalletOutline },
                 { href: "/cart", label: "Cart", icon: HiOutlineShoppingCart },
                 {
                   href: "/notifications",
@@ -147,6 +162,11 @@ export default function Navbar() {
                 },
               ].map(({ href, label, icon: Icon }) => {
                 const isActive = pathname === href; // Add this
+                // / Show counters on specific links
+                const showNotificationBadge =
+                  label === "Notifications" && unreadNotifications > 0;
+                const showCartBadge = label === "Cart" && cartItemCount > 0;
+
                 return (
                   <Link
                     key={href}
@@ -156,13 +176,20 @@ export default function Navbar() {
                   >
                     <div
                       className={cn(
-                        "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                        "w-10 h-10 relative flex items-center justify-center rounded-full transition-all duration-200",
                         isActive
                           ? "bg-blue-600 text-white shadow"
                           : "bg-gray-100 hover:bg-blue-100 hover:text-blue-600"
                       )}
                     >
                       <Icon className="text-xl" />
+                      {(showNotificationBadge || showCartBadge) && (
+                      <span className="absolute top-0 right-0 border border-white -mt-1 -mr-1 w-5 h-5 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        {showNotificationBadge
+                          ? unreadNotifications
+                          : cartItemCount}
+                      </span>
+                    )}
                     </div>
                     <span>{label}</span>
                   </Link>

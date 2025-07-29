@@ -7,6 +7,7 @@ import { FoodCardSkeleton } from "@/components/FoodCardSkeleton";
 import PopupMessage from "@/components/PopupMessage";
 import { useNotification } from "@/context/messageContext";
 import { useRouter } from "next/navigation";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 type Product = {
   id: number;
@@ -32,6 +33,8 @@ export default function Menu() {
   );
   const { showNotification } = useNotification();
   const router = useRouter();
+  const {refreshCounters} = useGlobalContext();
+
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -90,6 +93,7 @@ export default function Menu() {
           "success",
           `"${data.product}" has been added to your cart.`
         );
+        refreshCounters();
       } else {
         showNotification("error", "Failed to add item to cart.");
       }

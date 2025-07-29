@@ -10,6 +10,7 @@ import { RoleProvider } from "@/context/RoleProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GlobalProvider } from "@/context/GlobalContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,10 +31,12 @@ export default function RootLayout({
         <GoogleOAuthProvider clientId="814532111461-ftsc18otheakopmd1c2kilosqqfcqvdi.apps.googleusercontent.com">
           <AuthProvider>
             <RoleProvider>
-              <NotificationProvider>
-                <ToastContainer /> {/* toast alert  */}
-                <ConditionalLayout>{children}</ConditionalLayout>
-              </NotificationProvider>
+              <GlobalProvider>
+                <NotificationProvider>
+                  <ToastContainer /> {/* toast alert  */}
+                  <ConditionalLayout>{children}</ConditionalLayout>
+                </NotificationProvider>
+              </GlobalProvider>
             </RoleProvider>
           </AuthProvider>
         </GoogleOAuthProvider>

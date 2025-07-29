@@ -18,6 +18,7 @@ import {
   Utensils,
   Eye,
   RefreshCcw,
+  Edit,
 } from "lucide-react";
 import TableManagementSkeleton from "./TableSkeleton";
 import ReservationCreateModal from "./ReservationCreateModal";
@@ -266,10 +267,11 @@ const TableManagement: React.FC = () => {
     <div>
       <div className="p-6 bg-gray-50 min-h-screen">
         <div className="flex items-center mb-3 gap-4">
-          <button onClick={()=>{
-            fetchTables(true);
-            fetchReservations(true);
-          } }
+          <button
+            onClick={() => {
+              fetchTables(true);
+              fetchReservations(true);
+            }}
             // onClick={() => fetchMenuItems(true)}
             className="flex items-center gap-1 text-sm px-3 py-2 bg-[var(--gray-200)] hover:bg-[--gray-300] rounded text-[var(--text-secondary)]"
           >
@@ -612,7 +614,7 @@ const TableManagement: React.FC = () => {
                               : "-"}
                           </span>
                         </td>
-                        <td className="py-3 px-4">
+                        <td className="py-3 px-4 flex items-center justify-between gap-2">
                           <div className="flex space-x-2">
                             <select
                               className="text-xs border border-gray-300 rounded px-2 py-1"
@@ -627,6 +629,25 @@ const TableManagement: React.FC = () => {
                               <option value="cleaning">Cleaning</option>
                             </select>
                           </div>
+                          <button
+                            onClick={() => {
+                              // setEditId(item.id);
+                              // setEditOpen(true);
+                            }}
+                            className="text-blue-600 hover:text-blue-900"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+
+                          <button
+                            onClick={() => {
+                              // setDeleteId(item.id);
+                              // setDeleteOpen(true);
+                            }}
+                            className="text-red-600 hover:text-red-900"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </td>
                       </tr>
                     ))}

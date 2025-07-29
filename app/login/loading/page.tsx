@@ -24,7 +24,7 @@ export default function LoginRedirectPage() {
           console.log("✅ Cookie set:", res.data.user_status_encoded);
 
           // Wait a bit for middleware to pick it up
-          await delay(1000);
+          await delay(1500);
           window.location.href = "/";
         } else {
           throw new Error("No encoded status");

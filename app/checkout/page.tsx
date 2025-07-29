@@ -13,6 +13,7 @@ import {
   HiOutlineCheckCircle,
   HiOutlineXCircle,
 } from "react-icons/hi";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 interface CartItem {
   id: number;
@@ -43,6 +44,8 @@ export default function CheckoutPage() {
   const [tables, setTables] = useState<Table[]>([]);
   const [selectedTable, setSelectedTable] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const { refreshCounters } = useGlobalContext();
+
 
   const paymentMethods = [
     {
@@ -209,6 +212,7 @@ export default function CheckoutPage() {
         `Order placed successfully! Order ID: ${res.data.order.id}`
       );
       setCartItems([]);
+      refreshCounters();
       router.push("/profile");
     } catch (err: any) {
       // setCheckoutError(err.response?.data?.error || "Checkout failed");

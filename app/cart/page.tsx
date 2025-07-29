@@ -7,6 +7,7 @@ import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 import { useRouter } from "next/navigation";
 import BackButton from "@/components/BackButton";
 import { useNotification } from "@/context/messageContext";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 type CartItem = {
   id: number;
@@ -22,6 +23,7 @@ export default function CartPage() {
   const [error, setError] = useState<string | null>(null);
   const { showNotification } = useNotification();
   const router = useRouter();
+  const { refreshCounters } = useGlobalContext();
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -35,6 +37,7 @@ export default function CartPage() {
           imageSrc: item.product_image,
         }));
         setCartItems(mappedItems);
+        refreshCounters();
       } catch (err: any) {
         if (err.response && err.response.status === 404) {
           showNotification(

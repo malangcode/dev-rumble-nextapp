@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import HomePageSkeleton from "@/components/HomePageSkeleton";
 import { useAuth } from "@/context/AuthContext";
+import { useGlobalContext } from "@/context/GlobalContext";
 
 export default function HomePage() {
   // const [loading, setLoading] = useState(true);
   const { user, logout, loading } = useAuth();
+  const { refreshCounters } = useGlobalContext();
+
+  useEffect(() => {
+    refreshCounters();
+  }, []);
 
   // useEffect(() => {
   //   // Simulate a loading delay (e.g., fetching data)
