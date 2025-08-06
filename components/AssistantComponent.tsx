@@ -74,7 +74,7 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
       await playAudioWithWait("/audios/laugh.mp3");
       isListeningRef.current = true;
       setIsListening(true);
-    } else if (transcript.includes("demo")) {
+    } else if (transcript.includes("demo") || transcript.includes("presentation") || transcript.includes("present")) {
       setIsListening(false);
       await playAudioWithWait("/audios/intro2.mp3");
 
