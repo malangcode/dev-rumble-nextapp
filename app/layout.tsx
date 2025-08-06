@@ -11,6 +11,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { GlobalProvider } from "@/context/GlobalContext";
+import AssistantWrapper from "@/components/AssistantUI";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,7 +36,9 @@ export default function RootLayout({
               <GlobalProvider>
                 <NotificationProvider>
                   <ToastContainer /> {/* toast alert  */}
+                  <AssistantWrapper>
                   <ConditionalLayout>{children}</ConditionalLayout>
+                  </AssistantWrapper>
                 </NotificationProvider>
               </GlobalProvider>
             </RoleProvider>
