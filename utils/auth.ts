@@ -10,8 +10,6 @@ export interface UserAuthStatus {
   is_staff: boolean;
   is_superuser: boolean;
   email: string;
-  wallet_balance: string;
-  photo: string | null;
   exp: number; // 👈 new
 }
 

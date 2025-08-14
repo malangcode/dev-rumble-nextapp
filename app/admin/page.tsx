@@ -16,19 +16,10 @@ import {
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import AdminOrdersComponent from "@/adminComponents/orders/orderComponent";
-import AdminMenuComponent from "@/adminComponents/menu/MenuComponent";
-import Dashboard from "@/adminComponents/dashboard/DashboardComponent";
-import Reports from "@/adminComponents/reports/ReportsComponent";
-import TableManagement from "@/adminComponents/Table/TableComponent";
-import UserRoleManagement from "@/adminComponents/users/Users";
-import AdminPaymentsComponent from "@/adminComponents/payments/PaymentPage";
+// import UserRoleManagement from "@/adminComponents/users/Users";
 import ThemeToggle from "@/components/ThemeToggle";
-import SettingsPage from "../settings/page";
-import { useRole } from "@/context/RoleProvider";
 import ForbiddenPage from "@/components/ForbiddenPage";
 import AdminLandingPage from "@/adminComponents/landing/AdminLandingPage";
-import InventoryDashboard from "@/adminComponents/inventory/InventoryDashboard";
 
 // Media Query Hook
 function useMediaQuery(query: string): boolean {
@@ -66,59 +57,56 @@ export default function AdminPage() {
 
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const { hasPermission, hasRole, loading, user } = useRole();
 
   const navItems = [
-    hasPermission("view_dashboard") && {
+  {
       label: "Dashboard",
       icon: <Home size={18} />,
       key: "dashboard",
     },
-    (hasPermission("manage_orders") || hasPermission("view_orders")) && {
+ {
       label: "Orders",
       icon: <ClipboardList size={18} />,
       key: "orders",
     },
-    (hasPermission("manage_products") || hasPermission("view_products")) && {
+   {
       label: "Menu",
       icon: <ShoppingCart size={18} />,
       key: "menu",
     },
-    (hasPermission("manage_tables") || hasPermission("view_tables")) && {
+ {
       label: "Tables",
       icon: <Table2 size={18} />,
       key: "tables",
     },
-    (hasPermission("manage_payments") || hasPermission("view_payments")) && {
+ {
       label: "Payments",
       icon: <Banknote size={18} />,
       key: "payments",
     },
-    (hasPermission("manage_inventory") || hasPermission("view_inventory")) && {
+   {
       label: "Inventory",
       icon: <Package size={18} />,
       key: "inventory",
     },
-    (hasPermission("manage_reports") || hasPermission("view_reports")) && {
+{
       label: "Reports",
       icon: <BarChart2 size={18} />,
       key: "reports",
     },
-    (hasPermission("manage_users") || hasPermission("view_users")) && {
+{
       label: "Users",
       icon: <Users size={18} />,
       key: "users",
     },
-    (hasPermission("manage_settings") || hasPermission("view_settings")) && {
+ {
       label: "Settings",
       icon: <Settings size={18} />,
       key: "settings",
     },
   ].filter(Boolean) as NavItem[];
 
-  //  permission base case rendering
-  const canViewDashboard = () =>
-    hasPermission("view_dashboard");
+
 
   // Get the active nav item
   const activeNavItem = navItems.find((item) => item.key === activePage);
@@ -156,61 +144,34 @@ export default function AdminPage() {
         return <AdminLandingPage />;
 
       case "dashboard":
-        return canViewDashboard() ? <Dashboard /> : <ForbiddenPage />;
+        return <ForbiddenPage />;
 
       case "dashboard":
-        return <Dashboard />;
+        return <p>hello</p>;
 
       case "orders":
-        return (
-          (hasPermission("manage_orders") || hasPermission("view_orders")) && (
-            <AdminOrdersComponent />
-          )
-        );
+        return <p>orders</p>;
 
       case "menu":
-        return (
-          (hasPermission("manage_products") ||
-            hasPermission("view_products")) && <AdminMenuComponent />
-        );
+        return <p>hello</p>;
 
       case "tables":
-        return (
-          (hasPermission("manage_tables") || hasPermission("view_tables")) && (
-            <TableManagement />
-          )
-        );
+        return <p>tables</p>;
 
       case "reports":
-        return (
-          (hasPermission("manage_reports") ||
-            hasPermission("view_reports")) && <Reports />
-        );
+        return <p>reports</p>;
 
       case "users":
-        return (
-          (hasPermission("manage_users") || hasPermission("view_users")) && (
-            <UserRoleManagement />
-          )
-        );
+        return <p>users</p>;
 
       case "payments":
-        return (
-          (hasPermission("manage_payments") ||
-            hasPermission("view_payments")) && <AdminPaymentsComponent />
-        );
+        return <p>payments</p>;
 
       case "inventory":
-        return (
-          (hasPermission("manage_inventory") ||
-            hasPermission("view_inventory")) && <InventoryDashboard />
-        );
- 
+        return <p>inventory</p>;
+
       case "settings":
-        return (
-          (hasPermission("manage_settings") ||
-            hasPermission("view_settings")) && <SettingsPage />
-        );
+        return <p>settings</p>;
 
       default:
         return (

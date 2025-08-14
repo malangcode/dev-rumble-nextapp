@@ -100,7 +100,7 @@ export default function Navbar() {
 
           {user ? (
             <img
-              src={user.photo ? BASE_URL + user.photo : "/images/profile2.jpg"}
+              src="/images/profile2.jpg"
               alt="Profile"
               onClick={toggleSidebar}
               className="w-10 h-10 sm:w-12 sm:h-12 lg:w-13 lg:h-13 rounded-full cursor-pointer object-cover shadow-md transition-transform duration-200 hover:scale-105 hover:shadow-lg border-2 border-white"
