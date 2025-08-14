@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.className} bg-gray-50 text-gray-900`}>
         {/* <ClientLayout> */}
-        <GoogleOAuthProvider clientId="814532111461-ftsc18otheakopmd1c2kilosqqfcqvdi.apps.googleusercontent.com">
+        <GoogleOAuthProvider clientId="252727771176-r3e94dru2j4sr0p7j9ltjp8gar31i5ha.apps.googleusercontent.com">
           <AuthProvider>
             <ToastContainer /> {/* toast alert  */}
             <AssistantWrapper>
