@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { IoWalletOutline } from "react-icons/io5";
 import ThemeToggle from "./ThemeToggle";
-import { useGlobalContext } from "@/context/GlobalContext";
 
 import {
   HiHome,
@@ -43,7 +42,6 @@ export default function Navbar() {
   const { user, logout } = useAuth();
   const isSmallScreen = useMediaQuery("(max-width: 768px)");
   const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
-  const { unreadNotifications, cartItemCount } = useGlobalContext();
 
   // useEffect(() => {
   //   const fetchUser = async () => {
@@ -75,11 +73,6 @@ export default function Navbar() {
               const Icon = link.icon;
               const isActive = pathname === link.href;
 
-              // / Show counters on specific links
-              const showNotificationBadge =
-                link.name === "Notifications" && unreadNotifications > 0;
-              const showCartBadge = link.name === "Cart" && cartItemCount > 0;
-
               return (
                 <Link
                   key={link.href}
@@ -95,13 +88,7 @@ export default function Navbar() {
                     )}
                   >
                     <Icon className="text-lg" />
-                    {(showNotificationBadge || showCartBadge) && (
-                      <span className="absolute top-0 right-0 border border-white -mt-1 -mr-1 w-5 h-5 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                        {showNotificationBadge
-                          ? unreadNotifications
-                          : cartItemCount}
-                      </span>
-                    )}
+                   
                   </div>
                   <span className="mt-[6px]">{link.name}</span>
                 </Link>
@@ -163,10 +150,6 @@ export default function Navbar() {
               ].map(({ href, label, icon: Icon }) => {
                 const isActive = pathname === href; // Add this
                 // / Show counters on specific links
-                const showNotificationBadge =
-                  label === "Notifications" && unreadNotifications > 0;
-                const showCartBadge = label === "Cart" && cartItemCount > 0;
-
                 return (
                   <Link
                     key={href}
@@ -183,13 +166,7 @@ export default function Navbar() {
                       )}
                     >
                       <Icon className="text-xl" />
-                      {(showNotificationBadge || showCartBadge) && (
-                      <span className="absolute top-0 right-0 border border-white -mt-1 -mr-1 w-5 h-5 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                        {showNotificationBadge
-                          ? unreadNotifications
-                          : cartItemCount}
-                      </span>
-                    )}
+                      
                     </div>
                     <span>{label}</span>
                   </Link>

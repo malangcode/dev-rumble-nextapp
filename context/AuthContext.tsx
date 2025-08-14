@@ -8,7 +8,6 @@ import React, {
   useRef,
 } from "react";
 import { getAuthStatus, UserAuthStatus } from "@/utils/auth";
-import axios from "axios";
 import { usePathname, useRouter } from "next/navigation";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
 
@@ -16,7 +15,7 @@ interface AuthContextType {
   user: UserAuthStatus | null;
   loading: boolean;
   logout: () => void;
-}
+};
 
 const AuthContext = createContext<AuthContextType>({
   user: null,

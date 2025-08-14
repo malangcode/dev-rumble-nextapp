@@ -4,18 +4,11 @@ import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
-import HomePageSkeleton from "@/components/HomePageSkeleton";
 import { useAuth } from "@/context/AuthContext";
-import { useGlobalContext } from "@/context/GlobalContext";
 
 export default function HomePage() {
   // const [loading, setLoading] = useState(true);
   const { user, logout, loading } = useAuth();
-  const { refreshCounters } = useGlobalContext();
-
-  useEffect(() => {
-    refreshCounters();
-  }, []);
 
   // useEffect(() => {
   //   // Simulate a loading delay (e.g., fetching data)
@@ -23,7 +16,7 @@ export default function HomePage() {
   //   return () => clearTimeout(timer);
   // }, []);
 
-  if (loading) return <HomePageSkeleton />;
+  if (loading) return <div>Loading...</div>;
 
   return (
     <section className="min-h-screen bg-[var(--bg-component)] px-4 py-12 flex flex-col items-center justify-center text-center">
