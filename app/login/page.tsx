@@ -67,9 +67,9 @@ export default function LoginPage() {
   });
 
   const handleGithubLogin = () => {
-    const clientId = "Ov23liP5fwlwEjWUsogo"; // Replace with your real GitHub client ID
-    // const redirectUri = "http://localhost:3000/github-callback"; // Must match GitHub App setting
-    const redirectUri = "https://cms-nextapp-sandy.vercel.app/github-callback"; // Must match GitHub App setting
+    const clientId = "Ov23li2EaARy6c1mz8NK"; // Replace with your real GitHub client ID
+    const redirectUri = "http://localhost:3000/github-callback"; // Must match GitHub App setting
+    // const redirectUri = "https://cms-nextapp-sandy.vercel.app/github-callback"; // Must match GitHub App setting
 
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user user:email`;
 
@@ -132,7 +132,7 @@ export default function LoginPage() {
               id="email"
               value={email}
               required
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e:any) => setEmail(e.target.value)}
               className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="you@example.com"
             />
@@ -150,12 +150,12 @@ export default function LoginPage() {
               id="password"
               value={password}
               required
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e:any) => setPassword(e.target.value)}
               className="w-full mt-1 pr-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="••••••••"
             />
             <button
-              type="button"
+              // type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute top-[38px] right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
               aria-label={showPassword ? "Hide password" : "Show password"}

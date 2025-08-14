@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { HiEye, HiEyeOff } from "react-icons/hi";
@@ -99,7 +99,7 @@ export default function SignupPage() {
   });
 
   const handleGithubLogin = () => {
-    const clientId = "Ov23liP5fwlwEjWUsogo"; // Replace with your real GitHub client ID
+    const clientId = "Ov23li2EaARy6c1mz8NK"; // Replace with your real GitHub client ID
     const redirectUri = "http://localhost:3000/github-callback"; // Must match GitHub App setting
 
     const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=read:user user:email`;
@@ -144,7 +144,7 @@ export default function SignupPage() {
               id="username"
               value={username}
               required
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setUsername(e.target.value)}
               className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="Your username"
             />
@@ -162,7 +162,7 @@ export default function SignupPage() {
               id="email"
               value={email}
               required
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setEmail(e.target.value)}
               className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="you@example.com"
             />
@@ -180,12 +180,12 @@ export default function SignupPage() {
               id="password"
               value={password}
               required
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: { target: { value: SetStateAction<string>; }; }) => setPassword(e.target.value)}
               className="w-full mt-1 pr-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="••••••••"
             />
             <button
-              type="button"
+              // type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute top-[38px] right-3 text-gray-500 hover:text-gray-700 focus:outline-none"
               aria-label={showPassword ? "Hide password" : "Show password"}
@@ -206,7 +206,7 @@ export default function SignupPage() {
               id="confirmPassword"
               value={confirmPassword}
               required
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e:any) => setConfirmPassword(e.target.value)}
               className="w-full mt-1 pr-10 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               placeholder="••••••••"
             />
