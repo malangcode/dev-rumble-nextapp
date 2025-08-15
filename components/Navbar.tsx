@@ -26,7 +26,18 @@ import {
   HiOutlineShieldCheck, // Optional for admin panel icon
 } from "react-icons/hi";
 import Logo from "./LogoSwitcher";
-import { Bell, GraduationCap, Moon, Search, Sparkles, Sun } from "lucide-react";
+import {
+  Bell,
+  CalendarDays,
+  GraduationCap,
+  Handshake,
+  Moon,
+  School,
+  Search,
+  Sparkles,
+  Sun,
+  UsersRound,
+} from "lucide-react";
 
 const navLinks = [
   { name: "Home", href: "/", icon: HiHome },
@@ -330,6 +341,110 @@ export default function Navbar() {
               )}
             >
               Settings
+            </span>
+          </Link>
+          <Link
+            href="/settings"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/settings"
+                  ? "bg-blue-600 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+              )}
+            >
+              <CalendarDays className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/settings"
+                  ? "text-blue-600"
+                  : "text-gray-700 hover:text-blue-600"
+              )}
+            >
+              Event
+            </span>
+          </Link>
+          <Link
+            href="/settings"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/settings"
+                  ? "bg-blue-600 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+              )}
+            >
+              <Handshake className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/settings"
+                  ? "text-blue-600"
+                  : "text-gray-700 hover:text-blue-600"
+              )}
+            >
+              Find Buddy
+            </span>
+          </Link>
+          <Link
+            href="/settings"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/settings"
+                  ? "bg-blue-600 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+              )}
+            >
+              <UsersRound className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/settings"
+                  ? "text-blue-600"
+                  : "text-gray-700 hover:text-blue-600"
+              )}
+            >
+              Group
+            </span>
+          </Link>
+          <Link
+            href="/settings"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/settings"
+                  ? "bg-blue-600 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+              )}
+            >
+              <School className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/settings"
+                  ? "text-blue-600"
+                  : "text-gray-700 hover:text-blue-600"
+              )}
+            >
+              ClassRoom
             </span>
           </Link>
 
