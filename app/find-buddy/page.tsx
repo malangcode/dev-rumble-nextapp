@@ -139,7 +139,7 @@ export default function FindBuddy() {
 
         {/* Buddy List */}
         <div className="space-y-6">
-          {filteredBuddies.map((b) => (
+          {filteredBuddies.map((b:any) => (
             <div
               key={b.id}
               className="p-6 rounded-2xl bg-white/70 dark:bg-zinc-900/70 border border-white/20 shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
@@ -161,7 +161,7 @@ export default function FindBuddy() {
                   </h2>
                   <p className="text-sm text-gray-500">{b.faculty}</p>
                   <div className="flex flex-wrap gap-2 mt-2">
-                    {b.skills.map((skill, idx) => (
+                    {b.skills.map((skill:any, idx:any) => (
                       <span
                         key={idx}
                         className="px-3 py-1 text-xs rounded-full bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow"
