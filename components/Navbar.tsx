@@ -288,7 +288,7 @@ export default function Navbar() {
           )} */}
 
           <Link
-            href="/dashboard"
+            href="/"
             onClick={toggleSidebar}
             className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
           >
