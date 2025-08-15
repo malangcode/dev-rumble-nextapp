@@ -38,7 +38,7 @@ export default function ChatPopup() {
       {/* Chat Button */}
       <button
         onClick={() => setIsOpen((prev) => !prev)}
-        className="fixed bottom-6 right-6 z-50 p-4 rounded-full shadow-lg bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white hover:scale-105 transition"
+        className="fixed bottom-24 left-6 z-50 p-4 rounded-full shadow-lg bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white hover:scale-105 transition"
       >
         <HiOutlineChatAlt2 size={24} />
       </button>

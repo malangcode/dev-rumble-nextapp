@@ -39,6 +39,7 @@ import {
   Sun,
   UsersRound,
 } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
   { name: "Home", href: "/", icon: HiHome },
@@ -130,15 +131,18 @@ export default function Navbar() {
       </nav> */}
       {/* Top Nav */}
       <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-3">
-          <span className="inline-flex items-center gap-2 font-semibold">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
+          {/* <span className="inline-flex items-center gap-2 font-semibold">
             <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow-md">
               <GraduationCap className="w-4 h-4" />
             </span>
             <span className="text-lg tracking-tight">
               Campus<span className="text-indigo-500">X</span>
             </span>
-          </span>
+          </span> */}
+          <Image src="/icons/logo12.png" alt="CampusX Logo" width={130} height={130} />
+
+        
 
           {/* Search */}
           <div className="flex-1 hidden md:flex">
@@ -149,18 +153,16 @@ export default function Navbar() {
                   aria-label="Search"
                   // value={query}
                   // onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search courses, files, people… (Ctrl/Cmd + K)"
+                  placeholder="Search courses, files, people…"
                   className="w-full rounded-2xl pl-9 pr-4 py-2 bg-white/60 dark:bg-zinc-900/60 border border-white/30 dark:border-white/10 outline-none focus:ring-2 ring-indigo-400/60 shadow-sm"
                 />
-                <kbd className="hidden lg:flex absolute right-3 top-1/2 -translate-y-1/2 text-[10px] px-1.5 py-0.5 rounded bg-zinc-900/90 text-white/80 dark:bg-white/10">
-                  ⌘K
-                </kbd>
+                
               </div>
             </label>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-6  ml-auto">
             <button
               // onClick={() => setPaletteOpen(true)}
               className="hidden md:inline-flex items-center gap-1 rounded-xl px-3 py-2 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"

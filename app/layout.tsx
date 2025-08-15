@@ -14,8 +14,8 @@ import AssistantWrapper from "@/components/AssistantUI";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SmartCanteen",
-  description: "Modern canteen management system for colleges",
+  title: "Learn-Z",
+  description: "Modern Learning Platform AI Powered",
 };
 
 export default function RootLayout({

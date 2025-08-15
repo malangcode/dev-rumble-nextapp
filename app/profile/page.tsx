@@ -206,7 +206,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="scrollbar mt-10 flex justify-center gap-8 border-b border-white/20 dark:border-white/10 overflow-x-scroll ">
+        <div className="scrollbar overflow-x-auto mt-10 flex justify-center gap-8 border-b border-white/20 dark:border-white/10">
           {["overview", "courses", "groups", "friends", "friendRequest"].map(
             (tab) => (
               <button

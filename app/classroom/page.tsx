@@ -73,9 +73,9 @@ const TeachingChatUI: React.FC = () => {
       id: 1,
       title: "Introduction to Calculus",
       date: "2 hours ago",
-      active: true,
+      active: false,
     },
-    { id: 2, title: "Physics: Wave Motion", date: "1 day ago", active: false },
+    { id: 2, title: "Physics: Wave Motion", date: "1 day ago", active: true },
     { id: 3, title: "Chemistry Basics", date: "3 days ago", active: false },
     { id: 4, title: "Programming Logic", date: "1 week ago", active: false },
   ]);
@@ -155,6 +155,14 @@ const TeachingChatUI: React.FC = () => {
     }
   }, [animationPlaying]);
 
+  const playWaveVideo = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = false; // play with sound
+      videoRef.current.currentTime = 0; // restart video
+      videoRef.current.play().catch(console.error);
+    }
+  };
+
   // Auto-scroll messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -162,6 +170,11 @@ const TeachingChatUI: React.FC = () => {
 
   const sendMessage = async () => {
     if (!message.trim()) return;
+
+    // If message contains 'wave', play video
+    if (message.toLowerCase().includes("wave")) {
+      playWaveVideo();
+    }
 
     const newMessage: Message = {
       id: Date.now(),
@@ -190,6 +203,7 @@ const TeachingChatUI: React.FC = () => {
       // speakText(aiText);
       // Play AI voice
       const audio = new Audio(`data:audio/mpeg;base64,${res.ai_audio}`);
+      console.log("AI audio response:", res.ai_audio);
       audio.play();
 
       setMessages((prev) =>
@@ -235,6 +249,28 @@ const TeachingChatUI: React.FC = () => {
     }, 1000);
   };
 
+  const [lessonPlaying, setLessonPlaying] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const handleStartLesson = () => {
+    if (!lessonPlaying) {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+        videoRef.current.muted = false;
+        videoRef.current.play().catch((err) => {
+          console.warn("Autoplay with sound blocked:", err);
+        });
+      }
+      setLessonPlaying(true);
+    } else {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+      setLessonPlaying(false);
+    }
+  };
+
   const startTeachingAnimation = () => {
     setAnimationPlaying(true);
     setCanvasElements([]);
@@ -262,7 +298,7 @@ const TeachingChatUI: React.FC = () => {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex flex-col overflow-hidden">
+    <div className="w-full h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900 flex flex-col overflow-hidden">
       {/* VS Code Style Top Bar */}
       <div className="bg-gray-800 text-white flex items-center px-4 py-2 gap-4 border-b border-gray-700 justify-between">
         <div className="flex items-center gap-2">
@@ -318,7 +354,7 @@ const TeachingChatUI: React.FC = () => {
           </button>
           <button
             onClick={() => {
-              router.push("/") // Redirect to home or logout
+              router.push("/"); // Redirect to home or logout
             }}
             className="flex items-center gap-2 hover:bg-gray-700 px-3 py-1 rounded ml-auto text-red-400"
           >
@@ -382,12 +418,18 @@ const TeachingChatUI: React.FC = () => {
             <div className="flex-1 relative bg-gradient-to-b from-gray-800/30 to-gray-900/30 backdrop-blur-sm border border-gray-700/30 m-2 rounded-xl overflow-hidden">
               {/* Canvas Controls */}
               <div className="absolute top-4 left-4 z-10 flex gap-2">
-                <button
+                {/* <button
                   onClick={startTeachingAnimation}
                   className="bg-green-600/80 backdrop-blur-sm text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 flex items-center gap-2"
                 >
                   <Play className="text-sm" />
                   Teach
+                </button> */}
+                <button
+                  className="bg-green-600/80 backdrop-blur-sm text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 flex items-center gap-2"
+                  onClick={handleStartLesson}
+                >
+                  ▶ {lessonPlaying ? "Stop Lesson" : "Start Lesson"}
                 </button>
                 <button
                   onClick={clearCanvas}
@@ -436,22 +478,16 @@ const TeachingChatUI: React.FC = () => {
                   </div>
                 ))}
 
-                {/* Central Welcome Message */}
-                {canvasElements.length === 0 && (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center text-gray-400">
-                      <div className="text-6xl mb-4">
-                        <Bot className="mx-auto animate-bounce" />
-                      </div>
-                      <h2 className="text-2xl font-bold mb-2">
-                        Interactive Teaching Canvas
-                      </h2>
-                      <p className="text-lg">
-                        Ask me anything and I'll explain it visually!
-                      </p>
-                    </div>
-                  </div>
-                )}
+                <div className="absolute inset-0 flex items-center justify-center m-8 mt-15">
+                  <video
+                    ref={videoRef}
+                    src="/video/wave.mp4"
+                    playsInline
+                    muted={false}
+                    style={{ display: lessonPlaying ? "block" : "none" }}
+                    className="rounded-lg shadow-lg max-w-full max-h-full"
+                  />
+                </div>
               </div>
             </div>
 
@@ -566,7 +602,7 @@ const TeachingChatUI: React.FC = () => {
             {/* Input Area */}
             {layout.showChatInput && (
               <div className="p-4">
-                <div className="flex items-center bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 px-4 py-3">
+                <div className="w-full flex items-center bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 px-4 py-3">
                   <input
                     type="text"
                     value={message}
@@ -575,9 +611,7 @@ const TeachingChatUI: React.FC = () => {
                     placeholder="Ask me to explain any concept..."
                     className="flex-1 bg-transparent text-white placeholder-gray-400 outline-none text-sm"
                   />
-                  <div className="flex items-center gap-2 ml-4">
-                    <Paperclip className="text-gray-400 text-sm cursor-pointer hover:text-white transition-colors" />
-                    <Mic className="text-gray-400 text-sm cursor-pointer hover:text-white transition-colors" />
+                  <div className="flex items-center gap-2">
                     <button
                       onClick={sendMessage}
                       className="bg-gradient-to-r from-purple-600 to-violet-600 text-white p-2 rounded-lg hover:from-purple-700 hover:to-violet-700 transition-all duration-300 hover:scale-105"
