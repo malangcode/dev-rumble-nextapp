@@ -9,8 +9,8 @@ export default function FindBuddy() {
   const initialBuddies = [
     {
       id: 1,
-      name: "Aarav Sharma",
-      faculty: "Computer Science",
+      name: "Bibek Adhikari",
+      faculty: "BIT",
       skills: ["React", "Node.js", "MongoDB"],
       avatar: "/images/profile2.jpg",
     },
