@@ -31,6 +31,7 @@ import {
   CalendarDays,
   GraduationCap,
   Handshake,
+  LayoutDashboard,
   Moon,
   School,
   Search,
@@ -286,6 +287,33 @@ export default function Navbar() {
             </>
           )} */}
 
+          <Link
+            href="/dashboard"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/profile"
+                  ? "bg-blue-600 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+              )}
+            >
+              <LayoutDashboard className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/profile"
+                  ? "text-blue-600"
+                  : "text-gray-700 hover:text-blue-600"
+              )}
+            >
+              Dashboard
+            </span>
+          </Link>
+
           {/* Profile */}
           <Link
             href="/profile"
@@ -315,7 +343,7 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/settings"
+            href="/events"
             onClick={toggleSidebar}
             className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
           >
@@ -337,11 +365,11 @@ export default function Navbar() {
                   : "text-gray-700 hover:text-blue-600"
               )}
             >
-              Event
+              Events
             </span>
           </Link>
           <Link
-            href="/settings"
+            href="/find-buddy"
             onClick={toggleSidebar}
             className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
           >
@@ -367,7 +395,7 @@ export default function Navbar() {
             </span>
           </Link>
           <Link
-            href="/settings"
+            href="/group"
             onClick={toggleSidebar}
             className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
           >
@@ -393,7 +421,7 @@ export default function Navbar() {
             </span>
           </Link>
           <Link
-            href="/settings"
+            href="/classroom"
             onClick={toggleSidebar}
             className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
           >
