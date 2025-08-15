@@ -26,7 +26,18 @@ import {
   HiOutlineShieldCheck, // Optional for admin panel icon
 } from "react-icons/hi";
 import Logo from "./LogoSwitcher";
-import { Bell, CalendarDays, GraduationCap, Handshake, Moon, School, Search, Sparkles, Sun, UsersRound } from "lucide-react";
+import {
+  Bell,
+  CalendarDays,
+  GraduationCap,
+  Handshake,
+  Moon,
+  School,
+  Search,
+  Sparkles,
+  Sun,
+  UsersRound,
+} from "lucide-react";
 
 const navLinks = [
   { name: "Home", href: "/", icon: HiHome },
@@ -168,24 +179,40 @@ export default function Navbar() {
               <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-fuchsia-500 shadow-[0_0_0_2px_rgba(255,255,255,0.75)] dark:shadow-[0_0_0_2px_rgba(24,24,27,1)]" />
             </button>
 
-            <button
-              className="flex items-center gap-2 rounded-2xl pl-1 pr-3 py-1 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
-              aria-label="Open profile"
-              onClick={toggleSidebar}
-            >
-              <div className="relative">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-fuchsia-500 to-amber-500" />
-                <span className="absolute -bottom-1 -right-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
-                  S
-                </span>
-              </div>
-              <div className="text-left leading-tight">
-                <span className="block text-xs text-zinc-500 dark:text-zinc-400">
-                  Student
-                </span>
-                <span className="block text-sm font-medium">Laxmi S.</span>
-              </div>
-            </button>
+            {user ? (
+              <button
+                className="flex items-center gap-2 rounded-2xl pl-1 pr-3 py-1 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+                aria-label="Open profile"
+                onClick={toggleSidebar}
+              >
+                
+                <div className="text-left leading-tight">
+                  <span className="block text-xs text-zinc-500 dark:text-zinc-400">
+                    Student
+                  </span>
+                  <span className="block text-sm font-medium">John Doe</span>
+                </div>
+              </button>
+            ) : (
+              <button
+                onClick={toggleSidebar}
+                className="flex items-center gap-2 rounded-2xl pl-1 pr-3 py-1 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+                aria-label="Open profile"
+              >
+                <div className="relative">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-fuchsia-500 to-amber-500" />
+                  <span className="absolute -bottom-1 -right-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
+                    S
+                  </span>
+                </div>
+                <div className="text-left leading-tight">
+                  <span className="block text-xs text-zinc-500 dark:text-zinc-400">
+                    Student
+                  </span>
+                  <span className="block text-sm font-medium">Laxmi S.</span>
+                </div>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -283,6 +310,8 @@ export default function Navbar() {
             </span>
           </Link>
 
+          {/* Find Buddy */}
+
           {/* Settings */}
           <Link
             href="/settings"
@@ -375,7 +404,6 @@ export default function Navbar() {
                   : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
               )}
             >
-              
               <UsersRound className="text-xl" />
             </div>
             <span
