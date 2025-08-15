@@ -63,7 +63,7 @@ export default function ProfilePage() {
 
         {/* Tabs */}
         <div className="mt-10 flex justify-center gap-8 border-b border-white/20 dark:border-white/10">
-          {["overview", "courses", "groups", "timeline"].map((tab) => (
+          {["overview", "courses", "groups", "Friends","FriendRequest"].map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -87,10 +87,10 @@ export default function ProfilePage() {
                 Contact
               </h3>
               <p className="flex items-center gap-2 text-sm text-gray-500">
-                <HiOutlineMail /> john.doe@example.com
+                <HiOutlineMail /> heydev@example.com
               </p>
               <p className="flex items-center gap-2 text-sm text-gray-500">
-                <HiOutlinePhone /> +61 987654321
+                <HiOutlinePhone /> +977 123-456-7890
               </p>
             </div>
 
