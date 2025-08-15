@@ -245,7 +245,7 @@ export default function StudentDashboard() {
 
   return (
     <div className={dark ? "dark" : ""}>
-      <div className="pt-4 min-h-screen bg-gradient-to-br from-sky-50 via-indigo-50 to-fuchsia-50 dark:from-zinc-950 dark:via-slate-950 dark:to-indigo-950 text-zinc-900 dark:text-zinc-100">
+      <div className="pt-4 pb-16 min-h-screen bg-gradient-to-br from-sky-50 via-indigo-50 to-fuchsia-50 dark:from-zinc-950 dark:via-slate-950 dark:to-indigo-950 text-zinc-900 dark:text-zinc-100">
 
         {/* Hero */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
@@ -388,14 +388,6 @@ export default function StudentDashboard() {
             </motion.section>
           </div>
         </main>
-
-        {/* Footer */}
-        <footer className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 text-xs text-zinc-500 dark:text-zinc-400">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            <p>© {new Date().getFullYear()} CampusX · Student Dashboard</p>
-            <p className="flex items-center gap-1">Built with <span className="text-pink-500">♥</span> · Press <kbd className="px-1 py-0.5 rounded bg-zinc-900/90 text-white/80 dark:bg-white/10">Ctrl/Cmd + K</kbd> for Quick Actions</p>
-          </div>
-        </footer>
       </div>
 
       {/* Command Palette */}

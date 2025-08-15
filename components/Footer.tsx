@@ -10,7 +10,7 @@ import {
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white pt-12 pb-8 mt-16">
+    <footer className="relative bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-700 text-white pt-12 pb-8 ">
       <div className="absolute inset-0 bg-black/30 backdrop-blur-md"></div>
 
       <div className="relative max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10 text-sm">
