@@ -87,7 +87,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-tr from-indigo-50 via-sky-50 to-white dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-900">
   <div className="w-full max-w-md space-y-6 rounded-3xl border border-white/30 dark:border-white/10 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl shadow-xl p-6">
-    <h2 className="text-2xl font-bold text-center bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
+    <h2 className="text-2xl font-bold text-center bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">
       Welcome Back
     </h2>
 
@@ -175,7 +175,7 @@ export default function LoginPage() {
 
       <Button
         type="submit"
-        className="w-full rounded-xl bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 text-white shadow hover:opacity-90 transition"
+        className="w-full rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow hover:opacity-90 transition"
       >
         {loggingIn ? "Logging in..." : "Login"}
       </Button>
@@ -185,7 +185,7 @@ export default function LoginPage() {
       Don't have an account?{" "}
       <Link
         href="/signup"
-        className="text-fuchsia-500 hover:underline hover:text-fuchsia-600"
+        className="text-indigo-500 hover:underline hover:text-indigo-600"
       >
         Sign up here
       </Link>
