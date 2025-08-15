@@ -4,29 +4,94 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiSearch } from "react-icons/fi";
+import Link from "next/link";
 
 export default function FindBuddy() {
   const initialBuddies = [
     {
-      id: 1,
-      name: "Bibek Adhikari",
-      faculty: "BIT",
-      skills: ["React", "Node.js", "MongoDB"],
+      id: "1",
+      name: "Aarav Sharma",
+      faculty: "Computer Science – Senior",
+      location: "Sydney, Australia",
+      email: "aarav@example.com",
+      phone: "+977 9876543210",
       avatar: "/images/profile2.jpg",
+      gpa: "3.8",
+      credits: "92",
+      attendance: "96%",
+      skills: ["React", "Node.js", "MongoDB", "UI/UX Design"],
+      courses: [
+        { id: 1, name: "React Development", credits: 3, grade: "A" },
+        { id: 2, name: "AI Fundamentals", credits: 4, grade: "B+" },
+      ],
     },
     {
-      id: 2,
+      id: "2",
       name: "Priya Khadka",
-      faculty: "Information Systems",
-      skills: ["Python", "Machine Learning", "Data Analysis"],
+      faculty: "Information Systems – Junior",
+      location: "Kathmandu, Nepal",
+      email: "priya@example.com",
+      phone: "+977 9812345678",
       avatar: "/images/profile2.jpg",
+      gpa: "3.9",
+      credits: "80",
+      attendance: "94%",
+      skills: ["Python", "Data Analysis", "Machine Learning", "SQL"],
+      courses: [
+        { id: 1, name: "Database Management", credits: 3, grade: "A" },
+        { id: 2, name: "Python for Data Science", credits: 4, grade: "A-" },
+      ],
     },
     {
-      id: 3,
+      id: "3",
       name: "Rohan Thapa",
-      faculty: "Network Engineering",
-      skills: ["Cybersecurity", "Linux", "Cloud"],
+      faculty: "Network Engineering – Senior",
+      location: "Melbourne, Australia",
+      email: "rohan@example.com",
+      phone: "+61 456 789 012",
       avatar: "/images/profile2.jpg",
+      gpa: "3.7",
+      credits: "88",
+      attendance: "91%",
+      skills: ["Cybersecurity", "Linux", "Cloud Computing", "Networking"],
+      courses: [
+        { id: 1, name: "Advanced Networking", credits: 3, grade: "A-" },
+        { id: 2, name: "Cloud Infrastructure", credits: 4, grade: "B+" },
+      ],
+    },
+    {
+      id: "4",
+      name: "Sita Adhikari",
+      faculty: "Software Engineering – Sophomore",
+      location: "Pokhara, Nepal",
+      email: "sita@example.com",
+      phone: "+977 9801234567",
+      avatar: "/images/profile2.jpg",
+      gpa: "3.6",
+      credits: "65",
+      attendance: "89%",
+      skills: ["Java", "Spring Boot", "PostgreSQL", "Git"],
+      courses: [
+        { id: 1, name: "Java Programming", credits: 3, grade: "A" },
+        { id: 2, name: "Database Systems", credits: 4, grade: "B+" },
+      ],
+    },
+    {
+      id: "5",
+      name: "Kiran Lama",
+      faculty: "Artificial Intelligence – Senior",
+      location: "Brisbane, Australia",
+      email: "kiran@example.com",
+      phone: "+61 400 123 456",
+      avatar: "/images/profile2.jpg",
+      gpa: "4.0",
+      credits: "100",
+      attendance: "98%",
+      skills: ["Deep Learning", "Computer Vision", "Python", "TensorFlow"],
+      courses: [
+        { id: 1, name: "Deep Learning", credits: 3, grade: "A+" },
+        { id: 2, name: "Computer Vision", credits: 4, grade: "A" },
+      ],
     },
   ];
 
@@ -81,13 +146,15 @@ export default function FindBuddy() {
             >
               {/* Info */}
               <div className="flex items-center gap-5 flex-1">
-                <Image
-                  src={b.avatar}
-                  alt={b.name}
-                  width={70}
-                  height={70}
-                  className="rounded-full border-4 border-white shadow-md"
-                />
+                <Link href={`/profile/${b.id}`}>
+                  <Image
+                    src={b.avatar}
+                    alt={b.name}
+                    width={70}
+                    height={70}
+                    className="rounded-full border-4 border-white shadow-md"
+                  />
+                </Link>
                 <div>
                   <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
                     {b.name}
