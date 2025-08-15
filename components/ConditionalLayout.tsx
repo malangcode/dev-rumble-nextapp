@@ -24,8 +24,8 @@ export default function ConditionalLayout({
         </div>
       ) : (
         // For non-admin routes, keep your normal main wrapper
-        <div className="min-h-screen flex justify-center px-1 pt-3">
-          <main className="w-full max-w-[1200px]">{children}</main>
+        <div className="min-h-screen flex justify-center">
+          <main className="w-full max-full">{children}</main>
         </div>
       )}
 

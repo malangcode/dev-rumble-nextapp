@@ -7,7 +7,6 @@ const ThemeToggle = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
-    // Check if a theme was saved before
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -24,22 +23,19 @@ const ThemeToggle = () => {
   };
 
   return (
-    <div className='flex flex-col items-center text-xs font-medium text-gray-600 hover:text-blue-600 transition-all duration-200'>
     <button
       onClick={toggleTheme}
-      className="flex flex-col items-center text-xs font-medium text-[var(--text-secondary)] bg-[var(--bg-icon)] hover:bg-blue-100 hover:text-blue-600 transition-all duration-200 w-10 h-10 justify-center rounded-full"
+      className="rounded-xl p-2 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 
+                 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+      aria-label="Toggle theme"
       title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
     >
       {theme === 'light' ? (
-        <FiMoon className="w-5 h-5" />
+        <FiMoon className="w-4 h-4" />
       ) : (
-        <FiSun className="w-5 h-5" />
-        
+        <FiSun className="w-4 h-4" />
       )}
     </button>
-    <span className="mt-[6px] text-[var(--text-secondary)] hidden md:block">{theme === 'light' ? 'Light Mode' : 'Dark Mode'}</span>
-    </div>
-    
   );
 };
 
