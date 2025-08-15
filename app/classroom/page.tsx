@@ -354,7 +354,7 @@ const TeachingChatUI: React.FC = () => {
           </button>
           <button
             onClick={() => {
-              router.push("/"); // Redirect to home or logout
+              router.push("/dashboard"); // Redirect to home or logout
             }}
             className="flex items-center gap-2 hover:bg-gray-700 px-3 py-1 rounded ml-auto text-red-400"
           >

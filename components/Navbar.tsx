@@ -72,77 +72,19 @@ export default function Navbar() {
     setIsSidebarOpen(false);
     window.location.href = "/login";
   };
+  const router = useRouter();
 
   return (
     <>
-      {/* <nav
-        className=" shadow-md sticky top-0 z-50"
-        style={{ backgroundColor: "var(--bg-card)" }}
-      >
-        <div className="max-w-7xl mx-auto px-4 py-1 sm:py-2 flex justify-between items-center">
-          <Logo />
-
-          <div className="hidden md:flex items-center space-x-16">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="flex flex-col items-center text-xs font-medium text-[var(--text-secondary)] hover:text-blue-600 transition-all duration-200"
-                >
-                  <div
-                    className={cn(
-                      "w-10 relative h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                      isActive
-                        ? "bg-[var(--color-primary)] text-white shadow"
-                        : "bg-[var(--bg-icon)] text-[var(--text-secondary)] hover:bg-blue-100 hover:text-blue-600"
-                    )}
-                  >
-                    <Icon className="text-lg" />
-                   
-                  </div>
-                  <span className="mt-[6px]">{link.name}</span>
-                </Link>
-              );
-            })}
-          </div>
-
-          <ThemeToggle />
-
-          {user ? (
-            <img
-              src="/images/profile2.jpg"
-              alt="Profile"
-              onClick={toggleSidebar}
-              className="w-10 h-10 sm:w-12 sm:h-12 lg:w-13 lg:h-13 rounded-full cursor-pointer object-cover shadow-md transition-transform duration-200 hover:scale-105 hover:shadow-lg border-2 border-white"
-            />
-          ) : (
-            <button
-              onClick={toggleSidebar}
-              className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition duration-200 flex items-center justify-center"
-            >
-              <HiOutlineUserCircle className="text-xl" />
-            </button>
-          )}
-        </div>
-      </nav> */}
       {/* Top Nav */}
       <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
-          {/* <span className="inline-flex items-center gap-2 font-semibold">
-            <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow-md">
-              <GraduationCap className="w-4 h-4" />
-            </span>
-            <span className="text-lg tracking-tight">
-              Campus<span className="text-indigo-500">X</span>
-            </span>
-          </span> */}
-          <Image src="/icons/logo12.png" alt="CampusX Logo" width={130} height={130} />
-
-        
+          <Image onClick={() => router.push("/")}
+            src="/icons/logo12.png"
+            alt="Learn-Z"
+            width={130}
+            height={130}
+          />
 
           {/* Search */}
           <div className="flex-1 hidden md:flex">
@@ -156,7 +98,6 @@ export default function Navbar() {
                   placeholder="Search courses, files, people…"
                   className="w-full rounded-2xl pl-9 pr-4 py-2 bg-white/60 dark:bg-zinc-900/60 border border-white/30 dark:border-white/10 outline-none focus:ring-2 ring-indigo-400/60 shadow-sm"
                 />
-                
               </div>
             </label>
           </div>
@@ -175,6 +116,9 @@ export default function Navbar() {
             {/* <ThemeToggle /> */}
 
             <button
+              onClick={() => {
+                router.push("/notification");
+              }}
               className="relative rounded-xl p-2 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
               aria-label="Notifications"
             >
@@ -201,7 +145,9 @@ export default function Navbar() {
                   <span className="block text-xs text-zinc-500 dark:text-zinc-400">
                     Student
                   </span>
-                  <span className="block text-sm font-medium">{user?.username}</span>
+                  <span className="block text-sm font-medium">
+                    {user?.username}
+                  </span>
                 </div>
               </button>
             ) : (
@@ -237,14 +183,12 @@ export default function Navbar() {
       >
         {/* Header */}
         <div className="flex justify-between items-center px-4 py-2 border-b border-white/20 dark:border-white/10">
-          <span className="inline-flex items-center gap-2 font-semibold">
-            <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow-md">
-              <GraduationCap className="w-4 h-4" />
-            </span>
-            <span className="text-lg tracking-tight">
-              Campus<span className="text-indigo-500">X</span>
-            </span>
-          </span>
+          <Image onClick={() => router.push("/")}
+            src="/icons/logo12.png"
+            alt="Learn-Z"
+            width={130}
+            height={130}
+          />
           <button
             onClick={toggleSidebar}
             className="rounded-xl p-2 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm text-gray-600 hover:text-red-500"
@@ -255,53 +199,15 @@ export default function Navbar() {
 
         {/* Nav */}
         <nav className="p-4 space-y-2">
-          {/* {isSmallScreen && (
-            <>
-              {[
-                { href: "/", label: "Home", icon: HiOutlineHome },
-                { href: "/menu", label: "Menu", icon: HiOutlineMenu },
-                { href: "/wallet", label: "Wallet", icon: IoWalletOutline },
-                { href: "/cart", label: "Cart", icon: HiOutlineShoppingCart },
-                {
-                  href: "/notifications",
-                  label: "Notifications",
-                  icon: HiOutlineBell,
-                },
-              ].map(({ href, label, icon: Icon }) => {
-                const isActive = pathname === href;
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    onClick={toggleSidebar}
-                    className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm text-gray-700 hover:text-blue-600"
-                  >
-                    <div
-                      className={cn(
-                        "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                        isActive
-                          ? "bg-blue-600 text-white shadow"
-                          : "bg-gray-100 hover:bg-blue-100 hover:text-blue-600"
-                      )}
-                    >
-                      <Icon className="text-xl" />
-                    </div>
-                    <span>{label}</span>
-                  </Link>
-                );
-              })}
-            </>
-          )} */}
-
           <Link
-            href="/"
+            href="/dashboard"
             onClick={toggleSidebar}
             className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
           >
             <div
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                pathname === "/profile"
+                pathname === "/dashboard"
                   ? "bg-blue-600 text-white scale-105 shadow"
                   : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
               )}
@@ -311,7 +217,7 @@ export default function Navbar() {
             <span
               className={cn(
                 "transition-colors duration-200",
-                pathname === "/profile"
+                pathname === "/dashboard"
                   ? "text-blue-600"
                   : "text-gray-700 hover:text-blue-600"
               )}
@@ -356,7 +262,7 @@ export default function Navbar() {
             <div
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                pathname === "/settings"
+                pathname === "/events"
                   ? "bg-blue-600 text-white scale-105 shadow"
                   : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
               )}
@@ -366,7 +272,7 @@ export default function Navbar() {
             <span
               className={cn(
                 "transition-colors duration-200",
-                pathname === "/settings"
+                pathname === "/events"
                   ? "text-blue-600"
                   : "text-gray-700 hover:text-blue-600"
               )}
@@ -382,7 +288,7 @@ export default function Navbar() {
             <div
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                pathname === "/settings"
+                pathname === "/find-buddy"
                   ? "bg-blue-600 text-white scale-105 shadow"
                   : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
               )}
@@ -392,7 +298,7 @@ export default function Navbar() {
             <span
               className={cn(
                 "transition-colors duration-200",
-                pathname === "/settings"
+                pathname === "/find-buddy"
                   ? "text-blue-600"
                   : "text-gray-700 hover:text-blue-600"
               )}
@@ -408,7 +314,7 @@ export default function Navbar() {
             <div
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                pathname === "/settings"
+                pathname === "/group"
                   ? "bg-blue-600 text-white scale-105 shadow"
                   : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
               )}
@@ -418,7 +324,7 @@ export default function Navbar() {
             <span
               className={cn(
                 "transition-colors duration-200",
-                pathname === "/settings"
+                pathname === "/group"
                   ? "text-blue-600"
                   : "text-gray-700 hover:text-blue-600"
               )}
@@ -434,7 +340,7 @@ export default function Navbar() {
             <div
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
-                pathname === "/settings"
+                pathname === "/classroom"
                   ? "bg-blue-600 text-white scale-105 shadow"
                   : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
               )}
@@ -444,7 +350,7 @@ export default function Navbar() {
             <span
               className={cn(
                 "transition-colors duration-200",
-                pathname === "/settings"
+                pathname === "/classroom"
                   ? "text-blue-600"
                   : "text-gray-700 hover:text-blue-600"
               )}

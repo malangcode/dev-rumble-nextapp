@@ -1,78 +1,72 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { HiOutlineBell, HiX } from "react-icons/hi";
+import { Bell, CheckCircle, AlertCircle } from "lucide-react";
 
-export default function NotificationSidebar() {
-  const [isOpen, setIsOpen] = useState(false);
-
-  // Dummy notification data
+export default function Notification() {
   const notifications = [
     {
       id: 1,
-      title: "New Friend Request",
-      message: "Aarav Sharma sent you a friend request.",
-      time: "2 mins ago",
+      type: "success",
+      title: "Booking Confirmed",
+      message: "Your bus ticket has been successfully booked!",
+      time: "2 min ago",
     },
     {
       id: 2,
-      title: "New Message",
-      message: "Priya Khadka: Hey, how’s your project going?",
-      time: "10 mins ago",
+      type: "warning",
+      title: "Payment Pending",
+      message: "Your payment is still processing, please check again later.",
+      time: "15 min ago",
     },
     {
       id: 3,
-      title: "Classroom Invite",
-      message: "You’ve been added to Web Dev Group.",
+      type: "info",
+      title: "New Offer",
+      message: "Get 20% discount on your next booking!",
       time: "1 hr ago",
     },
   ];
 
+  const getIcon = (type:any) => {
+    switch (type) {
+      case "success":
+        return <CheckCircle className="text-green-500 w-6 h-6" />;
+      case "warning":
+        return <AlertCircle className="text-yellow-500 w-6 h-6" />;
+      case "info":
+        return <Bell className="text-blue-500 w-6 h-6" />;
+      default:
+        return <Bell className="text-gray-500 w-6 h-6" />;
+    }
+  };
+
   return (
-    <>
-      {/* Notification Button */}
-      <button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 right-6 p-4 rounded-full shadow-lg bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white hover:scale-105 transition z-50"
-      >
-        <HiOutlineBell size={24} />
-      </button>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-200 dark:from-zinc-900 dark:to-zinc-800 p-6">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-100 flex items-center gap-2">
+          <Bell className="w-6 h-6 text-fuchsia-500" /> Notifications
+        </h1>
 
-      {/* Sidebar */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.aside
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "tween", duration: 0.3 }}
-            className="fixed top-0 right-0 w-80 sm:w-96 h-full bg-white/10 backdrop-blur-lg border-l border-white/20 shadow-xl z-50 flex flex-col"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white">
-              <h2 className="text-lg font-semibold">Notifications</h2>
-              <button onClick={() => setIsOpen(false)}>
-                <HiX size={22} />
-              </button>
+        <div className="space-y-4">
+          {notifications.map((n) => (
+            <div
+              key={n.id}
+              className="flex items-start gap-4 p-4 rounded-xl bg-white/80 dark:bg-zinc-900/70 shadow-sm border border-gray-100 dark:border-zinc-800 hover:shadow-md transition"
+            >
+              <div className="shrink-0">{getIcon(n.type)}</div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
+                  {n.title}
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  {n.message}
+                </p>
+                <span className="text-xs text-gray-400">{n.time}</span>
+              </div>
             </div>
-
-            {/* Notifications List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {notifications.map((note) => (
-                <div
-                  key={note.id}
-                  className="p-3 rounded-lg bg-white/80 text-gray-800 shadow-sm hover:bg-white transition"
-                >
-                  <h4 className="font-semibold text-sm">{note.title}</h4>
-                  <p className="text-xs text-gray-600">{note.message}</p>
-                  <span className="text-[10px] text-gray-500">{note.time}</span>
-                </div>
-              ))}
-            </div>
-          </motion.aside>
-        )}
-      </AnimatePresence>
-    </>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
