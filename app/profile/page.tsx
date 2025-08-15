@@ -4,12 +4,117 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone } from "react-icons/hi";
+import Link from "next/link";
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
 
+  // Dummy data
+  const courses = [
+    { id: 1, name: "Advanced Web Development", credits: 3, grade: "A" },
+    { id: 2, name: "Machine Learning Basics", credits: 4, grade: "B+" },
+    { id: 3, name: "Database Management Systems", credits: 3, grade: "A-" },
+  ];
+
+  const groups = [
+    { id: 1, name: "AI Enthusiasts", role: "Member", members: 24 },
+    { id: 2, name: "Full-Stack Devs", role: "Admin", members: 18 },
+  ];
+
+  const friends = [
+    {
+      id: "1",
+      name: "Aarav Sharma",
+      faculty: "Computer Science – Senior",
+      location: "Sydney, Australia",
+      email: "aarav@example.com",
+      phone: "+977 9876543210",
+      avatar: "/images/profile2.jpg",
+      gpa: "3.8",
+      credits: "92",
+      attendance: "96%",
+      skills: ["React", "Node.js", "MongoDB", "UI/UX Design"],
+      courses: [
+        { id: 1, name: "React Development", credits: 3, grade: "A" },
+        { id: 2, name: "AI Fundamentals", credits: 4, grade: "B+" },
+      ],
+    },
+    {
+      id: "2",
+      name: "Priya Khadka",
+      faculty: "Information Systems – Junior",
+      location: "Kathmandu, Nepal",
+      email: "priya@example.com",
+      phone: "+977 9812345678",
+      avatar: "/images/profile2.jpg",
+      gpa: "3.9",
+      credits: "80",
+      attendance: "94%",
+      skills: ["Python", "Data Analysis", "Machine Learning", "SQL"],
+      courses: [
+        { id: 1, name: "Database Management", credits: 3, grade: "A" },
+        { id: 2, name: "Python for Data Science", credits: 4, grade: "A-" },
+      ],
+    },
+    {
+      id: "3",
+      name: "Rohan Thapa",
+      faculty: "Network Engineering – Senior",
+      location: "Melbourne, Australia",
+      email: "rohan@example.com",
+      phone: "+61 456 789 012",
+      avatar: "/images/profile2.jpg",
+      gpa: "3.7",
+      credits: "88",
+      attendance: "91%",
+      skills: ["Cybersecurity", "Linux", "Cloud Computing", "Networking"],
+      courses: [
+        { id: 1, name: "Advanced Networking", credits: 3, grade: "A-" },
+        { id: 2, name: "Cloud Infrastructure", credits: 4, grade: "B+" },
+      ],
+    },
+    {
+      id: "4",
+      name: "Sita Adhikari",
+      faculty: "Software Engineering – Sophomore",
+      location: "Pokhara, Nepal",
+      email: "sita@example.com",
+      phone: "+977 9801234567",
+      avatar: "/images/profile2.jpg",
+      gpa: "3.6",
+      credits: "65",
+      attendance: "89%",
+      skills: ["Java", "Spring Boot", "PostgreSQL", "Git"],
+      courses: [
+        { id: 1, name: "Java Programming", credits: 3, grade: "A" },
+        { id: 2, name: "Database Systems", credits: 4, grade: "B+" },
+      ],
+    },
+    {
+      id: "5",
+      name: "Kiran Lama",
+      faculty: "Artificial Intelligence – Senior",
+      location: "Brisbane, Australia",
+      email: "kiran@example.com",
+      phone: "+61 400 123 456",
+      avatar: "/images/profile2.jpg",
+      gpa: "4.0",
+      credits: "100",
+      attendance: "98%",
+      skills: ["Deep Learning", "Computer Vision", "Python", "TensorFlow"],
+      courses: [
+        { id: 1, name: "Deep Learning", credits: 3, grade: "A+" },
+        { id: 2, name: "Computer Vision", credits: 4, grade: "A" },
+      ],
+    },
+  ];
+
+  const friendRequests = [
+    { id: 1, name: "Rohan Thapa", faculty: "Network Engineering" },
+  ];
+
   return (
-    <div className="min-h-screen px-6 py-10 bg-gradient-to-tr from-indigo-50 via-sky-50 to-white dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-900 flex justify-center items-start">
+    <div className="min-h-screen px-6 py-10 bg-gradient-to-tr from-indigo-50 via-sky-50 flex justify-center items-start">
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
@@ -26,7 +131,7 @@ export default function ProfilePage() {
             className="rounded-full border-4 border-white shadow-lg"
           />
           <div className="text-center">
-            <h1 className="text-3xl font-bold bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">
               John Doe
             </h1>
             <p className="text-base text-gray-600 dark:text-gray-400">
@@ -38,7 +143,7 @@ export default function ProfilePage() {
             <button className="px-6 py-2 rounded-xl bg-white/50 dark:bg-zinc-900/50 border border-white/20 hover:bg-white/70 dark:hover:bg-zinc-900/70 shadow-sm transition">
               Message
             </button>
-            <button className="px-6 py-2 rounded-xl bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 text-white shadow hover:opacity-90 transition">
+            <button className="px-6 py-2 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow hover:opacity-90 transition">
               Edit Profile
             </button>
           </div>
@@ -63,22 +168,24 @@ export default function ProfilePage() {
 
         {/* Tabs */}
         <div className="mt-10 flex justify-center gap-8 border-b border-white/20 dark:border-white/10">
-          {["overview", "courses", "groups", "Friends","FriendRequest"].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`pb-3 text-base capitalize transition-all ${
-                activeTab === tab
-                  ? "border-b-2 border-fuchsia-500 text-fuchsia-500"
-                  : "text-gray-500 hover:text-fuchsia-400"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+          {["overview", "courses", "groups", "friends", "friendRequest"].map(
+            (tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`pb-3 text-base capitalize transition-all ${
+                  activeTab === tab
+                    ? "border-b-2 border-indigo-500 text-indigo-500"
+                    : "text-gray-500 hover:text-indigo-400"
+                }`}
+              >
+                {tab}
+              </button>
+            )
+          )}
         </div>
 
-        {/* Content */}
+        {/* Overview */}
         {activeTab === "overview" && (
           <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Contact */}
@@ -101,11 +208,11 @@ export default function ProfilePage() {
               </h3>
               <p className="text-sm text-gray-500">Unavailable</p>
               <div className="w-full h-3 bg-gray-200 dark:bg-zinc-800 rounded-full mb-4">
-                <div className="w-1/4 h-full bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 rounded-full"></div>
+                <div className="w-1/4 h-full bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 rounded-full"></div>
               </div>
               <p className="text-sm text-gray-500">Wednesday</p>
               <div className="w-full h-3 bg-gray-200 dark:bg-zinc-800 rounded-full">
-                <div className="w-3/4 h-full bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 rounded-full"></div>
+                <div className="w-3/4 h-full bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 rounded-full"></div>
               </div>
             </div>
 
@@ -116,17 +223,124 @@ export default function ProfilePage() {
               </h3>
               <a
                 href="#"
-                className="block text-sm text-fuchsia-500 hover:underline"
+                className="block text-sm text-indigo-500 hover:underline"
               >
                 Academic Resources
               </a>
               <a
                 href="#"
-                className="block text-sm text-fuchsia-500 hover:underline"
+                className="block text-sm text-indigo-500 hover:underline"
               >
                 Student Portal
               </a>
             </div>
+          </div>
+        )}
+
+        {/* Courses */}
+        {activeTab === "courses" && (
+          <div className="mt-8 space-y-4">
+            {courses.map((course) => (
+              <div
+                key={course.id}
+                className="p-4 rounded-xl bg-white/70 dark:bg-zinc-900/70 border border-white/20 shadow-md flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-semibold">{course.name}</h4>
+                  <p className="text-sm text-gray-500">
+                    {course.credits} Credits
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-indigo-500 text-white text-sm">
+                  Grade: {course.grade}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Groups */}
+        {activeTab === "groups" && (
+          <div className="mt-8 space-y-4">
+            {groups.map((group) => (
+              <div
+                key={group.id}
+                className="p-4 rounded-xl bg-white/70 dark:bg-zinc-900/70 border border-white/20 shadow-md flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-semibold">{group.name}</h4>
+                  <p className="text-sm text-gray-500">Role: {group.role}</p>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-indigo-500 text-white text-sm">
+                  {group.members} Members
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Friends */}
+        {activeTab === "friends" && (
+          <div className="mt-8 space-y-4">
+            {friends.map((friend) => (
+              <div
+                key={friend.id}
+                className="flex items-center gap-5 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-lg border border-white/20 dark:border-white/10 rounded-2xl shadow-lg p-5 transition hover:shadow-xl"
+              >
+                {/* Avatar */}
+                <Link href={`/profile/${friend.id}`}>
+                  <Image
+                    src="/images/profile2.jpg"
+                    alt={friend.name}
+                    width={60}
+                    height={60}
+                    className="rounded-full border-4 border-white shadow-md"
+                  />
+                </Link>
+
+                {/* Info */}
+                <div className="flex-1">
+                  <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200">
+                    {friend.name}
+                  </h2>
+                  <p className="text-sm text-gray-500">{friend.faculty}</p>
+                </div>
+
+                {/* Action Button */}
+                <button className="px-5 py-2 rounded-xl text-sm font-semibold bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white hover:opacity-90 transition">
+                  Message
+                </button>
+              </div>
+            ))}
+
+            {friends.length === 0 && (
+              <p className="text-center text-gray-500">No friends found.</p>
+            )}
+          </div>
+        )}
+
+        {/* Friend Requests */}
+        {activeTab === "friendRequest" && (
+          <div className="mt-8 space-y-4">
+            {friendRequests.map((req) => (
+              <div
+                key={req.id}
+                className="p-4 rounded-xl bg-white/70 dark:bg-zinc-900/70 border border-white/20 shadow-md flex justify-between items-center"
+              >
+                <div>
+                  <h4 className="font-semibold">{req.name}</h4>
+                  <p className="text-sm text-gray-500">{req.faculty}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button className="px-3 py-1 bg-green-500 text-white text-sm rounded-lg hover:bg-green-600">
+                    Accept
+                  </button>
+                  <button className="px-3 py-1 bg-red-500 text-white text-sm rounded-lg hover:bg-red-600">
+                    Decline
+                  </button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </motion.div>
