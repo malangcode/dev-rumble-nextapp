@@ -8,7 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { cn } from "@/lib/utils";
 import useMediaQuery from "@/hooks/useMediaQuery";
 import { IoWalletOutline } from "react-icons/io5";
-import ThemeToggle from "./ThemeToggle";
+// import ThemeToggle from "./ThemeToggle";
 
 import {
   HiHome,
@@ -129,7 +129,7 @@ export default function Navbar() {
         </div>
       </nav> */}
       {/* Top Nav */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10">
+      <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-3">
           <span className="inline-flex items-center gap-2 font-semibold">
             <span className="relative inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow-md">
@@ -170,7 +170,7 @@ export default function Navbar() {
               <span className="hidden sm:inline">Quick Actions</span>
             </button>
 
-            <ThemeToggle />
+            {/* <ThemeToggle /> */}
 
             <button
               className="relative rounded-xl p-2 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
@@ -187,7 +187,11 @@ export default function Navbar() {
                 onClick={toggleSidebar}
               >
                 <img
-                  src="/images/profile2.jpg"
+                  src={
+                    user.photo
+                      ? `${BASE_URL}/${user.photo}`
+                      : "/images/profile2.jpg"
+                  }
                   alt="Profile"
                   className="w-8 h-8 rounded-xl object-cover cursor-pointer shadow-md transition-transform duration-200 hover:scale-105 hover:shadow-lg border-2 border-white"
                 />
@@ -195,7 +199,7 @@ export default function Navbar() {
                   <span className="block text-xs text-zinc-500 dark:text-zinc-400">
                     Student
                   </span>
-                  <span className="block text-sm font-medium">John Doe</span>
+                  <span className="block text-sm font-medium">{user?.username}</span>
                 </div>
               </button>
             ) : (
@@ -207,14 +211,14 @@ export default function Navbar() {
                 <div className="relative">
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-fuchsia-500 to-amber-500" />
                   <span className="absolute -bottom-1 -right-1 text-[10px] bg-emerald-500 text-white px-1.5 py-0.5 rounded-full">
-                    S
+                    U
                   </span>
                 </div>
                 <div className="text-left leading-tight">
                   <span className="block text-xs text-zinc-500 dark:text-zinc-400">
                     Student
                   </span>
-                  <span className="block text-sm font-medium">Laxmi S.</span>
+                  <span className="block text-sm font-medium">user</span>
                 </div>
               </button>
             )}

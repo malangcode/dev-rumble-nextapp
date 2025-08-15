@@ -1,13 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone } from "react-icons/hi";
 import Link from "next/link";
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
+
+interface StudentProfile {
+  id: number;
+  photo: string;
+  semester: number;
+  faculty: string;
+  year?: number; // optional since your example didn't show it explicitly but may exist
+  background: string;
+  bio: string;
+  college: string;
+  contact_number: string;
+  gender: string;
+  lcid: string;
+  perm_address: string;
+  temp_address: string;
+  school: string;
+  user: number;
+  full_name: string;
+}
 
 export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
+
+  const [profile, setProfile] = useState<StudentProfile | null>(null);
+
+  const fetchprofile = async () => {
+    try {
+      const { data } = await axiosWithCsrf("/my-profile/");
+
+      setProfile(data);
+      console.log("Profile data:", data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchprofile();
+  }, []);
 
   // Dummy data
   const courses = [
@@ -123,21 +160,23 @@ export default function ProfilePage() {
       >
         {/* Profile Header */}
         <div className="flex flex-col items-center gap-4 pb-8 border-b border-white/20 dark:border-white/10">
-          <Image
-            src="/images/profile2.jpg"
-            alt="Profile"
-            width={120}
-            height={120}
-            className="rounded-full border-4 border-white shadow-lg"
-          />
+          <div className="w-32 h-32 rounded-full border-4 border-white shadow-lg overflow-hidden">
+            <Image
+              src={profile?.photo || "/images/profile2.jpg"}
+              alt="Profile"
+              width={128}
+              height={128}
+              className="object-cover w-full h-full"
+            />
+          </div>
           <div className="text-center">
             <h1 className="text-3xl font-bold bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">
-              John Doe
+              {profile?.full_name}
             </h1>
             <p className="text-base text-gray-600 dark:text-gray-400">
-              Computer Science – Senior
+              {profile?.faculty}
             </p>
-            <p className="text-sm text-gray-500">Sydney, Australia</p>
+            <p className="text-sm text-gray-500">{profile?.perm_address}</p>
           </div>
           <div className="flex gap-4 mt-4">
             <button className="px-6 py-2 rounded-xl bg-white/50 dark:bg-zinc-900/50 border border-white/20 hover:bg-white/70 dark:hover:bg-zinc-900/70 shadow-sm transition">
@@ -152,9 +191,9 @@ export default function ProfilePage() {
         {/* Stats */}
         <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
-            { label: "GPA", value: "3.9" },
+            { label: "Semester", value: profile?.semester || "N/A" },
             { label: "Credits", value: "98" },
-            { label: "Attendance", value: "94%" },
+            { label: "Attendance", value: "95%" },
           ].map((stat) => (
             <div
               key={stat.label}
@@ -167,7 +206,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Tabs */}
-        <div className="mt-10 flex justify-center gap-8 border-b border-white/20 dark:border-white/10">
+        <div className="scrollbar mt-10 flex justify-center gap-8 border-b border-white/20 dark:border-white/10 overflow-x-scroll ">
           {["overview", "courses", "groups", "friends", "friendRequest"].map(
             (tab) => (
               <button
@@ -197,7 +236,7 @@ export default function ProfilePage() {
                 <HiOutlineMail /> heydev@example.com
               </p>
               <p className="flex items-center gap-2 text-sm text-gray-500">
-                <HiOutlinePhone /> +977 123-456-7890
+                <HiOutlinePhone /> {profile?.contact_number || "N/A"}
               </p>
             </div>
 

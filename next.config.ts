@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         // protocol: 'http', //Must remove this in production
-        hostname: 'rahis.pythonanywhere.com',
+        hostname: 'smartcoderrahis.pythonanywhere.com',
         // hostname: 'localhost',
         // port: '8000',  //Must remove this in production
         pathname: '/media/**',

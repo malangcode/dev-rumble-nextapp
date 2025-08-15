@@ -4,6 +4,7 @@
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ChatPopup from "@/components/SoloChatPopup";
 
 export default function ConditionalLayout({
   children,
@@ -16,6 +17,7 @@ export default function ConditionalLayout({
 
   return (
     <>
+      <ChatPopup />
       {(!isAdminRoute && !isClassRoute ) && <Navbar />}
 
       {isAdminRoute ? (

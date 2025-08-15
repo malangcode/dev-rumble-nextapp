@@ -129,6 +129,7 @@ import {
   FolderOpen,
   Wifi,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
 // -----------------------------
 // Student Dashboard (Single-File)
@@ -145,6 +146,8 @@ export default function StudentDashboard() {
   const [query, setQuery] = useState("");
   const [paletteOpen, setPaletteOpen] = useState(false);
 
+
+  const { user } = useAuth();
   // Simple keyboard shortcut for command palette
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -262,7 +265,7 @@ export default function StudentDashboard() {
                   <div>
                     <p className="text-sm text-zinc-500 dark:text-zinc-400">{day}</p>
                     <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
-                      Welcome back, <span className="bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">Laxmi</span> 👋
+                      Welcome back, <span className="bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">{user?.username}</span> 👋
                     </h1>
                     <p className="mt-2 text-zinc-600 dark:text-zinc-300 max-w-xl">
                       Here’s your day at a glance. Stay on track with classes, deadlines, and campus events.

@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AssistantWrapper from "@/components/AssistantUI";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

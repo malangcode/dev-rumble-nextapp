@@ -11,6 +11,7 @@ export interface UserAuthStatus {
   is_superuser: boolean;
   email: string;
   exp: number; // 👈 new
+  photo: string;
 }
 
 export const getAuthStatus = async (): Promise<UserAuthStatus | null> => {

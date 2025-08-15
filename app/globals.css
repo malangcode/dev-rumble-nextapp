@@ -215,3 +215,8 @@ body {
     scroll-behavior: auto;
   }
 }
+
+  
+.scrollbar::-webkit-scrollbar {
+  display: none;
+}
