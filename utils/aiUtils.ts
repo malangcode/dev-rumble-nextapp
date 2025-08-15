@@ -12,7 +12,7 @@ const DEFAULT_API_URL = `${BASE_URL}/api/transcribe-and-reply-2/`;
 export async function sendToBackend(
   audioBlob?: Blob,
   text?: string,
-  apiUrl: string = DEFAULT_API_URL
+  apiUrl: string = "https://dev-rumble-backend.vercel.app/api/transcribe-and-reply-2/"
 ) {
   const formData = new FormData();
 
@@ -27,6 +27,7 @@ export async function sendToBackend(
     const response = await fetch(apiUrl, {
       method: "POST",
       body: formData,
+      credentials: "include", // sends cookies for cross-origin requests
     });
 
     if (!response.ok) {
