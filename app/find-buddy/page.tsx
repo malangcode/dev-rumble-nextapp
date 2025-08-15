@@ -3,10 +3,9 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import { FiSearch } from "react-icons/fi";
 
 export default function FindBuddy() {
-  // Dummy buddy data
   const initialBuddies = [
     {
       id: 1,
@@ -31,9 +30,15 @@ export default function FindBuddy() {
     },
   ];
 
-  const [buddies, setBuddies] = useState(initialBuddies);
+  const [buddies] = useState(initialBuddies);
   const [search, setSearch] = useState("");
   const [sentRequests, setSentRequests] = useState<number[]>([]);
+
+  const toggleRequest = (id: number) => {
+    setSentRequests((prev) =>
+      prev.includes(id) ? prev.filter((reqId) => reqId !== id) : [...prev, id]
+    );
+  };
 
   const filteredBuddies = buddies.filter(
     (b) =>
@@ -42,32 +47,29 @@ export default function FindBuddy() {
       b.skills.some((s) => s.toLowerCase().includes(search.toLowerCase()))
   );
 
-  const toggleRequest = (id: number) => {
-    setSentRequests((prev) =>
-      prev.includes(id) ? prev.filter((reqId) => reqId !== id) : [...prev, id]
-    );
-  };
-
   return (
-    <div className="min-h-screen px-6 py-10 bg-gradient-to-tr from-indigo-50 via-sky-50 to-white dark:from-zinc-950 dark:via-zinc-900 dark:to-zinc-900 flex flex-col items-center">
+    <div className="min-h-screen px-6 py-10 bg-gradient-to-tr from-indigo-50 via-sky-50 flex justify-center items-start">
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-4xl"
+        className="w-full max-w-5xl rounded-3xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl shadow-2xl p-8"
       >
-        {/* Search Bar */}
-        <div className="flex mb-8">
-          <input
-            type="text"
-            placeholder="Search for friends by name, faculty, or skill..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 rounded-l-xl border border-gray-300 dark:border-white/10 px-4 py-3 bg-white dark:bg-zinc-800 text-sm outline-none focus:ring-2 focus:ring-fuchsia-400"
-          />
-          <button className="px-5 bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 text-white rounded-r-xl flex items-center justify-center hover:opacity-90 transition">
-            <Search className="h-5 w-5" />
-          </button>
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
+            Find a Buddy
+          </h1>
+          <div className="flex items-center bg-white/70 dark:bg-zinc-800 px-4 py-2 rounded-xl shadow border border-white/20">
+            <FiSearch className="text-gray-500 mr-2" />
+            <input
+              type="text"
+              placeholder="Search buddies..."
+              className="bg-transparent outline-none text-sm text-gray-700 dark:text-gray-300"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Buddy List */}
@@ -75,51 +77,55 @@ export default function FindBuddy() {
           {filteredBuddies.map((b) => (
             <div
               key={b.id}
-              className="flex items-center gap-5 bg-white/70 dark:bg-zinc-900/70 backdrop-blur-lg border border-white/20 dark:border-white/10 rounded-2xl shadow-lg p-5 transition hover:shadow-xl"
+              className="p-6 rounded-2xl bg-white/70 dark:bg-zinc-900/70 border border-white/20 shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
             >
-              {/* Avatar */}
-              <Image
-                src={b.avatar}
-                alt={b.name}
-                width={70}
-                height={70}
-                className="rounded-full border-4 border-white shadow-md"
-              />
-
               {/* Info */}
-              <div className="flex-1">
-                <h2 className="text-lg font-bold text-gray-800 dark:text-gray-200">
-                  {b.name}
-                </h2>
-                <p className="text-sm text-gray-500">{b.faculty}</p>
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {b.skills.map((skill, idx) => (
-                    <span
-                      key={idx}
-                      className="text-xs px-3 py-1 rounded-full bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 text-white"
-                    >
-                      {skill}
-                    </span>
-                  ))}
+              <div className="flex items-center gap-5 flex-1">
+                <Image
+                  src={b.avatar}
+                  alt={b.name}
+                  width={70}
+                  height={70}
+                  className="rounded-full border-4 border-white shadow-md"
+                />
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-200">
+                    {b.name}
+                  </h2>
+                  <p className="text-sm text-gray-500">{b.faculty}</p>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {b.skills.map((skill, idx) => (
+                      <span
+                        key={idx}
+                        className="px-3 py-1 text-xs rounded-full bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow"
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              {/* Action Button */}
-              <button
-                onClick={() => toggleRequest(b.id)}
-                className={`px-5 py-2 rounded-xl text-sm font-semibold transition ${
-                  sentRequests.includes(b.id)
-                    ? "bg-white/50 dark:bg-zinc-900/50 border border-fuchsia-500 text-fuchsia-500 hover:bg-white/70 dark:hover:bg-zinc-900/70"
-                    : "bg-gradient-to-tr from-fuchsia-500 via-rose-500 to-amber-500 text-white hover:opacity-90"
-                }`}
-              >
-                {sentRequests.includes(b.id) ? "Unsend" : "Send Request"}
-              </button>
+              {/* Button */}
+              <div>
+                <button
+                  onClick={() => toggleRequest(b.id)}
+                  className={`px-6 py-2 rounded-xl text-sm font-medium shadow transition ${
+                    sentRequests.includes(b.id)
+                      ? "bg-red-500 text-white hover:bg-red-600"
+                      : "bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white hover:opacity-90"
+                  }`}
+                >
+                  {sentRequests.includes(b.id) ? "Unsend" : "Send Request"}
+                </button>
+              </div>
             </div>
           ))}
 
           {filteredBuddies.length === 0 && (
-            <p className="text-center text-gray-500">No buddies found.</p>
+            <p className="text-center text-gray-500">
+              No buddies found matching your search.
+            </p>
           )}
         </div>
       </motion.div>
