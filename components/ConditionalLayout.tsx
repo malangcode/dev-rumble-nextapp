@@ -12,10 +12,11 @@ export default function ConditionalLayout({
 }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
+  const isClassRoute = pathname?.startsWith("/classroom");
 
   return (
     <>
-      {!isAdminRoute && <Navbar />}
+      {(!isAdminRoute && !isClassRoute ) && <Navbar />}
 
       {isAdminRoute ? (
         // For admin routes, render children directly or with a different wrapper
@@ -29,7 +30,7 @@ export default function ConditionalLayout({
         </div>
       )}
 
-      {!isAdminRoute && <Footer />}
+      {(!isAdminRoute && !isClassRoute) && <Footer />}
     </>
   );
 }
