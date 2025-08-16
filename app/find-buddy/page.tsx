@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { FiSearch } from "react-icons/fi";
 import Link from "next/link";
 import AnimatedBg from "@/components/AnimatedBg";
+import MouseEffect from "@/components/MouseEffect";
 
 export default function FindBuddy() {
   const initialBuddies = [
@@ -115,6 +116,7 @@ export default function FindBuddy() {
 
   return (
     <div className="min-h-screen px-6 py-10  flex justify-center items-start">
+      <MouseEffect />
       <AnimatedBg />
       
       {/* Main Content */}
