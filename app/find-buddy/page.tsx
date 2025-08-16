@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { FiSearch } from "react-icons/fi";
 import Link from "next/link";
+import AnimatedBg from "@/components/AnimatedBg";
 
 export default function FindBuddy() {
   const initialBuddies = [
@@ -113,13 +114,17 @@ export default function FindBuddy() {
   );
 
   return (
-    <div className="min-h-screen px-6 py-10 bg-gradient-to-tr from-indigo-50 via-sky-50 flex justify-center items-start">
+    <div className="min-h-screen px-6 py-10  flex justify-center items-start">
+      <AnimatedBg />
+      
+      {/* Main Content */}
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-5xl rounded-3xl bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl shadow-2xl p-8"
+        className="w-full max-w-5xl rounded-3xl dark:bg-zinc-900/60 bg-white/50 backdrop-blur-xl shadow-2xl p-8"
       >
+       
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-8">
           <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-200">
@@ -142,7 +147,7 @@ export default function FindBuddy() {
           {filteredBuddies.map((b:any) => (
             <div
               key={b.id}
-              className="p-6 rounded-2xl bg-white/70 dark:bg-zinc-900/70 border border-white/20 shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
+              className="p-6 rounded-2xl dark:bg-zinc-900/70 border border-white/20 shadow-md flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
             >
               {/* Info */}
               <div className="flex items-center gap-5 flex-1">

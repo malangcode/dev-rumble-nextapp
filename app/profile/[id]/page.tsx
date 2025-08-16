@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone } from "react-icons/hi";
+import AnimatedBg from "@/components/AnimatedBg";
 
 // Dummy user profiles
 const profiles = [
@@ -104,12 +105,13 @@ export default function ProfileDetail() {
   }
 
   return (
-    <div className="min-h-screen px-6 py-10 bg-gradient-to-tr from-indigo-50 via-sky-50 flex justify-center items-start">
+    <div className="min-h-screen px-6 py-10  flex justify-center items-start">
+      <AnimatedBg />
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-6xl rounded-3xl border border-white/30 bg-white/60 backdrop-blur-xl shadow-2xl p-10"
+        className="w-full max-w-6xl rounded-3xl border border-white/30 backdrop-blur-xl shadow-2xl p-10"
       >
         {/* Profile Header */}
         <div className="flex flex-col items-center gap-4 pb-8 border-b border-white/20">
