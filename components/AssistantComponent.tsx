@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
   isActive,
@@ -74,7 +75,11 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
       await playAudioWithWait("/audios/laugh.mp3");
       isListeningRef.current = true;
       setIsListening(true);
-    } else if (transcript.includes("demo") || transcript.includes("presentation") || transcript.includes("present")) {
+    } else if (
+      transcript.includes("demo") ||
+      transcript.includes("presentation") ||
+      transcript.includes("present")
+    ) {
       setIsListening(false);
       await playAudioWithWait("/audios/intro2.mp3");
 
@@ -239,13 +244,13 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
     "left-top": {
       ...baseStyle,
       left: "20px",
-      top: "120px",
+      top: "130px",
       transform: "translate(0, 0)",
     },
     "right-top": {
       ...baseStyle,
       right: "20px",
-      top: "120px",
+      top: "130px",
       transform: "translate(0, 0)",
     },
     "left-bottom": {
@@ -284,14 +289,29 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
       )}
       {isActive && (
         <div style={{ ...positionStyles[assistantPos], zIndex: 9999 }}>
-          <img
-            src="/assistant.gif"
+          <motion.img
+            src="/icons/learnz-logo.png"
             alt="Assistant"
             style={{
               width: 160,
               height: 160,
               pointerEvents: "none",
-              filter: "drop-shadow(0 0 5px #0f62fe)",
+            }}
+            animate={{
+              rotate: 360, // continuous rotation
+              scale: [1, 1.1, 1], // subtle pulsing
+              y: [0, -16, 0], // smooth bounce up and down
+              filter: [
+                "drop-shadow(0 0 5px #0f62fe)",
+                "drop-shadow(0 0 15px #0f62fe)",
+                "drop-shadow(0 0 5px #0f62fe)",
+              ],
+            }}
+            transition={{
+              repeat: Infinity,
+              duration: 10, // overall duration of rotation
+              ease: "linear",
+              times: [0, 0.5, 1], // for coordinated animation steps
             }}
           />
         </div>

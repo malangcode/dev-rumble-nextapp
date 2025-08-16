@@ -134,7 +134,7 @@ export default function StudentDashboard() {
 
   return (
     <div className={dark ? "dark" : ""}>
-      <div className="pt-4 pb-16 min-h-screen bg-gradient-to-br from-sky-50 via-indigo-50 to-fuchsia-50 dark:from-zinc-950 dark:via-slate-950 dark:to-indigo-950 text-zinc-900 dark:text-zinc-100">
+      <div className="pt-4 pb-16 min-h-screen  dark:from-zinc-950 dark:via-slate-950 dark:to-indigo-950 text-zinc-900 dark:text-zinc-100">
 
         {/* Hero */}
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
@@ -143,7 +143,7 @@ export default function StudentDashboard() {
               variants={card}
               initial="hidden"
               animate="show"
-              className="lg:col-span-2 relative overflow-hidden rounded-3xl border border-white/30 dark:border-white/10 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-xl shadow-xl p-6"
+              className="lg:col-span-2 relative overflow-hidden rounded-3xl border border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/60 backdrop-blur-xl shadow-xl p-6"
             >
               <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40 blur-3xl" />
               <div className="relative">

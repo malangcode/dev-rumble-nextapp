@@ -77,7 +77,7 @@ export default function Navbar() {
   return (
     <>
       {/* Top Nav */}
-      <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10">
+      <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10 shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
           <Image onClick={() => router.push("/")}
             src="/icons/logo12.png"
@@ -128,7 +128,7 @@ export default function Navbar() {
 
             {user ? (
               <button
-                className="flex items-center gap-2 rounded-2xl pl-1 pr-3 py-1 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+                className="flex items-center gap-2 rounded-2xl pl-2 pr-4 py-1 bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
                 aria-label="Open profile"
                 onClick={toggleSidebar}
               >

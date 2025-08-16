@@ -6,10 +6,13 @@ import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone } from "react-icons/hi";
 import Link from "next/link";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
-import AnimatedBg from "@/components/AnimatedBg";
+import UpdateProfileModal from "@/components/profile/ProfileEditPopup";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 interface StudentProfile {
   id: number;
+  username: string;
   photo: string;
   semester: number;
   faculty: string;
@@ -31,6 +34,10 @@ export default function ProfilePage() {
   const [activeTab, setActiveTab] = useState("overview");
 
   const [profile, setProfile] = useState<StudentProfile | null>(null);
+  
+  const [openModal, setOpenModal] = useState(false);
+
+  const router = useRouter();
 
   const fetchprofile = async () => {
     try {
@@ -153,7 +160,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen px-6 py-10 flex justify-center items-start">
-      <AnimatedBg />
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
@@ -171,20 +177,19 @@ export default function ProfilePage() {
               className="object-cover w-full h-full"
             />
           </div>
+          
           <div className="text-center">
+            <p className="text-sm text-gray-500 mb-3">@{profile?.username}</p>
             <h1 className="text-3xl font-bold bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">
               {profile?.full_name}
             </h1>
-            <p className="text-base text-gray-600 dark:text-gray-400">
-              {profile?.faculty}
-            </p>
-            <p className="text-sm text-gray-500">{profile?.perm_address}</p>
+            <p className="text-sm text-gray-500 mt-2">{profile?.bio}</p>
           </div>
           <div className="flex gap-4 mt-4">
-            <button className="px-6 py-2 rounded-xl bg-white/50 dark:bg-zinc-900/50 border border-white/20 hover:bg-white/70 dark:hover:bg-zinc-900/70 shadow-sm transition">
+            <button onClick={() => router.push('/chatpage')} className="px-6 py-2 rounded-xl bg-white/50 dark:bg-zinc-900/50 border border-white/20 hover:bg-white/70 dark:hover:bg-zinc-900/70 shadow-sm transition">
               Message
             </button>
-            <button className="px-6 py-2 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow hover:opacity-90 transition">
+            <button onClick={() => setOpenModal(true)} className="px-6 py-2 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow hover:opacity-90 transition">
               Edit Profile
             </button>
           </div>
@@ -385,6 +390,11 @@ export default function ProfilePage() {
           </div>
         )}
       </motion.div>
+      <UpdateProfileModal open={openModal} onUpdate={() => {
+        toast.success("Profile updated successfully!");
+        fetchprofile();
+      }} 
+      onClose={() => setOpenModal(false)} />
     </div>
   );
 }

@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaCalendarAlt, FaMapMarkerAlt } from "react-icons/fa";
-import AnimatedBg from "@/components/AnimatedBg";
-import MouseEffect from "@/components/MouseEffect";
+
 
 export default function EventsPage() {
   const [filter, setFilter] = useState("All");
@@ -41,8 +40,6 @@ export default function EventsPage() {
 
   return (
     <div className="min-h-screen dark:from-zinc-900 dark:to-zinc-950 py-10 px-6">
-      <AnimatedBg />
-      <MouseEffect />
 
       {/* Header */}
       <motion.div

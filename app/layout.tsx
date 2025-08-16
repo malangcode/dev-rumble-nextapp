@@ -9,6 +9,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AssistantWrapper from "@/components/AssistantUI";
+import AnimatedBg from "@/components/AnimatedBg";
+import MouseEffect from "@/components/MouseEffect"; // ✅ use helper
 
 
 const inter = Inter({ subsets: ["latin"] });
@@ -30,6 +32,9 @@ export default function RootLayout({
         <GoogleOAuthProvider clientId="252727771176-r3e94dru2j4sr0p7j9ltjp8gar31i5ha.apps.googleusercontent.com">
           <AuthProvider>
             <ToastContainer /> {/* toast alert  */}
+            <AnimatedBg />
+            <MouseEffect />
+            {/* Main content */}
             <AssistantWrapper>
               <ConditionalLayout>{children}</ConditionalLayout>
             </AssistantWrapper>

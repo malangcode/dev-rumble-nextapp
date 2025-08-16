@@ -10,6 +10,11 @@ export default function LoginRedirectPage() {
   const [message, setMessage] = useState("Getting things ready...");
   const [retry, setRetry] = useState(false);
 
+  function getCompletedFlag() {
+    const value = localStorage.getItem("is_completed_flag");
+    return value ? JSON.parse(value) : false; // default false if not set
+  }
+
   useEffect(() => {
     const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -25,7 +30,12 @@ export default function LoginRedirectPage() {
 
           // Wait a bit for middleware to pick it up
           await delay(1500);
-          window.location.href = "/";
+          if (getCompletedFlag()) {
+            console.log("✅ User already completed profile");
+            router.push("/dashboard");
+          } else {
+            router.push("/completeprofile");
+          }
         } else {
           throw new Error("No encoded status");
         }

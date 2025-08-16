@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { motion } from "framer-motion";
 
 interface TriggerButtonProps {
   onTrigger: () => void;
@@ -8,24 +9,35 @@ interface TriggerButtonProps {
 }
 
 const TriggerButton: React.FC<TriggerButtonProps> = ({ onTrigger, isActive }) => {
+  const [dragging, setDragging] = useState(false);
+
   return (
-    <button
-      onClick={onTrigger}
+    <motion.div
+      drag
+      dragMomentum
+      dragElastic={0.2}
+      dragTransition={{
+        bounceStiffness: 600,
+        bounceDamping: 20,
+        power: 0.8,
+        timeConstant: 200,
+      }}
+      onDragStart={() => setDragging(true)}
+      onDragEnd={() => setDragging(false)}
+      onClick={() => {
+        if (!dragging) onTrigger();
+      }}
       style={{
         position: "fixed",
         left: 20,
         bottom: 20,
-        background: "transparent",
-        border: "none",
-        cursor: "pointer",
-        outline: "none",
         zIndex: 10000,
+        cursor: "grab",
       }}
-      aria-label="Trigger Assistant"
-      title={isActive ? "Assistant is active" : "Activate Assistant"}
+      whileTap={{ cursor: "grabbing" }}
     >
-      <img
-        src="/assistant.gif" // your gif path here
+      <motion.img
+        src="/icons/learnz-logo.png"
         alt="Assistant"
         style={{
           width: 60,
@@ -33,8 +45,11 @@ const TriggerButton: React.FC<TriggerButtonProps> = ({ onTrigger, isActive }) =>
           filter: isActive ? "drop-shadow(0 0 5px #0f62fe)" : "none",
           transition: "filter 0.3s ease",
         }}
+        animate={{ rotate: 360 }} // rotate continuously
+        transition={{ repeat: Infinity, duration: 5, ease: "linear" }} // smooth infinite rotation
+        whileTap={{ scale: 0.9 }}
       />
-    </button>
+    </motion.div>
   );
 };
 

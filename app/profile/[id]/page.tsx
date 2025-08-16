@@ -4,7 +4,6 @@ import { useParams } from "next/navigation";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { HiOutlineMail, HiOutlinePhone } from "react-icons/hi";
-import AnimatedBg from "@/components/AnimatedBg";
 
 // Dummy user profiles
 const profiles = [
@@ -106,7 +105,6 @@ export default function ProfileDetail() {
 
   return (
     <div className="min-h-screen px-6 py-10  flex justify-center items-start">
-      <AnimatedBg />
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}

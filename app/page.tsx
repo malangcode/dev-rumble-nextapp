@@ -1,10 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import {
-  Loader2,
-  PartyPopper,
-  Cookie,
-  Sparkles,
   Lightbulb,
   Rocket,
   Stars,

@@ -14,15 +14,17 @@ export default function ConditionalLayout({
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith("/admin");
   const isClassRoute = pathname?.startsWith("/classroom");
+  const isCompleteProfileRoute = pathname?.startsWith("/completeprofile");
+  const isCompleteSkillsRoute = pathname?.startsWith("/completeskills");
 
   return (
     <>
-      <ChatPopup />
-      {(!isAdminRoute && !isClassRoute ) && <Navbar />}
+      {(!isAdminRoute && !isClassRoute && !isCompleteProfileRoute && !isCompleteSkillsRoute) && <Navbar />}
+      {(!isAdminRoute && !isClassRoute && !isCompleteProfileRoute && !isCompleteSkillsRoute) && <ChatPopup />}
 
       {isAdminRoute ? (
         // For admin routes, render children directly or with a different wrapper
-        <div className="min-h-screenp-1">
+        <div className="min-h-screen p-1">
           {children}
         </div>
       ) : (
@@ -32,7 +34,7 @@ export default function ConditionalLayout({
         </div>
       )}
 
-      {(!isAdminRoute && !isClassRoute) && <Footer />}
+      {(!isAdminRoute && !isClassRoute && !isCompleteProfileRoute && !isCompleteSkillsRoute) && <Footer />}
     </>
   );
 }
