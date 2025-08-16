@@ -8,7 +8,10 @@ interface TriggerButtonProps {
   isActive: boolean;
 }
 
-const TriggerButton: React.FC<TriggerButtonProps> = ({ onTrigger, isActive }) => {
+const TriggerButton: React.FC<TriggerButtonProps> = ({
+  onTrigger,
+  isActive,
+}) => {
   const [dragging, setDragging] = useState(false);
 
   return (

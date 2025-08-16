@@ -241,7 +241,7 @@ export default function SkillsInterestsSetup() {
 
   if (isCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-4">
+      <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-white rounded-3xl shadow-2xl p-12 text-center max-w-md w-full">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-10 h-10 text-green-600" />

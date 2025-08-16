@@ -66,7 +66,7 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
     ) {
       setIsListening(false);
       isListeningRef.current = false;
-      await playAudioWithWait("/audios/intro1.mp3");
+      await playAudioWithWait("/audios/L_intro1.mp3");
       isListeningRef.current = true;
       setIsListening(true);
     } else if (transcript.includes("hahaha") || transcript.includes("haha")) {
@@ -81,7 +81,7 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
       transcript.includes("present")
     ) {
       setIsListening(false);
-      await playAudioWithWait("/audios/intro2.mp3");
+      await playAudioWithWait("/audios/L_intro2.mp3");
 
       await runDemoFlow(); // ✅ call the custom demo function
     } else {
@@ -113,73 +113,43 @@ const Assistant: React.FC<{ isActive: boolean; onFinish?: () => void }> = ({
     try {
       //   Step 1
       setAssistantPos("center");
-      await playAudioWithWait("/audios/p1.mp3");
+      await playAudioWithWait("/audios/L11.mp3");
 
+        // Step 2
+      router.push("/dashboard");
       await delay(1000);
-
-      // Step 2
       setAssistantPos("right-bottom");
-      await playAudioWithWait("/audios/p2.mp3");
+      await playAudioWithWait("/audios/L12.mp3");
 
+      router.push("/profile");
       await delay(1000);
-
       //step 3
       setAssistantPos("right-top");
-      await playAudioWithWait("/audios/p3.mp3");
-
-      await delay(1000);
-
+      await playAudioWithWait("/audios/L13.mp3");
+      
       //step 4
-      router.push("/");
-      setAssistantPos("center");
-      await playAudioWithWait("/audios/p4.mp3");
-
+      router.push("/find-buddy");
       await delay(1000);
+      setAssistantPos("left-top");
+      await playAudioWithWait("/audios/L14.mp3");
+      
 
       //step 5
+      router.push("/chatpage");
+      await delay(1000);
       setAssistantPos("left-top");
-      await playAudioWithWait("/audios/p5.mp3");
+      await playAudioWithWait("/audios/L15.mp3");
 
       //step 6
-      setAssistantPos("right-bottom");
-      router.push("/menu");
-      await delay(2000);
-      await playAudioWithWait("/audios/p6.mp3");
+      setAssistantPos("right-top");
+      router.push("/group");
+      await delay(1000);
+      await playAudioWithWait("/audios/L16.mp3");
 
       //   step 7
       setAssistantPos("center");
-      await playAudioWithWait("/audios/p67.mp3");
-
-      setAssistantPos("right-top");
-
-      //   step 8
-      await delay(1000);
-      await playAudioWithWait("/audios/p68.mp3");
-
-      //   step 9
-      router.push("/cart");
-      await delay(2000);
-      await playAudioWithWait("/audios/p69.mp3");
-
-      //   step 10
-      setAssistantPos("center");
-      await playAudioWithWait("/audios/p70.mp3");
-
-      setAssistantPos("left-top");
-      router.push("/checkout");
-      await delay(2000);
-      await playAudioWithWait("/audios/p71.mp3");
-
-      await delay(1000);
-
-      setAssistantPos("right-bottom");
-      router.push("/profile");
-
-      await delay(1000);
-      await playAudioWithWait("/audios/p72.mp3");
-
-      setAssistantPos("center");
-      await playAudioWithWait("/audios/p73.mp3");
+      router.push("/classroom");
+      await playAudioWithWait("/audios/L17.mp3");
 
       // Step 3 (optional)
       // setAssistantPos("left-bottom");

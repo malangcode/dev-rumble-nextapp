@@ -227,10 +227,6 @@ export default function ChatPlatform() {
     }
   };
 
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currentMessages.length]);
-
   return (
     <div className="flex h-screen p-8 w-full justify-center items-center">
       <div className="flex w-full h-full max-w-7xl rounded-3xl border border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/60 backdrop-blur-xl shadow-2xl p-10">

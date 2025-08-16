@@ -171,10 +171,10 @@ const TeachingChatUI: React.FC = () => {
   const sendMessage = async () => {
     if (!message.trim()) return;
 
-    // If message contains 'wave', play video
-    if (message.toLowerCase().includes("wave")) {
-      playWaveVideo();
-    }
+    // // If message contains 'wave', play video
+    // if (message.toLowerCase().includes("wave")) {
+    //   playWaveVideo();
+    // }
 
     const newMessage: Message = {
       id: Date.now(),

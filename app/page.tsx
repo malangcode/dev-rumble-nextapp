@@ -8,11 +8,13 @@ import {
   Target,
   Bot,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+  const router = useRouter();
 
   useEffect(() => {
     setIsVisible(true);
@@ -37,13 +39,13 @@ export default function LandingPage() {
   return (
     <div className="overflow-hidden">
       {/* Dynamic Mouse Cursor Effect */}
-      <div
+      {/* <div
         className="fixed pointer-events-none z-50 w-6 h-6 bg-gradient-to-r from-indigo-400 to-violet-500 rounded-full blur-sm opacity-40 transition-all duration-100 ease-out"
         style={{
           left: mousePosition.x - 12,
           top: mousePosition.y - 12,
         }}
-      />
+      /> */}
 
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10">
@@ -160,7 +162,7 @@ export default function LandingPage() {
 
                   <div className="flex flex-wrap justify-center gap-6">
                     <a
-                      href="/dashboard"
+                      onClick={() => router.push("/dashboard")}
                       className="group px-8 py-4 bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 rounded-2xl font-semibold text-lg text-white shadow-xl hover:shadow-indigo-500/30 transition-all duration-300 relative overflow-hidden transform hover:scale-105 hover:-translate-y-1 active:scale-95"
                     >
                       <div className="absolute inset-0 bg-gradient-to-tr from-indigo-400 via-violet-400 to-sky-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -170,7 +172,7 @@ export default function LandingPage() {
                     </a>
 
                     <a
-                      href="/about"
+                      href=""
                       className="px-8 py-4 bg-white/40 backdrop-blur-xl rounded-2xl font-semibold text-lg border border-white/30 text-zinc-700 hover:bg-white/60 hover:text-zinc-900 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/10 transform hover:scale-105 hover:-translate-y-1 active:scale-95"
                     >
                       Explore Features <Stars className="inline-block" />
