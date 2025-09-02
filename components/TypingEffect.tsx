@@ -74,11 +74,9 @@ const TypingEffect: React.FC<TypingProps> = ({ content, onFinish }) => {
           td: ({ node, ...props }) => (
             <td className="px-4 py-2 border border-gray-700" {...props} />
           ),
-          p: ({ node, ...props }) => (
-            <p className="text-white mb-3" {...props} />
-          ),
+          p: ({ node, ...props }) => <p className=" mb-3" {...props} />,
           li: ({ node, ...props }) => (
-            <li className="ml-5 list-disc text-gray-300 mb-1" {...props} />
+            <li className="ml-5 list-disc text-gray-600 mb-1" {...props} />
           ),
           code({ node, inline, className, children, ...props }: any) {
             const match = /language-(\w+)/.exec(className || "");
@@ -92,7 +90,7 @@ const TypingEffect: React.FC<TypingProps> = ({ content, onFinish }) => {
                     );
                     toast.success("Code copied!");
                   }}
-                  className="absolute top-2 right-2 bg-gray-700/80 text-white px-2 py-1 text-xs rounded hover:bg-gray-600 z-10"
+                  className="absolute top-2 right-2 bg-gray-700/80  px-2 py-1 text-xs rounded hover:bg-gray-600 z-10"
                 >
                   Copy
                 </button>
