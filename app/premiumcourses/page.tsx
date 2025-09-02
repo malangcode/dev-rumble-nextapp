@@ -83,7 +83,7 @@ export default function Page() {
   return (
     <div className="min-h-screen w-full overflow-x-hidden text-slate-900 bg-white/40 backdrop-blur-2xl">
       {/* Top Bar (kept your colors and glass look) */}
-      <div className="mx-auto max-w-7xl px-4 pt-10">
+      <div className="mx-auto max-w-7xl px-4 pt-10 mb-16">
         <div className="rounded-3xl flex px-8 py-4 md:py-6 bg-white/40 backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_20px_120px_rgba(168,85,247,0.35)]">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40" />
@@ -139,60 +139,7 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Hero (same palette and shadow) */}
-      <section className="relative">
-        <div className="mx-auto max-w-7xl px-4 py-10">
-          <div className="rounded-3xl p-8 md:p-12 bg-white/40 backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_20px_120px_rgba(168,85,247,0.35)]">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight flex items-center gap-3">
-              Unlock curated, ad-free premium courses
-              <Lock className="h-6 w-6 text-indigo-500" />
-            </h2>
-            <p className="mt-3 text-slate-700 md:max-w-3xl">
-              Enjoy a clean player, searchable catalog, and an{" "}
-              <em>Add to Classroom</em> workflow. Placeholders are shown for
-              premium videos until unlocked.
-            </p>
-
-            {/* Mobile Search */}
-            <div className="mt-6 flex gap-3 md:hidden">
-              <div className="flex items-center gap-2 rounded-2xl px-3 py-2 backdrop-blur-xl bg-white/60 ring-1 ring-white/40 shadow-[0_8px_40px_rgba(0,0,0,0.08)] w-full">
-                <svg
-                  aria-hidden
-                  className="h-5 w-5 opacity-70"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-4.35-4.35m1.1-4.4a6.75 6.75 0 11-13.5 0 6.75 6.75 0 0113.5 0z"
-                  />
-                </svg>
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search premium courses…"
-                  className="bg-transparent outline-none placeholder:text-slate-600/70 w-full"
-                />
-              </div>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="rounded-2xl px-3 py-2 backdrop-blur-xl bg-white/60 ring-1 ring-white/40 shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    
       {/* Grid of premium cards with placeholder (no embeds) */}
       <main className="mx-auto max-w-7xl px-4 pb-20">
         {filtered.length === 0 ? (

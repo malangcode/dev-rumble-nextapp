@@ -108,7 +108,7 @@ export default function Page() {
        
       </header> */}
 
-      <div className="mx-auto  max-w-7xl px-4 pt-10 ">
+      <div className="mx-auto  max-w-7xl px-4 pt-10 mb-16">
          <div className="rounded-3xl flex px-8 py-4 md:py-6 bg-white/40 backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_20px_120px_rgba(168,85,247,0.35)]">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40" />
@@ -163,56 +163,7 @@ export default function Page() {
       </div>
 
       {/* Hero */}
-      <section className="relative">
-        <div className="mx-auto max-w-7xl px-4 py-10">
-          <div className="rounded-3xl p-8 md:p-12 bg-white/40 backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_20px_120px_rgba(168,85,247,0.35)]">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
-              Learn with curated, ad-free YouTube courses.
-            </h2>
-            <p className="mt-3 text-slate-700 md:max-w-3xl">
-              Explore freemium lessons with a clean, distraction-free player,
-              searchable catalog, and a one-click <em>Add to Classroom</em> to
-              keep everything organized.
-            </p>
-            {/* Mobile Search */}
-            <div className="mt-6 flex gap-3 md:hidden">
-              <div className="flex items-center gap-2 rounded-2xl px-3 py-2 backdrop-blur-xl bg-white/60 ring-1 ring-white/40 shadow-[0_8px_40px_rgba(0,0,0,0.08)] w-full">
-                <svg
-                  aria-hidden
-                  className="h-5 w-5 opacity-70"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M21 21l-4.35-4.35m1.1-4.4a6.75 6.75 0 11-13.5 0 6.75 6.75 0 0113.5 0z"
-                  />
-                </svg>
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search courses, topics…"
-                  className="bg-transparent outline-none placeholder:text-slate-600/70 w-full"
-                />
-              </div>
-              <select
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-                className="rounded-2xl px-3 py-2 backdrop-blur-xl bg-white/60 ring-1 ring-white/40 shadow-[0_8px_40px_rgba(0,0,0,0.08)]"
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-      </section>
+      
 
       {/* Grid */}
       <main className="mx-auto max-w-7xl px-4 pb-20">

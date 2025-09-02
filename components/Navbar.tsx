@@ -38,6 +38,8 @@ import {
   Sparkles,
   Sun,
   UsersRound,
+  Crown,
+  Youtube
 } from "lucide-react";
 import Image from "next/image";
 
@@ -77,7 +79,8 @@ export default function Navbar() {
   return (
     <>
       {/* Top Nav */}
-      <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10 shadow-xl">
+      <header className="py-4 sticky top-0 z-40 backdrop-blur-xl bg-white/40 dark:bg-zinc-950/40 border-b border-white/20 dark:border-white/10 shadow-[0_20px_120px_rgba(99,102,241,0.35)]
+">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center gap-6">
           <Image onClick={() => router.push("/")}
             src="/icons/logo12.png"
@@ -208,8 +211,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/dashboard"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
               )}
             >
               <LayoutDashboard className="text-xl" />
@@ -218,8 +221,8 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/dashboard"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-600"
               )}
             >
               Dashboard
@@ -236,8 +239,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/profile"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
               )}
             >
               <HiOutlineUserCircle className="text-xl" />
@@ -246,8 +249,8 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/profile"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-500"
               )}
             >
               My Profile
@@ -263,8 +266,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/events"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
               )}
             >
               <CalendarDays className="text-xl" />
@@ -273,8 +276,8 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/events"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-600"
               )}
             >
               Events
@@ -289,8 +292,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/find-buddy"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
               )}
             >
               <Handshake className="text-xl" />
@@ -299,8 +302,8 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/find-buddy"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-600"
               )}
             >
               Find Buddy
@@ -315,8 +318,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/group"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
               )}
             >
               <UsersRound className="text-xl" />
@@ -325,8 +328,8 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/group"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-600"
               )}
             >
               Group
@@ -341,8 +344,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/classroom"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
               )}
             >
               <School className="text-xl" />
@@ -351,11 +354,64 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/classroom"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-600"
               )}
             >
               ClassRoom
+            </span>
+          </Link>
+
+          <Link
+            href="/freecourses"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/freecourses"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-500 hover:scale-110"
+              )}
+            >
+              <Youtube className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/freecourses"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-500"
+              )}
+            >
+              Youtube Courses
+            </span>
+          </Link>
+          <Link
+            href="/premiumcourses"
+            onClick={toggleSidebar}
+            className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-white/60 dark:bg-zinc-900/60 border border-white/20 dark:border-white/10 hover:bg-white/80 dark:hover:bg-zinc-900/80 transition shadow-sm"
+          >
+            <div
+              className={cn(
+                "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
+                pathname === "/premiumcourses"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-600 hover:scale-110"
+              )}
+            >
+              <Crown className="text-xl" />
+            </div>
+            <span
+              className={cn(
+                "transition-colors duration-200",
+                pathname === "/premiumcourses"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-600"
+              )}
+            >
+              Premium Courses
             </span>
           </Link>
 
@@ -369,8 +425,8 @@ export default function Navbar() {
               className={cn(
                 "w-10 h-10 flex items-center justify-center rounded-full transition-all duration-200",
                 pathname === "/settings"
-                  ? "bg-blue-600 text-white scale-105 shadow"
-                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 hover:scale-110"
+                  ? "bg-indigo-500 text-white scale-105 shadow"
+                  : "bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-indigo-500 hover:scale-110"
               )}
             >
               <HiOutlineCog className="text-xl" />
@@ -379,8 +435,8 @@ export default function Navbar() {
               className={cn(
                 "transition-colors duration-200",
                 pathname === "/settings"
-                  ? "text-blue-600"
-                  : "text-gray-700 hover:text-blue-600"
+                  ? "text-indigo-500"
+                  : "text-gray-700 hover:text-indigo-500"
               )}
             >
               Settings
@@ -434,7 +490,7 @@ export default function Navbar() {
               <Link
                 href="/signup"
                 onClick={toggleSidebar}
-                className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition shadow-sm"
+                className="flex items-center space-x-3 px-3 py-2 rounded-xl bg-indigo-500 text-white hover:bg-indigo-600 transition shadow-sm"
               >
                 <HiOutlineUserAdd className="text-xl" />
                 <span>Sign Up</span>

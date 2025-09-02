@@ -26,6 +26,11 @@ import {
   FilePlus2,
   ClipboardList,
   BookText,
+  ExternalLink,
+  FastForward,
+  Rewind,
+  X,
+  Pause,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { sendToBackend } from "@/utils/aiUtils";
@@ -84,6 +89,8 @@ const TeachingChatUI: React.FC = () => {
 
   // Left sidebar tabs
   const [leftTab, setLeftTab] = useState<"courses" | "chats">("courses");
+  const [expanded, setExpanded] = useState(false);
+  const [playing, setPlaying] = useState(false);
 
   // Credits (demo: you can wire these to real usage)
   const [inputCredits, setInputCredits] = useState(8000);
@@ -190,7 +197,7 @@ const TeachingChatUI: React.FC = () => {
 
   // lesson video placeholder + docs panel
   const [lessonPlaying, setLessonPlaying] = useState(false);
-  const [showDocs, setShowDocs] = useState(false);
+  const [showDocs, setShowDocs] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const handleReplay = () => {
     if (!lessonPlaying) {
@@ -311,7 +318,7 @@ const TeachingChatUI: React.FC = () => {
     <div className="w-full h-screen overflow-x-hidden bg-gradient-to-br from-indigo-50 via-violet-50 to-sky-50 text-slate-900 flex flex-col">
       {/* Top Bar */}
       <div className="sticky top-0 z-30 border-b border-white/50 bg-white/40 backdrop-blur-2xl shadow-[0_12px_60px_rgba(99,102,241,0.18)]">
-        <div className="px-4 py-2 flex items-center justify-between w-full">
+        <div className="px-4 py-1 flex items-center justify-between w-full">
           <div className="flex items-center py-2 gap-2">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40 ring-1 ring-white/60 shadow-[0_8px_30px_rgba(99,102,241,0.35)]" />
             <span className="font-semibold tracking-tight mr-4">
@@ -396,7 +403,7 @@ const TeachingChatUI: React.FC = () => {
           >
             {/* Header with credits */}
             <div className="p-4 border-b border-white/60">
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Workspace</h2>
                 <button className="rounded-lg px-3 py-1.5 text-sm font-medium text-white bg-gradient-to-r from-indigo-500 via-violet-500 to-sky-500 shadow-[0_10px_36px_rgba(99,102,241,0.45)]">
                   <GraduationCap className="h-4 w-4 inline mr-1" />
@@ -565,7 +572,7 @@ const TeachingChatUI: React.FC = () => {
 
         {/* Canvas */}
         {layout.showCanvas && (
-          <div className="flex-1 flex flex-col bg-white/50 backdrop-blur-2xl ring-1 ring-white/60 rounded-2xl shadow-[0_20px_120px_rgba(99,102,241,0.18)] overflow-hidden">
+          <div className="flex-1 min-w-[30%] flex flex-col bg-white/50 backdrop-blur-2xl ring-1 ring-white/60 rounded-2xl shadow-[0_20px_120px_rgba(99,102,241,0.18)] overflow-hidden min-h-0">
             {/* Canvas controls / placeholder header */}
             <div className="px-4 py-3 flex items-center justify-between border-b border-white/60">
               <div className="flex items-center gap-2">
@@ -598,7 +605,7 @@ const TeachingChatUI: React.FC = () => {
             </div>
 
             {/* Video placeholder + docs panel */}
-            <div className="flex-1 grid grid-rows-[auto,1fr]">
+            <div className="flex-1 grid grid-rows-[auto,1fr] min-h-0">
               <div className="relative">
                 <div className="aspect-video w-full">
                   <div className="h-full w-full relative bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20">
@@ -625,10 +632,10 @@ const TeachingChatUI: React.FC = () => {
                 </div>
               </div>
 
-              <div className="relative overflow-hidden">
+              <div className="relative min-h-0">
                 {/* Docs panel */}
                 {showDocs ? (
-                  <div className="h-full overflow-y-auto p-4 border-t border-white/60 bg-white/60">
+                  <div className="h-full overflow-y-auto p-4 pb-16 border-t border-white/60 bg-white/60">
                     <h3 className="font-semibold mb-2">Lesson Docs</h3>
                     <p className="text-sm text-slate-700">
                       Here are the notes, outline, and references for this
@@ -637,6 +644,26 @@ const TeachingChatUI: React.FC = () => {
                     <ul className="list-disc pl-6 mt-3 text-sm text-slate-700 space-y-1">
                       <li>Key Concepts: State, Props, Components</li>
                       <li>Examples: Basic Counter, Todo App Skeleton</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
+                      <li>Further Reading: Official React Docs</li>
                       <li>Further Reading: Official React Docs</li>
                     </ul>
                   </div>
@@ -673,7 +700,72 @@ const TeachingChatUI: React.FC = () => {
               </div>
             </div>
 
-           
+            {/* Bottom Control Bar */}
+            <div className="absolute bottom-0 inset-x-0 p-3">
+              {expanded ? (
+                <div className="flex items-center justify-between bg-white/60 backdrop-blur-2xl rounded-2xl ring-1 ring-white/60 px-4 py-2 shadow-[0_14px_60px_rgba(99,102,241,0.18)] transition-all">
+                  {/* Left group: playback */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      title="Rewind 10s"
+                      className="p-2 rounded-lg bg-white/70 hover:bg-white ring-1 ring-white/60 transition"
+                    >
+                      <Rewind className="h-5 w-5 text-indigo-600" />
+                    </button>
+                    <button
+                      title={playing ? "Pause" : "Play"}
+                      onClick={() => setPlaying((p) => !p)}
+                      className="p-2 rounded-lg bg-gradient-to-r from-indigo-500 via-violet-500 to-sky-500 text-white shadow-[0_10px_36px_rgba(99,102,241,0.45)] hover:shadow-[0_12px_44px_rgba(99,102,241,0.55)] transition"
+                    >
+                      {playing ? (
+                        <Pause className="h-5 w-5" />
+                      ) : (
+                        <Play className="h-5 w-5" />
+                      )}
+                    </button>
+                    <button
+                      title="Forward 10s"
+                      className="p-2 rounded-lg bg-white/70 hover:bg-white ring-1 ring-white/60 transition"
+                    >
+                      <FastForward className="h-5 w-5 text-indigo-600" />
+                    </button>
+                  </div>
+
+                  {/* Right group: utilities */}
+                  <div className="flex items-center gap-2">
+                    <button
+                      title="Download Docs"
+                      className="p-2 rounded-lg bg-white/70 hover:bg-white ring-1 ring-white/60 transition"
+                    >
+                      <Download className="h-5 w-5 text-violet-600" />
+                    </button>
+                    <button
+                      title="Open Docs in New Tab"
+                      className="p-2 rounded-lg bg-white/70 hover:bg-white ring-1 ring-white/60 transition"
+                    >
+                      <ExternalLink className="h-5 w-5 text-violet-600" />
+                    </button>
+                    <button
+                      title="Collapse Controls"
+                      onClick={() => setExpanded(false)}
+                      className="p-2 rounded-lg bg-white/70 hover:bg-white ring-1 ring-white/60 transition"
+                    >
+                      <X className="h-5 w-5 text-slate-700" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex justify-end">
+                  <button
+                    onClick={() => setExpanded(true)}
+                    title="Expand Controls"
+                    className="p-3 rounded-full bg-white/70 hover:bg-white ring-1 ring-white/60 shadow-md transition"
+                  >
+                    <Settings className="h-6 w-6 text-slate-700" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
 
@@ -700,7 +792,7 @@ const TeachingChatUI: React.FC = () => {
         {/* Right Chat */}
         {layout.showRight && (
           <div
-            className="bg-white/50 min-w-[30%] backdrop-blur-2xl ring-1 ring-white/60 rounded-2xl shadow-[0_20px_80px_rgba(99,102,241,0.18)] flex flex-col"
+            className={`bg-white/50 min-w-[30%] backdrop-blur-2xl ring-1 ring-white/60 rounded-2xl shadow-[0_20px_80px_rgba(99,102,241,0.18)] flex ${layout.showCanvas ? "" : "flex-1"} flex-col`}
             style={{ width: `${rightW}%` }}
           >
             <div className="p-4 border-b border-white/60 flex items-center justify-between">
