@@ -79,10 +79,10 @@ export default function PricingPage() {
   const fmt = (n: number) => n.toLocaleString();
 
   return (
-    <div className="min-h-screen pb-20 bg-gradient-to-br from-indigo-50 via-violet-50 to-sky-50 text-slate-900">
+    <div className="min-h-screen pb-16 bg-white/40 backdrop-blur-2xl text-slate-900">
       {/* Top / Hero */}
-      <header className="sticky top-0 z-20 border-b border-white/50 bg-white/40 backdrop-blur-2xl shadow-[0_12px_60px_rgba(99,102,241,0.18)]">
-        <div className="px-4 py-3 max-w-7xl mx-auto flex items-center justify-between">
+      {/* <div className="mx-auto max-w-7xl px-4 pt-10 mb-16">
+        <div className="rounded-3xl flex justify-between px-8 py-4 md:py-6 bg-white/40 backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_20px_120px_rgba(168,85,247,0.35)]">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-xl bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40 ring-1 ring-white/60 shadow-[0_8px_30px_rgba(99,102,241,0.35)]" />
             <span className="font-semibold tracking-tight">Learn-Z Pricing</span>
@@ -104,10 +104,10 @@ export default function PricingPage() {
             </Link>
           </div>
         </div>
-      </header>
+      </div> */}
 
       {/* Intro */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10">
+      <section className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl border border-white/60 bg-white/60 backdrop-blur-2xl p-6 shadow-[0_20px_120px_rgba(99,102,241,0.18)]">
           <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40 blur-3xl" />
           <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -147,15 +147,15 @@ export default function PricingPage() {
                   ${isHot
                     ? "border-white/60 ring-white/60 bg-white/70 shadow-[0_20px_120px_rgba(168,85,247,0.25)]"
                     : "border-white/50 ring-white/50 bg-white/60 shadow-[0_14px_80px_rgba(0,0,0,0.06)]"
-                  }`}
+                  } ${isHot ? "scale-103" : ""}`}
               >
                 {plan.badge && (
-                  <span className="absolute top-4 right-4 text-xs px-2 py-1 rounded-full bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20 border border-white/40">
+                  <span className="absolute top-2 left-2 text-xs px-2 py-1 rounded-full bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20 border border-white/40">
                     {plan.badge}
                   </span>
                 )}
 
-                <div className="flex items-center justify-between">
+                <div className={`flex ${plan.badge === "Most Popular" ? "mt-2" : ""} items-center justify-between`}>
                   <div className="flex items-center gap-2">
                     {plan.id === "starter" && <Sparkles className="h-5 w-5 text-indigo-600" />}
                     {plan.id === "pro" && <Crown className="h-5 w-5 text-amber-500" />}

@@ -277,7 +277,7 @@ export default function StudentDashboard() {
                     Update Plan
                   </h2>
                   <button
-                    onClick={() => router.push("/pricing")}
+                    onClick={() => router.push("/pricings")}
                     className="inline-flex items-center gap-1 text-xs font-medium rounded-xl px-3 py-1.5 bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow hover:opacity-90"
                   >
                     Upgrade <ChevronRight className="w-3 h-3" />
@@ -456,7 +456,7 @@ export default function StudentDashboard() {
                 />
               </div>
               <button
-                onClick={() => router.push("/pricing")}
+                onClick={() => router.push("/pricings")}
                 className="mt-3 w-full text-sm rounded-xl px-3 py-2 bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow hover:opacity-90"
               >
                 Update Plan
