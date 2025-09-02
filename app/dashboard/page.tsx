@@ -19,6 +19,7 @@ import {
   BookOpen,
   Clock,
   Search,
+  GraduationCapIcon,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Link from "next/link";
@@ -54,17 +55,33 @@ export default function StudentDashboard() {
     purchased: 12,
     completed: 7,
     consistencyRatio: 86, // %
-    rank: 128,            // global or cohort rank
+    rank: 128, // global or cohort rank
     tokensRemaining: 76420, // daily credit tokens remaining
     dailyTokensQuota: 100000,
-    userProgressPct: 64,  // overall learning progress for circular viz
+    userProgressPct: 64, // overall learning progress for circular viz
   };
 
   const recentPremium = [
-    { title: "Advanced React Patterns", duration: "2h 18m", level: "Intermediate" },
-    { title: "Next.js App Router Deep Dive", duration: "1h 42m", level: "Intermediate" },
-    { title: "TypeScript Pro Essentials", duration: "2h 05m", level: "Beginner+" },
-    { title: "System Design for Frontend", duration: "1h 29m", level: "Advanced" },
+    {
+      title: "Advanced React Patterns",
+      duration: "2h 18m",
+      level: "Intermediate",
+    },
+    {
+      title: "Next.js App Router Deep Dive",
+      duration: "1h 42m",
+      level: "Intermediate",
+    },
+    {
+      title: "TypeScript Pro Essentials",
+      duration: "2h 05m",
+      level: "Beginner+",
+    },
+    {
+      title: "System Design for Frontend",
+      duration: "1h 29m",
+      level: "Advanced",
+    },
   ];
 
   // Motion helpers
@@ -72,6 +89,87 @@ export default function StudentDashboard() {
     hidden: { opacity: 0, y: 12 },
     show: { opacity: 1, y: 0, transition: { duration: 0.35 } },
   };
+
+  // ---- Credits math (fallbacks if backend doesn't send input/output split) ----
+  const QUOTA = 100_000; // total given credits per day
+  const totalUsed = Math.max(
+    0,
+    Math.min(QUOTA, (stats.dailyTokensQuota ?? QUOTA) - stats.tokensRemaining)
+  );
+  const inputUsed = stats.inputUsed ?? Math.round(totalUsed * 0.55); // replace with real value if you have it
+  const outputUsed = stats.outputUsed ?? Math.max(0, totalUsed - inputUsed);
+
+  const pct = (val: number) => Math.min(100, Math.max(0, (val / QUOTA) * 100));
+
+  function MiniCircle({
+    label,
+    value,
+    percent,
+    subtitle,
+    size = 72,
+    stroke = 8,
+  }: {
+    label: string;
+    value: number;
+    percent: number; // 0..100
+    subtitle?: string;
+    size?: number;
+    stroke?: number;
+  }) {
+    const clamped = Math.max(0, Math.min(100, percent));
+    const r = (size - stroke) / 2;
+    const c = 2 * Math.PI * r;
+    const dash = (clamped / 100) * c;
+
+    return (
+      <div className="flex items-center gap-3">
+        <div className="relative grid place-items-center">
+          <svg width={size} height={size} className="-rotate-90">
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={r}
+              stroke="currentColor"
+              className="text-zinc-200/70 dark:text-white/10"
+              strokeWidth={stroke}
+              fill="none"
+            />
+            <circle
+              cx={size / 2}
+              cy={size / 2}
+              r={r}
+              stroke="url(#miniGrad)"
+              strokeWidth={stroke}
+              fill="none"
+              strokeDasharray={`${dash} ${c - dash}`}
+              strokeLinecap="round"
+            />
+            <defs>
+              <linearGradient id="miniGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#6366F1" /> {/* indigo-500 */}
+                <stop offset="50%" stopColor="#8B5CF6" /> {/* violet-500 */}
+                <stop offset="100%" stopColor="#0EA5E9" /> {/* sky-500 */}
+              </linearGradient>
+            </defs>
+          </svg>
+          <div className="absolute text-center">
+            <div className="text-xs font-semibold">{Math.round(clamped)}%</div>
+          </div>
+        </div>
+        <div className="leading-tight">
+          <div className="text-xs text-zinc-500 dark:text-zinc-400">
+            {label}
+          </div>
+          <div className="text-sm font-semibold">{value.toLocaleString()}</div>
+          {subtitle && (
+            <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
+              {subtitle}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={dark ? "dark" : ""}>
@@ -90,26 +188,20 @@ export default function StudentDashboard() {
               <div className="relative">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-zinc-500 dark:text-zinc-400">{day}</p>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                      {day}
+                    </p>
                     <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight mt-1">
                       Welcome back,{" "}
                       <span className="bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 bg-clip-text text-transparent">
                         {user?.username ?? "Creator"}
                       </span>{" "}
-                      👋
+                      <GraduationCapIcon size={30} className="ml-1 inline-block" />
                     </h1>
                     <p className="mt-2 text-zinc-600 dark:text-zinc-300 max-w-xl">
-                      Keep up the momentum! Your progress, consistency, and premium course journey are looking great.
+                      Keep up the momentum! Your progress, consistency, and
+                      premium course journey are looking great.
                     </p>
-                  </div>
-                  <div className="hidden md:flex items-center gap-3">
-                    <Link href={"/classroom"}>
-                      <ActionChip icon={<MessageCircle className="w-4 h-4" />} label="Ask AI" />
-                    </Link>
-                    <ActionChip icon={<FolderOpen className="w-4 h-4" />} label="My Files" />
-                    <Link href={"/find-buddy"}>
-                      <ActionChip icon={<Users className="w-4 h-4" />} label="Find Buddy" />
-                    </Link>
                   </div>
                 </div>
 
@@ -125,7 +217,7 @@ export default function StudentDashboard() {
                     icon={<CheckBadge className="w-4 h-4" />}
                     label="Courses Completed"
                     value={String(stats.completed)}
-                    sub="Keep shipping 🚀"
+                    sub="Keep shipping!"
                   />
                   <KPI
                     icon={<TrendingUp className="w-4 h-4" />}
@@ -138,6 +230,33 @@ export default function StudentDashboard() {
                     label="Rank"
                     value={`#${stats.rank}`}
                     sub="Global leaderboard"
+                  />
+                </div>
+
+                <div className="hidden md:flex items-center gap-5 mt-8 mb-3">
+                  <MiniCircle
+                    label="Input Used"
+                    value={inputUsed}
+                    percent={pct(inputUsed)}
+                    subtitle={`${inputUsed.toLocaleString()} / ${QUOTA.toLocaleString()}`}
+                  />
+                  <MiniCircle
+                    label="Output Used"
+                    value={outputUsed}
+                    percent={pct(outputUsed)}
+                    subtitle={`${outputUsed.toLocaleString()} / ${QUOTA.toLocaleString()}`}
+                  />
+                  <MiniCircle
+                    label="Total Used"
+                    value={totalUsed}
+                    percent={pct(totalUsed)}
+                    subtitle={`${totalUsed.toLocaleString()} / ${QUOTA.toLocaleString()}`}
+                  />
+                  <MiniCircle
+                    label="Remaining"
+                    value={stats.tokensRemaining}
+                    percent={pct(stats.tokensRemaining)}
+                    subtitle={`${stats.tokensRemaining.toLocaleString()} / ${QUOTA.toLocaleString()}`}
                   />
                 </div>
               </div>
@@ -170,10 +289,13 @@ export default function StudentDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Gauge className="w-4 h-4" />
-                      <span className="text-sm font-medium">Remaining Credits Today</span>
+                      <span className="text-sm font-medium">
+                        Remaining Credits Today
+                      </span>
                     </div>
                     <span className="text-sm font-mono">
-                      {stats.tokensRemaining.toLocaleString()} / {stats.dailyTokensQuota.toLocaleString()}
+                      {stats.tokensRemaining.toLocaleString()} /{" "}
+                      {stats.dailyTokensQuota.toLocaleString()}
                     </span>
                   </div>
                   <div className="mt-2 h-2 w-full rounded-full bg-zinc-200/70 dark:bg-white/10 overflow-hidden">
@@ -196,15 +318,22 @@ export default function StudentDashboard() {
                       <Sparkles className="w-4 h-4" />
                       <span className="text-sm font-medium">Your Progress</span>
                     </div>
-                    <CircularProgress percent={stats.userProgressPct} size={112} stroke={10} />
+                    <CircularProgress
+                      percent={stats.userProgressPct}
+                      size={112}
+                      stroke={10}
+                    />
                   </div>
                   <div className="rounded-2xl border border-white/30 dark:border-white/10 p-4 bg-white/60 dark:bg-zinc-900/50">
                     <div className="flex items-center gap-2">
                       <Rocket className="w-4 h-4" />
-                      <span className="text-sm font-medium">Next Milestone</span>
+                      <span className="text-sm font-medium">
+                        Next Milestone
+                      </span>
                     </div>
                     <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-2">
-                      Complete 3 more lessons to reach <strong>70%</strong> progress and unlock a bonus badge.
+                      Complete 3 more lessons to reach <strong>70%</strong>{" "}
+                      progress and unlock a bonus badge.
                     </p>
                     <button
                       onClick={() => router.push("/classroom")}
@@ -230,7 +359,8 @@ export default function StudentDashboard() {
           >
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Crown className="w-5 h-5 text-amber-500" /> Recent Premium Courses
+                <Crown className="w-5 h-5 text-amber-500" /> Recent Premium
+                Courses
               </h3>
               <button
                 onClick={() => router.push("/courses")}
@@ -286,9 +416,17 @@ export default function StudentDashboard() {
                 <Sparkles className="w-5 h-5" /> Personal Insights
               </h3>
               <ul className="mt-3 list-disc pl-5 text-sm text-zinc-700 dark:text-zinc-300 space-y-2">
-                <li>You’re most productive between <strong>7–9 PM</strong>. Try scheduling deep work here.</li>
-                <li><strong>{stats.consistencyRatio}%</strong> consistency—keep a streak going to boost retention.</li>
-                <li>Revisit “{recentPremium[0].title}” sections 3–4 for mastery.</li>
+                <li>
+                  You’re most productive between <strong>7–9 PM</strong>. Try
+                  scheduling deep work here.
+                </li>
+                <li>
+                  <strong>{stats.consistencyRatio}%</strong> consistency—keep a
+                  streak going to boost retention.
+                </li>
+                <li>
+                  Revisit “{recentPremium[0].title}” sections 3–4 for mastery.
+                </li>
               </ul>
             </motion.section>
 
@@ -302,7 +440,9 @@ export default function StudentDashboard() {
                 <CircleDollarSign className="w-5 h-5" /> Manage Plan & Credits
               </h3>
               <p className="text-sm text-zinc-600 dark:text-zinc-300 mt-2">
-                You have <strong>{stats.tokensRemaining.toLocaleString()}</strong> credits left today.
+                You have{" "}
+                <strong>{stats.tokensRemaining.toLocaleString()}</strong>{" "}
+                credits left today.
               </p>
               <div className="mt-3 h-2 w-full rounded-full bg-zinc-200/70 dark:bg-white/10 overflow-hidden">
                 <div
@@ -401,23 +541,51 @@ function KPI({
     <div className="relative overflow-hidden rounded-2xl p-4 border border-white/30 dark:border-white/10 bg-white/50 dark:bg-zinc-900/50">
       <div className="absolute -top-8 -right-8 w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20 blur-2xl" />
       <div className="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
-        {icon && <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20">{icon}</span>}
+        {icon && (
+          <span className="inline-flex items-center justify-center w-6 h-6 rounded-md bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20">
+            {icon}
+          </span>
+        )}
         <span>{label}</span>
       </div>
       <p className="text-2xl font-semibold mt-1">{value}</p>
-      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">{sub}</p>
+      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
+        {sub}
+      </p>
     </div>
   );
 }
 
 function CheckBadge(props: React.SVGProps<SVGSVGElement>) {
-  return <svg viewBox="0 0 24 24" className={props.className}>
-    <path d="M9 11l2 2 4-4" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" fill="none" />
-  </svg>;
+  return (
+    <svg viewBox="0 0 24 24" className={props.className}>
+      <path
+        d="M9 11l2 2 4-4"
+        stroke="currentColor"
+        strokeWidth="2"
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        stroke="currentColor"
+        strokeWidth="2"
+        fill="none"
+      />
+    </svg>
+  );
 }
 
-function PaletteItem({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle: string }) {
+function PaletteItem({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  subtitle: string;
+}) {
   return (
     <button className="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-white/50 dark:hover:bg-white/10">
       <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 text-white shadow">
@@ -425,7 +593,9 @@ function PaletteItem({ icon, title, subtitle }: { icon: React.ReactNode; title: 
       </span>
       <span className="text-left">
         <span className="block text-sm font-medium">{title}</span>
-        <span className="block text-xs text-zinc-500 dark:text-zinc-400">{subtitle}</span>
+        <span className="block text-xs text-zinc-500 dark:text-zinc-400">
+          {subtitle}
+        </span>
       </span>
     </button>
   );
@@ -478,7 +648,9 @@ function CircularProgress({
       </svg>
       <div className="absolute text-center">
         <div className="text-xl font-semibold">{clamped}%</div>
-        <div className="text-[11px] text-zinc-500 dark:text-zinc-400">overall</div>
+        <div className="text-[11px] text-zinc-500 dark:text-zinc-400">
+          overall
+        </div>
       </div>
     </div>
   );
