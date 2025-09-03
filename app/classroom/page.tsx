@@ -39,6 +39,54 @@ import TypingEffect from "@/components/TypingEffect";
 import Image from "next/image";
 import { VoiceRecorder } from "@/utils/voiceRecorder";
 import { useRouter } from "next/navigation";
+import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
+
+// classroom API shapes
+type ClassroomVideo = {
+  id: number;
+  title: string;
+  slug: string;
+  category: string;
+  youtube_url: string;
+  youtube_id?: string;
+};
+
+type ClassroomItem = {
+  id: number; // item id
+  video: ClassroomVideo; // nested video
+  added_at: string;
+  note: string;
+  progress_seconds: number;
+  completed: boolean;
+  last_watched_at: string | null;
+};
+
+type ClassroomResp = {
+  id: number;
+  name: string;
+  active_video: number | null; // optional
+  created_at: string;
+  items: ClassroomItem[];
+};
+
+function extractYouTubeId(link: string) {
+  try {
+    const url = new URL(link);
+    if (url.hostname === "youtu.be") return url.pathname.slice(1);
+    if (url.hostname.includes("youtube.com")) {
+      const v = url.searchParams.get("v");
+      if (v) return v;
+      const parts = url.pathname.split("/");
+      const idx = parts.findIndex((p) => p === "embed" || p === "shorts");
+      if (idx !== -1 && parts[idx + 1]) return parts[idx + 1];
+      const last = parts.filter(Boolean).pop();
+      if (last) return last;
+    }
+  } catch {
+    return link;
+  }
+  return link;
+}
 
 // Types
 interface Message {
@@ -116,7 +164,13 @@ const TeachingChatUI: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const recorder = new VoiceRecorder();
   const [isRecording, setIsRecording] = useState(false);
+
   const router = useRouter();
+
+  // classroom state
+  const [loadingClassroom, setLoadingClassroom] = useState(false);
+  const [classroomItems, setClassroomItems] = useState<ClassroomItem[]>([]);
+  const [activeVideo, setActiveVideo] = useState<ClassroomVideo | null>(null);
 
   // layout toggles
   const defaultLayout = {
@@ -165,6 +219,58 @@ const TeachingChatUI: React.FC = () => {
       return next;
     });
   };
+
+  const ThinkingDots: React.FC = () => {
+    const [i, setI] = useState(0);
+    useEffect(() => {
+      const t = setInterval(() => setI((v) => (v + 1) % 4), 400);
+      return () => clearInterval(t);
+    }, []);
+    const dots = ".".repeat(i);
+    return (
+      <span className="inline-flex items-center gap-2">
+        <span className="relative inline-block h-2 w-2 rounded-full bg-slate-500/70 animate-pulse" />
+        <span className="opacity-70">thinking{dots}</span>
+      </span>
+    );
+  };
+
+  // Fetch classroom on mount & set the current video
+  useEffect(() => {
+    let cancelled = false;
+    const run = async () => {
+      setLoadingClassroom(true);
+      try {
+        const { data } = await axiosWithCsrf.get<ClassroomResp>(
+          "/api/classroom/"
+        );
+        if (cancelled) return;
+
+        const items = Array.isArray(data?.items) ? data.items : [];
+        setClassroomItems(items);
+
+        // choose active: API’s active_video -> that item; else first item; else null
+        let chosen: ClassroomVideo | null = null;
+        if (data?.active_video != null) {
+          const m = items.find((it) => it.video?.id === data.active_video);
+          chosen = m?.video ?? null;
+        } else if (items.length > 0) {
+          chosen = items[0].video;
+        }
+        setActiveVideo(chosen ?? null);
+      } catch (e) {
+        console.error("Failed to load classroom", e);
+        setClassroomItems([]);
+        setActiveVideo(null);
+      } finally {
+        if (!cancelled) setLoadingClassroom(false);
+      }
+    };
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // canvas animation
   useEffect(() => {
@@ -248,7 +354,7 @@ const TeachingChatUI: React.FC = () => {
     const typingMessage: Message = {
       id: typingId,
       type: "ai",
-      content: "typing...",
+      content: "__thinking__", // << changed
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, typingMessage]);
@@ -495,26 +601,45 @@ const TeachingChatUI: React.FC = () => {
             <div className="flex-1 overflow-y-auto p-3">
               {leftTab === "courses" ? (
                 <div className="space-y-2">
-                  {[
-                    "HTML & CSS",
-                    "JavaScript Basics",
-                    "React 101",
-                    "Next.js App Router",
-                    "Tailwind CSS",
-                  ].map((c, i) => (
-                    <div
-                      key={i}
-                      className="p-3 rounded-xl bg-white/60 ring-1 ring-white/60 hover:bg-white/80 transition cursor-pointer"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="font-medium text-sm">{c}</div>
-                        <BookText className="h-4 w-4 text-indigo-600" />
-                      </div>
-                      <p className="text-xs text-slate-600 mt-1">
-                        Premium course
-                      </p>
+                  {loadingClassroom && (
+                    <div className="p-3 rounded-xl bg-white/60 ring-1 ring-white/60 text-sm text-slate-600">
+                      Loading your classroom…
                     </div>
-                  ))}
+                  )}
+
+                  {!loadingClassroom && classroomItems.length === 0 && (
+                    <div className="p-3 rounded-xl bg-white/60 ring-1 ring-white/60 text-sm text-slate-600">
+                      Your classroom is empty. Add videos from the courses page
+                      to see them here.
+                    </div>
+                  )}
+
+                  {classroomItems.map((it) => {
+                    const v = it.video;
+                    const isActive = activeVideo?.id === v.id;
+                    return (
+                      <button
+                        key={it.id}
+                        onClick={() => setActiveVideo(v)}
+                        className={`w-full text-left p-3 rounded-xl transition cursor-pointer ring-1
+            ${
+              isActive
+                ? "bg-indigo-200/60 ring-indigo-300/60"
+                : "bg-white/60 ring-white/60 hover:bg-white/80"
+            }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="font-medium text-sm truncate">
+                            {v.title}
+                          </div>
+                          <BookText className="h-4 w-4 text-indigo-600 shrink-0" />
+                        </div>
+                        <p className="text-xs text-slate-600 mt-1 truncate">
+                          {v.category || "Course"}
+                        </p>
+                      </button>
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -609,25 +734,45 @@ const TeachingChatUI: React.FC = () => {
               <div className="relative">
                 <div className="aspect-video w-full">
                   <div className="h-full w-full relative bg-gradient-to-tr from-indigo-500/20 via-violet-500/20 to-sky-500/20">
-                    {/* Faux shimmer */}
-                    <div className="absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.45),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.30),transparent_40%),radial-gradient(circle_at_50%_80%,rgba(255,255,255,0.25),transparent_45%)]" />
-                    {/* Play */}
-                    <button
-                      type="button"
-                      className="absolute inset-0 m-auto h-16 w-16 grid place-items-center rounded-full bg-white/70 backdrop-blur-xl ring-1 ring-white/60 shadow-[0_10px_40px_rgba(0,0,0,0.15)] hover:bg-white transition"
-                      title="Preview"
-                      onClick={handleReplay}
-                    >
-                      <Play className="h-7 w-7 text-indigo-600" />
-                    </button>
-                    <video
-                      ref={videoRef}
-                      src="/video/wave.mp4"
-                      playsInline
-                      muted={false}
-                      style={{ display: lessonPlaying ? "block" : "none" }}
-                      className="absolute inset-0 m-auto rounded-xl ring-1 ring-white/60 shadow-[0_16px_80px_rgba(99,102,241,0.3)] max-w-full max-h-full"
-                    />
+                    {activeVideo ? (
+                      <>
+                        {/* YouTube iframe of selected classroom video */}
+                        <div className="absolute inset-0 m-auto aspect-video w-full">
+                          <iframe
+                            className="h-full w-full rounded-xl ring-1 ring-white/60 shadow-[0_16px_80px_rgba(99,102,241,0.3)]"
+                            src={`https://www.youtube.com/embed/${
+                              activeVideo.youtube_id ??
+                              extractYouTubeId(activeVideo.youtube_url)
+                            }`}
+                            title={activeVideo.title}
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowFullScreen
+                            loading="lazy"
+                          />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        {/* fallback: your existing decorative preview with the play button */}
+                        <div className="absolute inset-0 opacity-60 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.45),transparent_40%),radial-gradient(circle_at_80%_30%,rgba(255,255,255,0.30),transparent_40%),radial-gradient(circle_at_50%_80%,rgba(255,255,255,0.25),transparent_45%)]" />
+                        <button
+                          type="button"
+                          className="absolute inset-0 m-auto h-16 w-16 grid place-items-center rounded-full bg-white/70 backdrop-blur-xl ring-1 ring-white/60 shadow-[0_10px_40px_rgba(0,0,0,0.15)] hover:bg-white transition"
+                          title="Preview"
+                          onClick={handleReplay}
+                        >
+                          <Play className="h-7 w-7 text-indigo-600" />
+                        </button>
+                        <video
+                          ref={videoRef}
+                          src="/video/wave.mp4"
+                          playsInline
+                          muted={false}
+                          style={{ display: lessonPlaying ? "block" : "none" }}
+                          className="absolute inset-0 m-auto rounded-xl ring-1 ring-white/60 shadow-[0_16px_80px_rgba(99,102,241,0.3)] max-w-full max-h-full"
+                        />
+                      </>
+                    )}
                   </div>
                 </div>
               </div>
@@ -792,7 +937,9 @@ const TeachingChatUI: React.FC = () => {
         {/* Right Chat */}
         {layout.showRight && (
           <div
-            className={`bg-white/50 min-w-[30%] backdrop-blur-2xl ring-1 ring-white/60 rounded-2xl shadow-[0_20px_80px_rgba(99,102,241,0.18)] flex ${layout.showCanvas ? "" : "flex-1"} flex-col`}
+            className={`bg-white/50 min-w-[30%] backdrop-blur-2xl ring-1 ring-white/60 rounded-2xl shadow-[0_20px_80px_rgba(99,102,241,0.18)] flex ${
+              layout.showCanvas ? "" : "flex-1"
+            } flex-col`}
             style={{ width: `${rightW}%` }}
           >
             <div className="p-4 border-b border-white/60 flex items-center justify-between">
@@ -834,8 +981,8 @@ const TeachingChatUI: React.FC = () => {
                         />
                       )}
                       <div className="overflow-auto max-w-full">
-                        {msg.content === "typing..." ? (
-                          <span className="opacity-70">typing…</span>
+                        {msg.content === "__thinking__" ? (
+                          <ThinkingDots />
                         ) : (
                           <>
                             <TypingEffect content={msg.content} />

@@ -46,6 +46,85 @@ export default function Page() {
   const [loadingReco, setLoadingReco] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // --- add these states near your other UI state ---
+  const [addingVideoId, setAddingVideoId] = useState<number | null>(null);
+  const [addedIds, setAddedIds] = useState<Set<number>>(new Set()); // track what's already in classroom
+  const [addError, setAddError] = useState<string | null>(null);
+
+  // --- state for existing classroom items ---
+  const [loadingClassroom, setLoadingClassroom] = useState(false);
+
+  // on mount, get the user's classroom
+useEffect(() => {
+  let aborted = false;
+  const run = async () => {
+    setLoadingClassroom(true);
+    try {
+      // GET /api/classroom/  -> returns { id, name, active_video, items: [{ id, video:{id,...}, ...}] }
+      const { data } = await axiosWithCsrf.get("/api/classroom/");
+      if (aborted) return;
+
+      const ids = new Set<number>(
+        (data?.items ?? [])
+          .map((it: any) => Number(it?.video?.id))
+          .filter((n: any) => Number.isFinite(n))
+      );
+      setAddedIds(ids);
+    } catch (err) {
+      if (!aborted) console.error("Failed to fetch classroom:", err);
+    } finally {
+      if (!aborted) setLoadingClassroom(false);
+    }
+  };
+  run();
+  return () => { aborted = true; };
+}, []);
+
+  // call this from the card button
+  function handleAddToClassroom(videoId: number) {
+    if (isAdded(videoId) || isAdding(videoId)) return;
+    setAddError(null);
+    setAddingVideoId(videoId);
+  }
+
+  // --- effect that performs the POST when a click sets addingVideoId ---
+  useEffect(() => {
+    if (addingVideoId == null) return;
+
+    let aborted = false;
+    const run = async () => {
+      try {
+        // POST /api/classroom/items/  { video_id }
+        await axiosWithCsrf.post("/api/classroom/items/", {
+          video_id: addingVideoId,
+        });
+
+        if (!aborted) {
+          setAddedIds((prev) => new Set(prev).add(addingVideoId));
+        }
+      } catch (e: any) {
+        if (!aborted) {
+          const msg =
+            e?.response?.data?.detail ||
+            e?.message ||
+            "Failed to add to your classroom.";
+          setAddError(msg);
+        }
+      } finally {
+        if (!aborted) setAddingVideoId(null);
+      }
+    };
+
+    run();
+    return () => {
+      aborted = true;
+    };
+  }, [addingVideoId, axiosWithCsrf]);
+
+  // helper for per-card loading/added states
+  const isAdding = (id: number) => addingVideoId === id;
+  const isAdded = (id: number) => addedIds.has(id);
+
   // Build categories dynamically from fetched videos (fallback to ["All"])
   const categories = useMemo(() => {
     const setCat = new Set<string>();
@@ -55,7 +134,7 @@ export default function Page() {
 
   const hasActiveFilter = useMemo(() => {
     const q = query.trim();
-    return (q.length > 0) || (category && category !== "All");
+    return q.length > 0 || (category && category !== "All");
   }, [query, category]);
 
   // Fetch videos (list)
@@ -76,7 +155,8 @@ export default function Page() {
         }
       } catch (e: any) {
         if (!aborted) {
-          const msg = e?.response?.data?.detail || e?.message || "Failed to load videos.";
+          const msg =
+            e?.response?.data?.detail || e?.message || "Failed to load videos.";
           setErrorMsg(msg);
         }
       } finally {
@@ -102,8 +182,14 @@ export default function Page() {
         if (q) params.q = q;
         if (category && category !== "All") params.category = category;
 
-        const { data } = await axiosWithCsrf.get("/api/videos/recommended/", { params });
-        const results = Array.isArray(data) ? data : Array.isArray(data?.results) ? data.results : [];
+        const { data } = await axiosWithCsrf.get("/api/videos/recommended/", {
+          params,
+        });
+        const results = Array.isArray(data)
+          ? data
+          : Array.isArray(data?.results)
+          ? data.results
+          : [];
         if (!aborted) setRecommended(results);
       } catch {
         if (!aborted) setRecommended([]); // likely anonymous user, not fatal
@@ -112,11 +198,16 @@ export default function Page() {
       }
     };
     run();
-    return () => { aborted = true; };
+    return () => {
+      aborted = true;
+    };
   }, [query, category]);
 
   // Dedup helpers
-  const recommendedIds = useMemo(() => new Set(recommended.map((v) => v.id)), [recommended]);
+  const recommendedIds = useMemo(
+    () => new Set(recommended.map((v) => v.id)),
+    [recommended]
+  );
   const dedupedMain = useMemo(
     () => videos.filter((v) => !recommendedIds.has(v.id)),
     [videos, recommendedIds]
@@ -129,9 +220,9 @@ export default function Page() {
     return Array.from(map.values());
   }, [videos, recommended]);
 
-  function handleAddToClassroom(id: string) {
-    setMyClassroom((prev) => (prev.includes(id) ? prev : [...prev, id]));
-  }
+  // function handleAddToClassroom(id: string) {
+  //   setMyClassroom((prev) => (prev.includes(id) ? prev : [...prev, id]));
+  // }
 
   const renderCard = (v: ApiVideo) => {
     const vid = v.youtube_id || extractYouTubeId(v.youtube_url);
@@ -160,17 +251,31 @@ export default function Page() {
               {v.category}
             </div>
           )}
-          <h3 className="text-lg md:text-xl font-semibold leading-snug">{v.title}</h3>
+          <h3 className="text-lg md:text-xl font-semibold leading-snug">
+            {v.title}
+          </h3>
           {v.description && (
-            <p className="mt-2 text-sm md:text-[15px] text-slate-700">{v.description}</p>
+            <p className="mt-2 text-sm md:text-[15px] text-slate-700">
+              {v.description}
+            </p>
           )}
 
           <div className="mt-5 flex items-center justify-between">
             <button
-              onClick={() => handleAddToClassroom(String(v.id))}
-              className="rounded-xl px-4 py-2 text-sm font-semibold text-white bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 shadow-[0_12px_48px_rgba(168,85,247,0.55)] hover:shadow-[0_12px_48px_rgba(168,85,247,0.65)] active:scale-[0.98] transition cursor-pointer"
+              onClick={() => handleAddToClassroom(Number(v.id))}
+              disabled={isAdded(Number(v.id)) || isAdding(Number(v.id))}
+              className="rounded-xl px-4 py-2 text-sm font-semibold text-white bg-gradient-to-tr from-indigo-500 via-violet-500 to-sky-500 disabled:opacity-60"
             >
-              {myClassroom.includes(String(v.id)) ? "Added ✓" : "Add to Classroom"}
+              {isAdded(Number(v.id)) ? (
+                "Added ✓"
+              ) : isAdding(Number(v.id)) ? (
+                <span className="inline-flex items-center gap-2">
+                  <span className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" />
+                  Adding…
+                </span>
+              ) : (
+                "Add to Classroom"
+              )}
             </button>
 
             <a
@@ -195,13 +300,26 @@ export default function Page() {
         <div className="rounded-3xl flex px-8 py-4 md:py-6 bg-white/40 backdrop-blur-2xl ring-1 ring-white/50 shadow-[0_20px_120px_rgba(168,85,247,0.35)]">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-indigo-500/40 via-violet-500/30 to-sky-500/40" />
-            <h1 className="text-xl font-semibold tracking-tight">Freemium Classroom</h1>
+            <h1 className="text-xl font-semibold tracking-tight">
+              Freemium Classroom
+            </h1>
           </div>
 
           <div className="ml-auto flex items-center gap-3">
             <div className="hidden md:flex items-center gap-3 rounded-2xl px-3 py-2 backdrop-blur-xl bg-white/50 shadow-[0_8px_40px_rgba(0,0,0,0.08)] ring-1 ring-white/40 border border-black/10">
-              <svg aria-hidden className="h-5 w-5 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m1.1-4.4a6.75 6.75 0 11-13.5 0 6.75 6.75 0 0113.5 0z" />
+              <svg
+                aria-hidden
+                className="h-5 w-5 opacity-70"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+              >
+                <path
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 21l-4.35-4.35m1.1-4.4a6.75 6.75 0 11-13.5 0 6.75 6.75 0 0113.5 0z"
+                />
               </svg>
               <input
                 value={query}
@@ -217,12 +335,16 @@ export default function Page() {
               className="rounded-xl px-3 py-2 backdrop-blur-xl bg-white/60 shadow-[0_8px_40px_rgba(0,0,0,0.08)] border border-black/10 ring-1 ring-white/40"
             >
               {categories.map((c) => (
-                <option key={c} value={c}>{c}</option>
+                <option key={c} value={c}>
+                  {c}
+                </option>
               ))}
             </select>
 
             <div className="hidden sm:block rounded-xl px-3 py-2 backdrop-blur-xl bg-white/60 border border-black/10 ring-1 ring-white/40 shadow-[0_8px_40px_rgba(0,0,0,0.08)]">
-              <span className="text-sm font-medium">My Classroom: {myClassroom.length}</span>
+              <span className="text-sm font-medium">
+                My Classroom: {myClassroom.length}
+              </span>
             </div>
           </div>
         </div>
@@ -241,7 +363,11 @@ export default function Page() {
                 key={t.key}
                 onClick={() => setActiveTab(k)}
                 className={`px-4 py-2 rounded-xl text-sm font-semibold transition
-                ${active ? "bg-slate-900 text-white shadow" : "bg-white/60 text-slate-700 ring-1 ring-slate-200 hover:bg-white"}`}
+                ${
+                  active
+                    ? "bg-slate-900 text-white shadow"
+                    : "bg-white/60 text-slate-700 ring-1 ring-slate-200 hover:bg-white"
+                }`}
               >
                 {t.label}
               </button>
@@ -262,8 +388,12 @@ export default function Page() {
         {activeTab === "forYou" && (
           <>
             <div className="flex items-center justify-between mt-2">
-              <h2 className="text-lg font-semibold text-slate-900">Recommended for you</h2>
-              {loadingReco && <div className="text-xs text-slate-600">Updating…</div>}
+              <h2 className="text-lg font-semibold text-slate-900">
+                Recommended for you
+              </h2>
+              {loadingReco && (
+                <div className="text-xs text-slate-600">Updating…</div>
+              )}
             </div>
 
             {recommended.length === 0 ? (
@@ -281,7 +411,9 @@ export default function Page() {
         {activeTab === "allVideos" && (
           <>
             <div className="flex items-center justify-between mt-2">
-              <h2 className="text-lg font-semibold text-slate-900">All videos</h2>
+              <h2 className="text-lg font-semibold text-slate-900">
+                All videos
+              </h2>
               {loadingList && (
                 <div className="text-xs text-slate-600 flex items-center gap-2">
                   <span className="inline-block h-3 w-3 rounded-full border-2 border-slate-400 border-t-transparent animate-spin" />
@@ -292,7 +424,9 @@ export default function Page() {
 
             {videos.length === 0 ? (
               <div className="mt-8 rounded-2xl p-8 text-center bg-white/60 backdrop-blur-xl ring-1 ring-white/40 shadow">
-                <p className="text-slate-700">No courses matched your search.</p>
+                <p className="text-slate-700">
+                  No courses matched your search.
+                </p>
               </div>
             ) : (
               <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 mt-8">
@@ -308,7 +442,9 @@ export default function Page() {
             {hasActiveFilter ? (
               <>
                 <div className="flex items-center justify-between mt-2">
-                  <h2 className="text-lg font-semibold text-slate-900">Results</h2>
+                  <h2 className="text-lg font-semibold text-slate-900">
+                    Results
+                  </h2>
                   {(loadingList || loadingReco) && (
                     <div className="text-xs text-slate-600">Updating…</div>
                   )}
@@ -316,7 +452,9 @@ export default function Page() {
 
                 {mergedFiltered.length === 0 ? (
                   <div className="mt-8 rounded-2xl p-8 text-center bg-white/60 backdrop-blur-xl ring-1 ring-white/40 shadow">
-                    <p className="text-slate-700">No courses matched your search.</p>
+                    <p className="text-slate-700">
+                      No courses matched your search.
+                    </p>
                   </div>
                 ) : (
                   <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3 mt-8">
@@ -330,8 +468,12 @@ export default function Page() {
                 {recommended.length > 0 && (
                   <section className="mt-2">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-semibold text-slate-900">Recommended for you</h2>
-                      {loadingReco && <div className="text-xs text-slate-600">Updating…</div>}
+                      <h2 className="text-lg font-semibold text-slate-900">
+                        Recommended for you
+                      </h2>
+                      {loadingReco && (
+                        <div className="text-xs text-slate-600">Updating…</div>
+                      )}
                     </div>
                     <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 mt-4">
                       {recommended.map((v) => renderCard(v))}
@@ -344,7 +486,9 @@ export default function Page() {
 
                 <section>
                   <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-slate-900">All videos</h2>
+                    <h2 className="text-lg font-semibold text-slate-900">
+                      All videos
+                    </h2>
                     {loadingList && (
                       <div className="text-xs text-slate-600 flex items-center gap-2">
                         <span className="inline-block h-3 w-3 rounded-full border-2 border-slate-400 border-t-transparent animate-spin" />
