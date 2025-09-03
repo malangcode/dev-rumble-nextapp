@@ -5,14 +5,16 @@
  * @param audioBlob Optional recorded audio.
  * @param text Optional typed text.
  * @param apiUrl Backend API endpoint.
- * 
+ * @param videoContext Video context information.
+ *
  */
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const DEFAULT_API_URL = `${BASE_URL}/api/transcribe-and-reply-2/`;
 export async function sendToBackend(
   audioBlob?: Blob,
   text?: string,
-  apiUrl: string = DEFAULT_API_URL
+  apiUrl: string = DEFAULT_API_URL,
+  videoContext?: any
 ) {
   const formData = new FormData();
 
@@ -21,6 +23,10 @@ export async function sendToBackend(
   }
   if (text) {
     formData.append("text", text);
+  }
+
+  if (videoContext) {
+    formData.append("videoContext", videoContext);
   }
 
   try {

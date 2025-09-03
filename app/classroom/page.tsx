@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, use } from "react";
 import {
   Send,
   Mic,
@@ -40,6 +40,11 @@ import Image from "next/image";
 import { VoiceRecorder } from "@/utils/voiceRecorder";
 import { useRouter } from "next/navigation";
 import { axiosWithCsrf } from "@/lib/axiosWithCsrf";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { get } from "http";
 
 // classroom API shapes
 type ClassroomVideo = {
@@ -49,6 +54,7 @@ type ClassroomVideo = {
   category: string;
   youtube_url: string;
   youtube_id?: string;
+  notes: string;
 };
 
 type ClassroomItem = {
@@ -172,6 +178,11 @@ const TeachingChatUI: React.FC = () => {
   const [classroomItems, setClassroomItems] = useState<ClassroomItem[]>([]);
   const [activeVideo, setActiveVideo] = useState<ClassroomVideo | null>(null);
 
+  const activeItem = useMemo(
+    () => classroomItems.find((it) => it.video?.id === activeVideo?.id) ?? null,
+    [classroomItems, activeVideo]
+  );
+
   // layout toggles
   const defaultLayout = {
     showLeft: true,
@@ -248,6 +259,8 @@ const TeachingChatUI: React.FC = () => {
 
         const items = Array.isArray(data?.items) ? data.items : [];
         setClassroomItems(items);
+
+        console.log(classroomItems);
 
         // choose active: API’s active_video -> that item; else first item; else null
         let chosen: ClassroomVideo | null = null;
@@ -332,6 +345,12 @@ const TeachingChatUI: React.FC = () => {
   const [showContext, setShowContext] = useState(false);
   const [contextText, setContextText] = useState("");
 
+  useEffect(() => {
+    if (activeVideo) {
+      console.log("Video context notes:", activeVideo.notes);
+    }
+  }, [activeVideo]);
+
   const sendMessage = async () => {
     if (!message.trim() && !contextText.trim()) return;
 
@@ -359,8 +378,10 @@ const TeachingChatUI: React.FC = () => {
     };
     setMessages((prev) => [...prev, typingMessage]);
 
+    const videoContext = activeVideo?.notes?.trim() || "";
+
     try {
-      const res = await sendToBackend(undefined, composed);
+      const res = await sendToBackend(undefined, composed, undefined, videoContext);
       const aiText = res.ai_text || "Sorry, I couldn't process that.";
       const audio = new Audio(`data:audio/mpeg;base64,${res.ai_audio}`);
       audio.play();
@@ -782,35 +803,136 @@ const TeachingChatUI: React.FC = () => {
                 {showDocs ? (
                   <div className="h-full overflow-y-auto p-4 pb-16 border-t border-white/60 bg-white/60">
                     <h3 className="font-semibold mb-2">Lesson Docs</h3>
-                    <p className="text-sm text-slate-700">
-                      Here are the notes, outline, and references for this
-                      video. You can render markdown or attach files here.
-                    </p>
-                    <ul className="list-disc pl-6 mt-3 text-sm text-slate-700 space-y-1">
-                      <li>Key Concepts: State, Props, Components</li>
-                      <li>Examples: Basic Counter, Todo App Skeleton</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                      <li>Further Reading: Official React Docs</li>
-                    </ul>
+
+                    {activeItem?.video?.notes?.trim() ? (
+                      <div className="prose prose-slate max-w-none prose-p:my-2 prose-li:my-1">
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          components={{
+                            table: ({ node, ...props }) => (
+                              <table
+                                className="w-full border-collapse border border-gray-300 my-6 text-sm"
+                                {...props}
+                              />
+                            ),
+                            thead: ({ node, ...props }) => (
+                              <thead
+                                className="bg-gray-100 text-gray-700"
+                                {...props}
+                              />
+                            ),
+                            tbody: ({ node, ...props }) => (
+                              <tbody
+                                className="bg-white text-gray-600"
+                                {...props}
+                              />
+                            ),
+                            tr: ({ node, ...props }) => (
+                              <tr
+                                className="border-b border-gray-200 hover:bg-gray-50"
+                                {...props}
+                              />
+                            ),
+                            th: ({ node, ...props }) => (
+                              <th
+                                className="px-4 py-2 text-left font-semibold border border-gray-300"
+                                {...props}
+                              />
+                            ),
+                            td: ({ node, ...props }) => (
+                              <td
+                                className="px-4 py-2 border border-gray-300"
+                                {...props}
+                              />
+                            ),
+                            h1: ({ node, ...props }) => (
+                              <h1
+                                className="text-2xl font-bold mb-3"
+                                {...props}
+                              />
+                            ),
+                            h2: ({ node, ...props }) => (
+                              <h2
+                                className="text-xl font-semibold mb-3"
+                                {...props}
+                              />
+                            ),
+                            h3: ({ node, ...props }) => (
+                              <h3
+                                className="text-lg font-semibold mb-4 mt-6"
+                                {...props}
+                              />
+                            ),
+                            a: ({ node, ...props }) => (
+                              <a
+                                className="text-base underline italic mb-4 text-blue-500 mt-6"
+                                {...props}
+                              />
+                            ),
+                            p: ({ node, ...props }) => (
+                              <p
+                                className="mb-6 leading-relaxed text-gray-800"
+                                {...props}
+                              />
+                            ),
+                            li: ({ node, ...props }) => (
+                              <li className="ml-5 list-disc mb-2" {...props} />
+                            ),
+
+                            // ✅ HR custom spacing
+                            hr: ({ node, ...props }) => (
+                              <hr
+                                className="my-8 border-t border-gray-300"
+                                {...props}
+                              />
+                            ),
+
+                            code({
+                              node,
+                              inline,
+                              className,
+                              children,
+                              ...props
+                            }: any) {
+                              const match = /language-(\w+)/.exec(
+                                className || ""
+                              );
+                              return !inline && match ? (
+                                <SyntaxHighlighter
+                                  style={oneDark}
+                                  language={match[1]}
+                                  PreTag="div"
+                                  wrapLines={true}
+                                  lineProps={{
+                                    style: {
+                                      wordBreak: "break-word",
+                                      whiteSpace: "pre-wrap",
+                                      fontSize: "0.9rem",
+                                    },
+                                  }}
+                                  {...props}
+                                >
+                                  {String(children).replace(/\n$/, "")}
+                                </SyntaxHighlighter>
+                              ) : (
+                                <code
+                                  className="bg-gray-100 px-1 rounded"
+                                  {...props}
+                                >
+                                  {children}
+                                </code>
+                              );
+                            },
+                          }}
+                        >
+                          {activeItem.video.notes}
+                        </ReactMarkdown>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-700">
+                        No notes for this lesson yet.
+                      </p>
+                    )}
                   </div>
                 ) : (
                   <div ref={canvasRef} className="w-full h-full relative p-6">

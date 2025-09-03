@@ -251,11 +251,11 @@ useEffect(() => {
               {v.category}
             </div>
           )}
-          <h3 className="text-lg md:text-xl font-semibold leading-snug">
+          <h3 className="text-lg md:text-xl font-semibold leading-snug line-clamp-2">
             {v.title}
           </h3>
           {v.description && (
-            <p className="mt-2 text-sm md:text-[15px] text-slate-700">
+            <p className="mt-2 text-sm md:text-[15px] text-slate-700 line-clamp-2">
               {v.description}
             </p>
           )}
@@ -350,7 +350,7 @@ useEffect(() => {
         </div>
 
         {/* Tabs */}
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-6 flex items-center gap-2">
           {[
             { key: "all", label: "All" },
             { key: "forYou", label: "For You" },
